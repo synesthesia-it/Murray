@@ -2,4 +2,5 @@
 
 bundle install --path vendor/bundle
 bundle exec pod install --repo-update
-open *space
+open *space;
+exit 0
