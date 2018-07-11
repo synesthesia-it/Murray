@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="8VR-1g-qFQ" customClass="ImagePickerItemView" customModule="StreetMarket360" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="515"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Foto" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ohS-Al-lws">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="441.5"/>
+                    <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="14"/>
+                    <color key="textColor" red="0.60784313729999995" green="0.60784313729999995" blue="0.60784313729999995" alpha="1" colorSpace="deviceRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1co-pF-zuX">
+                    <rect key="frame" x="0.0" y="451" width="64" height="64"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="64" id="DIZ-bt-wSS"/>
+                        <constraint firstAttribute="width" constant="64" id="WPX-Te-6kg"/>
+                    </constraints>
+                    <state key="normal" image="ic_add"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2vs-Pd-l0i">
+                    <rect key="frame" x="45" y="451" width="19" height="22"/>
+                    <state key="normal" image="close_onrange"/>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="ohS-Al-lws" secondAttribute="trailing" id="1ka-1j-WZ7"/>
+                <constraint firstAttribute="bottom" secondItem="1co-pF-zuX" secondAttribute="bottom" id="6qQ-39-L0o"/>
+                <constraint firstItem="ohS-Al-lws" firstAttribute="top" secondItem="8VR-1g-qFQ" secondAttribute="top" id="TRt-JM-xEm"/>
+                <constraint firstItem="1co-pF-zuX" firstAttribute="leading" secondItem="8VR-1g-qFQ" secondAttribute="leading" id="UXJ-dk-ccD"/>
+                <constraint firstItem="2vs-Pd-l0i" firstAttribute="top" secondItem="1co-pF-zuX" secondAttribute="top" id="YgA-9d-WHp"/>
+                <constraint firstItem="ohS-Al-lws" firstAttribute="leading" secondItem="8VR-1g-qFQ" secondAttribute="leading" id="nZj-Md-aiA"/>
+                <constraint firstItem="1co-pF-zuX" firstAttribute="top" secondItem="ohS-Al-lws" secondAttribute="bottom" constant="9.5" id="rnG-ZE-abA"/>
+                <constraint firstItem="2vs-Pd-l0i" firstAttribute="trailing" secondItem="1co-pF-zuX" secondAttribute="trailing" id="vx5-1J-wJ7"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="deleteButton" destination="2vs-Pd-l0i" id="MIO-Pn-xuY"/>
+                <outlet property="openButton" destination="1co-pF-zuX" id="pWN-NO-RTr"/>
+                <outlet property="title" destination="ohS-Al-lws" id="fCr-Hq-woV"/>
+            </connections>
+            <point key="canvasLocation" x="28" y="127"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="close_onrange" width="19" height="19"/>
+        <image name="ic_add" width="28" height="30"/>
+    </resources>
+</document>

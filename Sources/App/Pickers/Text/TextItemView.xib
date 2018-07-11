@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="TextItemView" customModule="StreetMarket360" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="310" height="357"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="EMAIL" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gdd-cU-Zqe">
+                    <rect key="frame" x="0.0" y="0.0" width="310" height="325"/>
+                    <fontDescription key="fontDescription" name="Futura-Medium" family="Futura" pointSize="14"/>
+                    <color key="textColor" red="0.0" green="0.59999999999999998" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="mail@gmail.com" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="8Sj-k2-eBQ">
+                    <rect key="frame" x="0.0" y="325" width="310" height="30"/>
+                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="gKB-YH-Llp"/>
+                    </constraints>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="deviceRGB"/>
+                    <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="18"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QyB-KW-PKC">
+                    <rect key="frame" x="0.0" y="355" width="310" height="1"/>
+                    <color key="backgroundColor" red="0.97254901960784301" green="0.55294117647058805" blue="0.168627450980392" alpha="1" colorSpace="deviceRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="eQm-yn-rkr"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="8Sj-k2-eBQ" secondAttribute="bottom" constant="2" id="7Io-lt-lYg"/>
+                <constraint firstItem="8Sj-k2-eBQ" firstAttribute="leading" secondItem="gdd-cU-Zqe" secondAttribute="leading" id="A6p-I3-iVl"/>
+                <constraint firstItem="QyB-KW-PKC" firstAttribute="top" secondItem="8Sj-k2-eBQ" secondAttribute="bottom" id="EJW-sF-8Or"/>
+                <constraint firstItem="gdd-cU-Zqe" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="Fzn-oL-ATd"/>
+                <constraint firstItem="8Sj-k2-eBQ" firstAttribute="trailing" secondItem="gdd-cU-Zqe" secondAttribute="trailing" id="Gwn-cz-1B8"/>
+                <constraint firstItem="8Sj-k2-eBQ" firstAttribute="top" secondItem="gdd-cU-Zqe" secondAttribute="bottom" id="HEu-yU-GWQ"/>
+                <constraint firstItem="gdd-cU-Zqe" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Y7U-iF-ASx"/>
+                <constraint firstItem="QyB-KW-PKC" firstAttribute="trailing" secondItem="8Sj-k2-eBQ" secondAttribute="trailing" id="Z2d-uW-bSw"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="gdd-cU-Zqe" secondAttribute="trailing" id="fpp-Ef-YGH"/>
+                <constraint firstItem="QyB-KW-PKC" firstAttribute="leading" secondItem="8Sj-k2-eBQ" secondAttribute="leading" id="hpD-z4-GNV"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="textField" destination="8Sj-k2-eBQ" id="01j-bD-UI8"/>
+                <outlet property="titleLabel" destination="gdd-cU-Zqe" id="tXn-hr-h3j"/>
+            </connections>
+            <point key="canvasLocation" x="1" y="-101.5"/>
+        </view>
+    </objects>
+</document>
