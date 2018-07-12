@@ -2,13 +2,31 @@
 import Foundation
 import Files
 import ShellOut
-
+import Commander
 
 public final class Project {
     
     var git : URL
     var projectName : String
     var projectPath : String
+    
+    static func commands(for group:Group) {
+        group.group("project") {
+            $0.command(
+                "new",
+                Argument<String>("projectName", description: "Name of project"),
+                Option<String>("git", default:"git@github.com:synesthesia-it/Skeleton.git", description:"Project's template git url")) {
+                    projectName, git in
+                    guard let url = URL(string: git) else {
+                        return
+                    }
+                    try Project(projectName: projectName, git: url).run()
+                    
+            }
+        }
+        
+    }
+    
     public init( projectName: String, git: URL, projectPath:String? = nil) {
         self.projectName = projectName
         self.git = git
