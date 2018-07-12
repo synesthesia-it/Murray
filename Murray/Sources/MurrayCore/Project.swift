@@ -4,23 +4,27 @@ import Files
 import ShellOut
 
 
-public final class Skeleton {
-    private let arguments: [String]
+public final class Project {
     
-    public init(arguments: [String] = CommandLine.arguments) {
-        self.arguments = arguments
+    var git : URL
+    var projectName : String
+    
+    public init( projectName: String, git: URL) {
+        self.projectName = projectName
+        self.git = git
     }
     
     public func run() throws {
-        guard arguments.count > 1 else {
-            throw Error.missingProjectName
-        }
+
         // The first argument is the execution path
-        let projectName = arguments[1]
         
         do {
             let fs = FileSystem()
-            let folder = try fs.createFolder(at: projectName)
+            
+            guard let folder = try? fs.createFolder(at: projectName) else {
+                throw Error.existingFolder
+                
+            }
             FileManager.default.changeCurrentDirectoryPath(folder.path)
         
             let url = URL(string:"git@github.com:synesthesia-it/Murray.git")!
@@ -33,22 +37,41 @@ public final class Skeleton {
             try murrayFolder.subfolder(named: "Murray").delete()
             print ("Moving contents to proper folder")
             try murrayFolder.moveContents(to: folder, includeHidden: true)
-            print ("Environment setup")
-            try shellOut(to: ShellOutCommand(string: "./install.sh"),
+            
+            try shellOut(to: "bundle",
+                         arguments:["install","--path","vendor/bundle"],
                          outputHandle:FileHandle.standardOutput,
                          errorHandle:FileHandle.standardError)
+            
+            try shellOut(to: "bundle",
+                         arguments:["exec","pod","install",],
+                         outputHandle:FileHandle.standardOutput,
+                         errorHandle:FileHandle.standardError)
+            
+            try shellOut(to: "open",
+                         arguments:["*space"],
+                         outputHandle:FileHandle.standardOutput,
+                         errorHandle:FileHandle.standardError)
+            
+            
             print ("Done!")
             exit(0)
             
-        } catch {
-            throw Error.existingFolder
+        } catch let error {
+            if error is Error {
+                throw error
+            } else {
+                throw Error.shellError
+            }
         }
     }
 }
-public extension Skeleton {
+
+public extension Project {
     enum Error: Swift.Error {
         case missingProjectName
         case existingFolder
         case gitError
+        case shellError
     }
 }
