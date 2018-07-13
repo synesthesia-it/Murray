@@ -13,9 +13,6 @@ public class Menu {
         return Group {
             Project.commands(for: $0)
             Template.commands(for: $0)
-            $0.command("file", {
-                print ("New file")
-            })
         }
     }
     

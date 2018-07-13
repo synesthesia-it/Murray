@@ -23,5 +23,9 @@ let package = Package(
         .target(name: "MurrayCore", dependencies:
             ["Files","ShellOut","Commander"]
         ),
+        .testTarget(
+            name: "MurrayTests",
+            dependencies: ["MurrayCore", "Files"]
+        )
         ]
 )
