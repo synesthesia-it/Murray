@@ -10,59 +10,10 @@ import Files
 import ShellOut
 import Commander
 
-class BoneList : Codable {
-    
-    class Bone : Codable {
-        var name = ""
-        var subBones: [String] = []
-        var files: [String]  = []
-        var folders: [String]?
-        var createSubfolder:Bool = false
-        var placeholder:String?
-        enum CodingKeys : String, CodingKey {
-            case subBones
-            case files
-            case folders
-            case createSubfolder
-            case placeholder
-        }
-    }
-    
-    var bones: [String:Bone]
-    var sourcesBaseFolder: String = ""
-    
-    enum CodingKeys : String, CodingKey {
-        case bones
-        case sourcesBaseFolder
-    }
-}
+
 
 
 public final class Template {
-    
-    private enum Kind : String {
-        case view
-        case viewController
-        
-        var folders: [String] {
-            switch self {
-            case .view: return ["App","Views"]
-            case .viewController: return ["App","ViewControllers"]
-            }
-        }
-        var files: [String] {
-            switch self {
-            case .view: return ["ItemView.swift","ItemView.xib","ItemViewModel.swift"]
-                .map { "Bone" + $0}
-            case .viewController : return []
-            }
-        }
-        var placeholder:String {
-            return "Bone"
-        }
-        
-    }
-    
     
     static func commands(for group:Group) {
         group.group("template") {
@@ -78,20 +29,21 @@ public final class Template {
                 try Template.setup(git: url)
                 //try Template.setup(projectName: projectName, git: url).run()
             }
-            
-                $0.command("new",
-                Argument<String>("bone", description:""),
-                Argument<String>("name",description:"")
-                    )
-                { bone, name in
-                    try Template.newTemplate(bone: bone, name: name)
+            $0.command("list") { try Template.list() }
+            $0.command("new",
+                       Argument<String>("bone", description:""),
+                       Argument<String>("name", description:""),
+                       Option<String>("targetName", default:"", description:"")
+                )
+            { bone, name, targetName in
+                try Template.newTemplate(bone: bone, name: name, targetName:targetName)
                 
             }
         }
     }
     private static let murrayTemplatesFolderName = ".murrayTemplates"
     
-     public static func setup(git:URL) throws {
+    public static func setup(git:URL) throws {
         let fs = FileSystem()
         
         print ("Removing old setup")
@@ -109,9 +61,19 @@ public final class Template {
         try shellOut(to:.gitClone(url:git))
         
         try? folder.subfolders.first?.moveContents(to: folder)
-        try bonespec(from: folder)
+        _ = try bonespec(from: folder)
         
         //move first folder's contents to root
+    }
+    
+    
+    private static func list() throws {
+        let fs = FileSystem()
+        guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
+            throw Error.missingSetup
+        }
+        let spec = try self.bonespec(from: bonesFolder)
+        print (spec.printableDescription)
     }
     
     private static func bonespec(from folder:Folder) throws -> BoneList  {
@@ -138,68 +100,78 @@ public final class Template {
         }
     }
     
+    
+    
     private static func createSubBone(boneList:BoneList, bone:BoneList.Bone,templatesFolder:Folder, name:String, fs:FileSystem) throws {
         print ("Starting \(bone.name) bone")
         if bone.files.count > 0 {
-        let scriptPath = "\(Template.murrayTemplatesFolderName)/script.rb"
-        let subfolders = ["Sources"] + (bone.folders ?? [])
-        print ("Subfolders: \(subfolders)")
-        let sourcesFolder:Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in
-            guard let f = acc else { return nil }
-            return try? f.subfolder(named:current)
-        }
-        print ("SourcesFolder: \(sourcesFolder?.path ?? "unknown")")
-        guard let containingFolder = sourcesFolder else {
-            print ("Missing containing subfolder")
-            throw Error.missingSubfolder
-        }
-        
-        guard let finalFolder = (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
-            print ("Missing final subfolder")
-            throw Error.missingSubfolder
-        }
-        print ("Parsing \(bone.name) files")
-        try bone.files.forEach { path in
-            print (templatesFolder.path + "/" + path )
+            let scriptPath = "\(Template.murrayTemplatesFolderName)/script.rb"
+            let subfolders = ["Sources"] + bone.folders
+            print ("Subfolders: \(subfolders)")
+            let sourcesFolder:Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in
+                guard let f = acc else { return nil }
+                return try? f.subfolder(named:current)
+            }
+            print ("SourcesFolder: \(sourcesFolder?.path ?? "unknown")")
+            guard let containingFolder = sourcesFolder else {
+                print ("Missing containing subfolder")
+                throw Error.missingSubfolder
+            }
             
-            guard let templateFile = try? templatesFolder.file(named: path) else {
-                throw Error.missingFile
+            guard let finalFolder =
+                bone.createSubfolder == false ? containingFolder : 
+                (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
+                print ("Missing final subfolder")
+                throw Error.missingSubfolder
             }
-            print ("Moving to destination")
-            guard let file = try? templateFile.copy(to: finalFolder) else {
-                throw Error.missingFile
-            }
-            print ("Renaming")
-            if let placeholder = bone.placeholder {
-                if let filename = path.split(separator: "/").last {
-                    try file.rename(to: filename.replacingOccurrences(of: placeholder, with: name))
+            print ("Parsing \(bone.name) files")
+            try bone.files.forEach { path in
+                print (templatesFolder.path + "/" + path )
+                
+                guard let templateFile = try? templatesFolder.file(named: path) else {
+                    throw Error.missingFile
                 }
-            print ("Reading file")
-            var string = try file.readAsString()
-            
-            let innerPlaceholder = "___\(placeholder)Placeholder___"
-            let innerPlaceholderLowercased = "___\(placeholder)PlaceholderFirstLowercased___"
-            string = string
-                .replacingOccurrences(of: innerPlaceholder, with: name)
-                .replacingOccurrences(of: innerPlaceholderLowercased, with: name.firstLowercased())
-            print ("Writing file")
-            try file.write(string: string)
+                print ("Moving to destination")
+                guard let file = try? templateFile.copy(to: finalFolder) else {
+                    throw Error.missingFile
+                }
+                print ("Renaming")
+                let placeholder = bone.placeholder
+                if placeholder.count > 0 {
+                    if let filename = path.split(separator: "/").last {
+                        try file.rename(to: filename.replacingOccurrences(of: placeholder, with: name))
+                    }
+                    print ("Reading file")
+                    var string = try file.readAsString()
+                    
+                    let innerPlaceholder = "___\(placeholder)Placeholder___"
+                    let innerPlaceholderLowercased = "___\(placeholder)PlaceholderFirstLowercased___"
+                    string = string
+                        .replacingOccurrences(of: innerPlaceholder, with: name)
+                        .replacingOccurrences(of: innerPlaceholderLowercased, with: name.firstLowercased())
+                    print ("Writing file")
+                    try file.write(string: string)
+                }
+                print (fs.currentFolder.path)
+                let projectName = fs.currentFolder.subfolders
+                    .filter ({ $0.name.contains(".xcodeproj") })
+                    .map ({ $0.nameExcludingExtension }).first
+                print ("Editing project \"\(projectName ?? "")\"")
+                if let projectName = projectName,
+                    bone.targetNames.count > 0 {
+                    
+                    let args = [
+                        scriptPath,
+                        projectName,
+                        file.path,
+                        "\"\((bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap{ $0 })).joined(separator:"|"))\"",
+                        "\"\((bone.targetNames).joined(separator:"|"))\"",
+                    ]
+                    print (args)
+                    try shellOut(to: "ruby",
+                                 arguments:args)
+                }
             }
-            //TODO find project name
-            
-            
-            
-            
-            let args = [
-                scriptPath,
-                "test",
-                file.path,
-                "\"\(((bone.folders ?? []) + [name]).joined(separator:"|"))\""
-            ]
-            print (args)
-            try shellOut(to: "ruby",
-                         arguments:args)
-        }
         }
         print ("Parsing \(bone.name) subBones")
         try bone.subBones.compactMap {
@@ -209,7 +181,7 @@ public final class Template {
         }
     }
     
-    private static func newTemplate(bone boneName:String, name:String) throws {
+    private static func newTemplate(bone boneName:String, name:String, targetName:String) throws {
         let fs = FileSystem()
         
         guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
@@ -229,58 +201,6 @@ public final class Template {
             throw Error.missingSubfolder
         }
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs)
-//        let subfolders = ["Sources"] + kind.folders
-//        let sourcesFolder:Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in
-//            guard let f = acc else { return nil }
-//            return try? f.subfolder(named:current)
-//        }
-//        guard let containingFolder = sourcesFolder else {
-//            throw Error.missingSubfolder
-//        }
-//
-//        guard let finalFolder = try? containingFolder.createSubfolder(named: name) else {
-//            throw Error.missingSubfolder
-//        }
-//
-//        try kind.files.forEach { filename in
-//            print (templatesFolder.path + "/" + filename )
-//            guard let templateFile = try? templatesFolder.file(named: filename) else {
-//                throw Error.missingFile
-//            }
-//            print ("Moving to destination")
-//            guard let file = try? templateFile.copy(to: finalFolder) else {
-//                throw Error.missingFile
-//            }
-//            print ("Renaming")
-//            try file.rename(to: filename.replacingOccurrences(of: kind.placeholder, with: name))
-//            print ("Reading file")
-//            var string = try file.readAsString()
-//            let innerPlaceholder = "___\(kind.placeholder)Placeholder___"
-//            let innerPlaceholderLowercased = "___\(kind.placeholder)PlaceholderFirstLowercased___"
-//            string = string
-//                .replacingOccurrences(of: innerPlaceholder, with: name)
-//                .replacingOccurrences(of: innerPlaceholderLowercased, with: name.firstLowercased())
-//            print ("Writing file")
-//            try file.write(string: string)
-//            //TODO find project name
-//
-//
-//
-//
-//            let args = [
-//                scriptPath,
-//                "test",
-//                file.path,
-//                "\"\((kind.folders + [name]).joined(separator:"|"))\""
-//            ]
-//            print (args)
-//            try shellOut(to: "ruby",
-//                         arguments:args)
-//
-//        }
-        
-        
-        
         
     }
     
@@ -293,7 +213,7 @@ fileprivate extension Template {
         project_name = ARGV[0]
         file_path = ARGV[1]
         destination_folder_string = ARGV[2]
-        targets_string = ARGV[3] || "App"
+        targets_string = ARGV[3]
 
         destination_folders = destination_folder_string.split('|')
         target_names = targets_string.split('|')

@@ -8,6 +8,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
+    .package(url: "https://github.com/onevcat/Rainbow", from: "3.0.0"),
 	.package(
             url: "https://github.com/johnsundell/files.git",
             from: "1.0.0"
@@ -21,7 +22,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(name: "Murray", dependencies: ["MurrayCore"]),
         .target(name: "MurrayCore", dependencies:
-            ["Files","ShellOut","Commander"]
+            ["Files","ShellOut","Commander","Rainbow"]
         ),
         .testTarget(
             name: "MurrayTests",
