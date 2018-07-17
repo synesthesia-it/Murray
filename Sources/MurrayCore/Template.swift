@@ -119,7 +119,7 @@ public final class Template {
             }
             
             guard let finalFolder =
-                bone.createSubfolder == false ? containingFolder : 
+                bone.createSubfolder == false ? containingFolder :
                 (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
                 print ("Missing final subfolder")
                 throw Error.missingSubfolder
@@ -228,12 +228,12 @@ fileprivate extension Template {
           if reference[f] != nil
             reference = reference[f]
           else
-            reference = reference.new_group(f, path, :project)
+            reference = reference.new_group(f, f, :group)
           end
         end
 
-        file = Xcodeproj::Project::Object::FileReferencesFactory.new_reference(reference , file_path , :project)
-
+        file = Xcodeproj::Project::Object::FileReferencesFactory.new_reference(reference , file_path , :group)
+        
         reference << file
 
         project.targets
@@ -242,7 +242,6 @@ fileprivate extension Template {
                   t.source_build_phase.add_file_reference(file)
                 end
         project.save
-
     """
 }
 
