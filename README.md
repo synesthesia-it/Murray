@@ -16,9 +16,14 @@ curl -fsSL https://raw.githubusercontent.com/synesthesia-it/Murray/master/instal
 # Usage
 
 Create a new skeleton app (defaults to [Skeleton](https://github.com/synesthesia-it/Skeleton) )
+After proper cloning and, the app's bundle is installed if a Gemfile is available
+
 ```
-$ murray project new
+$ murray project new CoolApp
 ```
+
+Next command should all be used inside your freshly created project's directory.
+(example: `~/XCodeProjects/CoolApp`)
 
 Clone a Bones repository and setup current project (defaults to [Bones](https://github.com/synesthesia-it/Bones) )
 
@@ -32,3 +37,15 @@ In this case, a `viewSection` is created by replacing placeholders inside the te
 ```
 $ murray template new viewSection Product
 ```
+
+List all templates available for current project
+```
+$ murray template list
+```
+
+# Bones
+-- TODO
+
+### Why Murray?
+
+Because we're dealing with Skeleton apps and Bones and we really miss Monkey Island a lot! :)
