@@ -22,8 +22,10 @@ After proper cloning and, the app's bundle is installed if a Gemfile is availabl
 $ murray project new CoolApp
 ```
 
-Next command should all be used inside your freshly created project's directory.
+
+Next commands should all be used inside your freshly created project's directory.
 (example: `~/XCodeProjects/CoolApp`)
+
 
 Clone a Bones repository and setup current project (defaults to [Bones](https://github.com/synesthesia-it/Bones) )
 
@@ -43,7 +45,7 @@ List all templates available for current project
 $ murray template list
 ```
 
-# Bones
+# Bones and Bonespec.json
 -- TODO
 
 ### Why Murray?
