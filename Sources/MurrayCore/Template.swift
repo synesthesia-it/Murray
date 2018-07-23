@@ -18,62 +18,182 @@ public final class Template {
     static func commands(for group:Group) {
         group.group("template") {
             $0.command(
-                "setup",
+                "install",
                 //                Argument<String>("setup", description: "Setup templates in current folder"),
-                Option<String>("git", default:"git@github.com:synesthesia-it/Bones.git", description:"Project's template git url"))
+                Option<String>("boneFile", default:"", description:"Project's Bonefile"))
             {
                 git in
-                guard let url = URL(string: git) else {
-                    return
-                }
-                try Template.setup(git: url)
-                //try Template.setup(projectName: projectName, git: url).run()
+                try Template.setup()
             }
-            $0.command("list") { try Template.list() }
+            
+            $0.command("list") {
+                try Template.list()
+            }
+            
+            $0.command("create",
+                       Argument<String>("boneName", description:""),
+                       Argument<String>("filenames", description:"Filenames separated by | "),
+                       Option<String>("specName", default:"Custom", description:"")
+                       )
+            { name, files, listName in
+                try Template.newBone(listName: listName, name: name, files: files.components(separatedBy: "|"))
+            }
+            
             $0.command("new",
                        Argument<String>("bone", description:""),
                        Argument<String>("name", description:""),
+                       Option<String>("boneListName", default:"", description:""),
                        Option<String>("targetName", default:"", description:"")
                 )
-            { bone, name, targetName in
-                try Template.newTemplate(bone: bone, name: name, targetName:targetName)
+            { bone, name, listName, targetName in
+                try Template.newTemplate(bone: bone, name: name, listName:listName, targetName:targetName)
                 
             }
         }
     }
-    private static let murrayTemplatesFolderName = ".murrayTemplates"
+    private static let murrayTemplatesFolderName = ".murray"
+    private static let murrayLocalTemplatesFolderName = "MurrayTemplates"
     
-    public static func setup(git:URL) throws {
+    public static func setup() throws {
         let fs = FileSystem()
         
         print ("Removing old setup")
         try? FileManager.default.removeItem(atPath: murrayTemplatesFolderName)
         
-        //Check if root folder (look for a xcodeproj file)
+        //TODO? Check if root folder (look for a xcodeproj file)
         
         guard let folder = try? fs.createFolder(at: murrayTemplatesFolderName) else {
             throw Error.existingFolder
         }
+        let urls = try self.urlsFromBonefile()
+        try urls.forEach { git in
+            FileManager.default.changeCurrentDirectoryPath(folder.path)
+            print ("Cloning bones app from \(git.absoluteString)")
+            try shellOut(to:.gitClone(url:git))
+            guard let boneFolder = folder.subfolders.first else {
+                throw Error.missingSubfolder
+            }
+            //try? folder.subfolders.first?.moveContents(to: folder)
+            _ = try bonespec(from: boneFolder)
+        }
         
-        FileManager.default.changeCurrentDirectoryPath(folder.path)
-        print ("Cloning bones app from \(git.absoluteString)")
-        
-        try shellOut(to:.gitClone(url:git))
-        
-        try? folder.subfolders.first?.moveContents(to: folder)
-        _ = try bonespec(from: folder)
-        
-        //move first folder's contents to root
     }
     
-    
-    private static func list() throws {
+     static func remoteBones() throws -> [BoneList]  {
         let fs = FileSystem()
         guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
             throw Error.missingSetup
         }
-        let spec = try self.bonespec(from: bonesFolder)
-        print (spec.printableDescription)
+        return try bonesFolder.subfolders.map { boneFolder in
+            return try self.bonespec(from: boneFolder)
+        }
+    }
+    
+    static func localBones() throws -> [BoneList]?  {
+        let fs = FileSystem()
+        guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayLocalTemplatesFolderName) else {
+            return nil
+        }
+        return try bonesFolder.subfolders.map { boneFolder in
+            let spec = try self.bonespec(from: boneFolder)
+            spec.isLocal = true
+            return spec
+        }
+    }
+    static func bones() throws -> [BoneList] {
+        return try remoteBones() + (localBones() ?? [])
+    }
+    public static func list() throws {
+        try self.bones().forEach { spec in
+            print (spec.printableDescription)
+        }
+    }
+    
+    public static func newBone(listName:String = "Custom", name:String, files:[String]) throws {
+        
+        let fs = FileSystem()
+        guard let bonesFolder = try? fs.currentFolder.createSubfolderIfNeeded(withName: murrayLocalTemplatesFolderName) else {
+            throw Error.missingSubfolder
+        }
+        
+        guard let listFolder = try? bonesFolder.createSubfolderIfNeeded(withName: listName) else {
+            throw Error.missingSubfolder
+        }
+        
+        guard let spec = try? listFolder.createFileIfNeeded(withName: "Bonespec.json") else {
+            throw Error.missingBonespec
+        }
+        let list:BoneList
+         if let data = try? spec.read() {
+            do {
+                list = try JSONDecoder().decode(BoneList.self, from: data)
+                list.bones.forEach { (key,value) in
+                    value.name = key
+                }
+            } catch let error {
+//                print (error)
+//                throw Error.bonespecParsingError
+                list = BoneList.list(name: listName)
+            }
+         } else {
+            list = BoneList.list(name: listName)
+        }
+        
+        let bone = BoneList.Bone(name: name, files: files)
+        if list.bones[name] != nil {
+            //TODO existing bone
+            throw Error.existingFolder
+        }
+        list.bones[name] = bone
+        
+        guard let nameFolder = try? listFolder.createSubfolderIfNeeded(withName: name) else {
+            throw Error.missingSubfolder
+        }
+        
+        try files.forEach {
+            try nameFolder.createFile(named: $0)
+        }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        guard let jsonData = try? encoder.encode(list) else {
+            //TODO proper error
+            throw Error.missingBonespec
+        }
+        
+        guard let string = String(data:jsonData, encoding: .utf8) else {
+            //TODO proper erro
+            throw Error.missingBonespec
+        }
+        
+        
+        try spec.write(string: string)
+        
+    }
+    
+    private static func urlsFromBonefile() throws -> [URL]  {
+        let fs = FileSystem()
+        guard let boneFile = try? fs.currentFolder.file(named: "Bonefile") else {
+            throw Error.missingBonefile
+        }
+        let contents = try boneFile.readAsString()
+        return Set(
+            contents.components(separatedBy: "\n")
+            .map {$0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)}
+            .filter {$0.count > 0}
+            .compactMap { string in
+                let strings = string.components(separatedBy: " ")
+                guard let command = strings.first,
+                    strings.count == 2,
+                    command == "bone"
+                    else { return nil }
+                
+                return strings.last?.replacingOccurrences(of: "\"", with: "")
+                
+            }
+            .compactMap { URL(string: $0) }
+            )
+            .map {$0}
+        
     }
     
     private static func bonespec(from folder:Folder) throws -> BoneList  {
@@ -120,9 +240,9 @@ public final class Template {
             
             guard let finalFolder =
                 bone.createSubfolder == false ? containingFolder :
-                (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
-                print ("Missing final subfolder")
-                throw Error.missingSubfolder
+                    (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
+                        print ("Missing final subfolder")
+                        throw Error.missingSubfolder
             }
             print ("Parsing \(bone.name) files")
             try bone.files.forEach { path in
@@ -181,10 +301,10 @@ public final class Template {
         }
     }
     
-    private static func newTemplate(bone boneName:String, name:String, targetName:String) throws {
+    private static func newTemplate(bone boneName:String, name:String, listName:String, targetName:String) throws {
         let fs = FileSystem()
         
-        guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
+        guard var bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
             throw Error.missingSetup
         }
         let scriptPath = "\(murrayTemplatesFolderName)/script.rb"
@@ -192,12 +312,37 @@ public final class Template {
         let script = try File(path: scriptPath, using: FileManager.default)
         try script.write(string: Template.rubyScript)
         
-        let boneList = try self.bonespec(from: bonesFolder)
+        let lists = try self.bones()
         
-        guard let rootBone = boneList.bones[boneName] else {
+        let tuple:(list:BoneList,bone:BoneList.Bone)? = lists
+            .filter { listName.count == 0 || $0.name == listName }
+            .reduce(nil) { acc, list in
+            if acc != nil { return acc }
+//            let folder = try bonesFolder.subfolder(named: list.name)
+//            let bonelist = try self.bonespec(from: folder)
+            
+        if let rootBone = list.bones[boneName] {
+                return (list,rootBone)
+        } else {
+            return nil
+            }
+        }
+        guard let root = tuple else {
             throw Error.unknownBone
         }
-        guard let templatesFolder = try? bonesFolder.subfolder(atPath: boneList.sourcesBaseFolder) else {
+        
+        let boneList = root.list
+        let rootBone = root.bone
+        
+        if boneList.isLocal {
+            guard let localFolder = try? fs.currentFolder.subfolder(named: murrayLocalTemplatesFolderName) else {
+                throw Error.missingLocalSubfolder
+            }
+            bonesFolder = localFolder
+        }
+        print (bonesFolder.path)
+        guard
+            let templatesFolder = try? bonesFolder.subfolder(named: boneList.name).subfolder(atPath: boneList.sourcesBaseFolder) else {
             throw Error.missingSubfolder
         }
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs)
@@ -255,16 +400,24 @@ public extension String {
 }
 
 public extension Template {
-    enum Error: Swift.Error {
+    enum Error: String, Swift.Error, CustomStringConvertible {
         case missingSetup
         case missingFile
         case missingSubfolder
+        case missingLocalSubfolder
         case missingProjectName
         case existingFolder
         case gitError
         case shellError
         case missingBonespec
+        case missingBonefile
         case bonespecParsingError
         case unknownBone
+        public var description: String {
+            return self.rawValue
+        }
+        public var localizedDescription: String {
+            return self.rawValue
+        }
     }
 }
