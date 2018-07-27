@@ -26,11 +26,18 @@ $ murray project new CoolApp
 Next commands should all be used inside your freshly created project's directory.
 (example: `~/XCodeProjects/CoolApp`)
 
-
-Clone a Bones repository and setup current project (defaults to [Bones](https://github.com/synesthesia-it/Bones) )
+You should create a Bonefile, containg one or more remote repositories with your Bones.
+A bone is a set of file templates described by a Bonespec.json
+Example:
 
 ```
-$ murray template setup
+bone "https://github.com/synesthesia-it/Bone"
+```
+
+You can then setup your project with
+
+```
+$ murray template install
 ```
 
 Install a Bone into your current project
