@@ -27,6 +27,7 @@ Next commands should all be used inside your freshly created project's directory
 (example: `~/XCodeProjects/CoolApp`)
 
 **Warning**
+
 Remember to set your project's schemes to *shared* if you plan to use Fastlane or similar tools
 
 You should create a Bonefile, containg one or more remote repositories with your Bones.
