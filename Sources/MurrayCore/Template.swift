@@ -144,8 +144,8 @@ public final class Template {
             //TODO existing bone
             throw Error.existingFolder
         }
-        list.bones[name] = bone
-        
+//        list.bones[name] = bone
+        list.append(bone: bone)
         guard let nameFolder = try? listFolder.createSubfolderIfNeeded(withName: name) else {
             throw Error.missingSubfolder
         }

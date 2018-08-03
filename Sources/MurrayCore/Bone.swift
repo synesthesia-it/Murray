@@ -10,8 +10,8 @@ import Rainbow
 class BoneList : Codable {
     
     class Bone : Codable {
-        
         var name = ""
+        
         var description : String {
             get { return _description ?? "" }
             set { _description = newValue}
@@ -54,6 +54,7 @@ class BoneList : Codable {
         enum CodingKeys : String, CodingKey {
             case _subBones = "subBones"
             case _files = "files"
+            case name = "name"
             case _folderPath = "folderPath"
             case _placeholder = "placeholder"
             case _description = "description"
@@ -73,27 +74,36 @@ class BoneList : Codable {
         }
     }
     
-    
-    var bones: [String:Bone]
+    private var _bones:[Bone]
+    lazy var bones: [String:Bone] = {
+        return _bones.reduce([:], { a, b in
+            var acc = a
+            acc[b.name] = b
+            return acc
+        })
+    }()
+    func append(bone:Bone) {
+        _bones = _bones + [bone]
+    }
     var name:String = ""
     var sourcesBaseFolder: String = ""
     var isLocal = false
     enum CodingKeys : String, CodingKey {
-        case bones
+        case _bones = "bones"
         case name
         case sourcesBaseFolder
     }
     
     var printableDescription : String {
-        return self.bones
-            .map { [$0.key.green, $0.value.description]
+        return "\n" + self._bones
+            .map { [$0.name.green, $0.description]
                 .compactMap{$0}
                 .joined(separator: " - ") }
-            .joined(separator: "\n\n")
+            .joined(separator: "\n\n") + "\n"
     }
     
     private init() {
-        self.bones = [:]
+        self._bones = []
     }
     
     public static func list(name:String, bones:[Bone] = []) -> BoneList {
