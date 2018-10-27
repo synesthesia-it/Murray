@@ -34,7 +34,7 @@ public final class Template {
                        Argument<String>("boneName", description:""),
                        Argument<String>("filenames", description:"Filenames separated by | "),
                        Option<String>("specName", default:"Custom", description:"")
-                       )
+                )
             { name, files, listName in
                 try Template.newBone(listName: listName, name: name, files: files.components(separatedBy: "|"))
             }
@@ -79,7 +79,7 @@ public final class Template {
         
     }
     
-     static func remoteBones() throws -> [BoneList]  {
+    static func remoteBones() throws -> [BoneList]  {
         let fs = FileSystem()
         guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
             throw Error.missingSetup
@@ -124,18 +124,18 @@ public final class Template {
             throw Error.missingBonespec
         }
         let list:BoneList
-         if let data = try? spec.read() {
+        if let data = try? spec.read() {
             do {
                 list = try JSONDecoder().decode(BoneList.self, from: data)
                 list.bones.forEach { (key,value) in
                     value.name = key
                 }
             } catch let error {
-//                print (error)
-//                throw Error.bonespecParsingError
+                //                print (error)
+                //                throw Error.bonespecParsingError
                 list = BoneList.list(name: listName)
             }
-         } else {
+        } else {
             list = BoneList.list(name: listName)
         }
         
@@ -144,7 +144,7 @@ public final class Template {
             //TODO existing bone
             throw Error.existingFolder
         }
-//        list.bones[name] = bone
+        //        list.bones[name] = bone
         list.append(bone: bone)
         guard let nameFolder = try? listFolder.createSubfolderIfNeeded(withName: name) else {
             throw Error.missingSubfolder
@@ -178,19 +178,19 @@ public final class Template {
         let contents = try boneFile.readAsString()
         return Set(
             contents.components(separatedBy: "\n")
-            .map {$0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)}
-            .filter {$0.count > 0}
-            .compactMap { string in
-                let strings = string.components(separatedBy: " ")
-                guard let command = strings.first,
-                    strings.count == 2,
-                    command == "bone"
-                    else { return nil }
-                
-                return strings.last?.replacingOccurrences(of: "\"", with: "")
-                
-            }
-            .compactMap { URL(string: $0) }
+                .map {$0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)}
+                .filter {$0.count > 0}
+                .compactMap { string in
+                    let strings = string.components(separatedBy: " ")
+                    guard let command = strings.first,
+                        strings.count == 2,
+                        command == "bone"
+                        else { return nil }
+                    
+                    return strings.last?.replacingOccurrences(of: "\"", with: "")
+                    
+                }
+                .compactMap { URL(string: $0) }
             )
             .map {$0}
         
@@ -226,7 +226,7 @@ public final class Template {
         print ("Starting \(bone.name) bone")
         if bone.files.count > 0 {
             let scriptPath = "\(Template.murrayTemplatesFolderName)/script.rb"
-            let subfolders = ["Sources"] + bone.folders
+            let subfolders = boneList.folders + bone.folders
             print ("Subfolders: \(subfolders)")
             let sourcesFolder:Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in
                 guard let f = acc else { return nil }
@@ -273,23 +273,25 @@ public final class Template {
                     try file.write(string: string)
                 }
                 print (fs.currentFolder.path)
-                let projectName = fs.currentFolder.subfolders
-                    .filter ({ $0.name.contains(".xcodeproj") })
-                    .map ({ $0.nameExcludingExtension }).first
-                print ("Editing project \"\(projectName ?? "")\"")
-                if let projectName = projectName,
-                    bone.targetNames.count > 0 {
-                    
-                    let args = [
-                        scriptPath,
-                        projectName,
-                        file.path,
-                        "\"\((bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap{ $0 })).joined(separator:"|"))\"",
-                        "\"\((bone.targetNames).joined(separator:"|"))\"",
-                    ]
-                    print (args)
-                    try shellOut(to: "ruby",
-                                 arguments:args)
+                if bone.targetNames.count > 0 {
+                    let projectName = fs.currentFolder.subfolders
+                        .filter ({ $0.name.contains(".xcodeproj") })
+                        .map ({ $0.nameExcludingExtension }).first
+                    print ("Editing project \"\(projectName ?? "")\"")
+                    if let projectName = projectName,
+                        bone.targetNames.count > 0 {
+                        
+                        let args = [
+                            scriptPath,
+                            projectName,
+                            file.path,
+                            "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap{ $0 })).filter {$0.count > 0}.joined(separator:"|"))\"",
+                            "\"\((bone.targetNames).joined(separator:"|"))\"",
+                        ]
+                        print (args)
+                        try shellOut(to: "ruby",
+                                     arguments:args)
+                    }
                 }
             }
         }
@@ -317,15 +319,15 @@ public final class Template {
         let tuple:(list:BoneList,bone:BoneList.Bone)? = lists
             .filter { listName.count == 0 || $0.name == listName }
             .reduce(nil) { acc, list in
-            if acc != nil { return acc }
-//            let folder = try bonesFolder.subfolder(named: list.name)
-//            let bonelist = try self.bonespec(from: folder)
-            
-        if let rootBone = list.bones[boneName] {
-                return (list,rootBone)
-        } else {
-            return nil
-            }
+                if acc != nil { return acc }
+                //            let folder = try bonesFolder.subfolder(named: list.name)
+                //            let bonelist = try self.bonespec(from: folder)
+                
+                if let rootBone = list.bones[boneName] {
+                    return (list,rootBone)
+                } else {
+                    return nil
+                }
         }
         guard let root = tuple else {
             throw Error.unknownBone
@@ -343,7 +345,7 @@ public final class Template {
         print (bonesFolder.path)
         guard
             let templatesFolder = try? bonesFolder.subfolder(named: boneList.name).subfolder(atPath: boneList.sourcesBaseFolder) else {
-            throw Error.missingSubfolder
+                throw Error.missingSubfolder
         }
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs)
         
@@ -366,8 +368,8 @@ fileprivate extension Template {
         project_path = "./#{project_name}.xcodeproj"
         project = Xcodeproj::Project.open(project_path)
 
-        reference = project['Sources']
-        path = "./Sources"
+        reference = project
+        path = "./"
         destination_folders.each do |f|
           path = path + "/" + f
           if reference[f] != nil

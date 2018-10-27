@@ -87,10 +87,15 @@ class BoneList : Codable {
     }
     var name:String = ""
     var sourcesBaseFolder: String = ""
+    private var destinationBaseFolder: String = "Sources"
+    var folders:[String] {
+        get {return destinationBaseFolder.components(separatedBy:"/") ?? [] }
+    }
     var isLocal = false
     enum CodingKeys : String, CodingKey {
         case _bones = "bones"
         case name
+        case destinationBaseFolder
         case sourcesBaseFolder
     }
     
