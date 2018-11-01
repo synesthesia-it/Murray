@@ -56,11 +56,8 @@ public final class Template {
     
     public static func setup() throws {
         let fs = FileSystem()
-        
-        print ("Removing old setup")
+        Logger.log("Removing old setup", level: .verbose)
         try? FileManager.default.removeItem(atPath: murrayTemplatesFolderName)
-        
-        //TODO? Check if root folder (look for a xcodeproj file)
         
         guard let folder = try? fs.createFolder(at: murrayTemplatesFolderName) else {
             throw Error.existingFolder
@@ -68,7 +65,8 @@ public final class Template {
         let urls = try self.urlsFromBonefile()
         try urls.forEach { git in
             FileManager.default.changeCurrentDirectoryPath(folder.path)
-            print ("Cloning bones app from \(git.absoluteString)")
+            Logger.log("Cloning bones app from \(git.absoluteString)", level: .normal)
+            
             try shellOut(to:.gitClone(url:git))
             guard let boneFolder = folder.subfolders.first else {
                 throw Error.missingSubfolder
@@ -105,7 +103,7 @@ public final class Template {
     }
     public static func list() throws {
         try self.bones().forEach { spec in
-            print (spec.printableDescription)
+            Logger.log("Spec detail: \(spec.printableDescription)", level: .verbose)
         }
     }
     
@@ -197,16 +195,15 @@ public final class Template {
     }
     
     private static func bonespec(from folder:Folder) throws -> BoneList  {
-        print ("Looking for Bonespec")
+        Logger.log("Looking for Bonespec", level: .verbose)
         guard let spec = try? folder.file(named: "Bonespec.json") else {
             throw Error.missingBonespec
         }
-        print ("Reading Bonespec")
+        Logger.log("Reading Bonespec", level: .verbose)
         guard let data = try? spec.read() else {
             throw Error.missingBonespec
         }
-        
-        print ("Parsing Bonespec")
+        Logger.log("Parsing Bonespec", level: .verbose)
         
         do {
             let list = try JSONDecoder().decode(BoneList.self, from: data)
@@ -215,7 +212,7 @@ public final class Template {
             }
             return list
         } catch let error {
-            print (error)
+            Logger.log(error.localizedDescription, level: .verbose)
             throw Error.bonespecParsingError
         }
     }
@@ -223,45 +220,44 @@ public final class Template {
     
     
     private static func createSubBone(boneList:BoneList, bone:BoneList.Bone,templatesFolder:Folder, name:String, fs:FileSystem) throws {
-        print ("Starting \(bone.name) bone")
+        
+        Logger.log("Starting \(bone.name) bone", level: .verbose)
         if bone.files.count > 0 {
             let scriptPath = "\(Template.murrayTemplatesFolderName)/script.rb"
             let subfolders = boneList.folders + bone.folders
-            print ("Subfolders: \(subfolders)")
+            Logger.log("Subfolders: \(subfolders)", level: .verbose)
             let sourcesFolder:Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in
                 guard let f = acc else { return nil }
                 return try? f.subfolder(named:current)
             }
-            print ("SourcesFolder: \(sourcesFolder?.path ?? "unknown")")
+            Logger.log("SourcesFolder: \(sourcesFolder?.path ?? "unknown")", level: .verbose)
             guard let containingFolder = sourcesFolder else {
-                print ("Missing containing subfolder")
                 throw Error.missingSubfolder
             }
             
             guard let finalFolder =
                 bone.createSubfolder == false ? containingFolder :
                     (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
-                        print ("Missing final subfolder")
                         throw Error.missingSubfolder
             }
-            print ("Parsing \(bone.name) files")
+            Logger.log("Parsing \(bone.name) files", level: .verbose)
             try bone.files.forEach { path in
-                print (templatesFolder.path + "/" + path )
-                
+                Logger.log(templatesFolder.path + "/" + path , level: .verbose)
+
                 guard let templateFile = try? templatesFolder.file(named: path) else {
                     throw Error.missingFile
                 }
-                print ("Moving to destination")
+                Logger.log("Moving to destination" , level: .verbose)
                 guard let file = try? templateFile.copy(to: finalFolder) else {
                     throw Error.missingFile
                 }
-                print ("Renaming")
+               Logger.log("Renaming" , level: .verbose)
                 let placeholder = bone.placeholder
                 if placeholder.count > 0 {
                     if let filename = path.split(separator: "/").last {
                         try file.rename(to: filename.replacingOccurrences(of: placeholder, with: name))
                     }
-                    print ("Reading file")
+                    Logger.log("Reading file" , level: .verbose)
                     var string = try file.readAsString()
                     
                     let innerPlaceholder = "___\(placeholder)Placeholder___"
@@ -269,15 +265,16 @@ public final class Template {
                     string = string
                         .replacingOccurrences(of: innerPlaceholder, with: name)
                         .replacingOccurrences(of: innerPlaceholderLowercased, with: name.firstLowercased())
-                    print ("Writing file")
+                    Logger.log("Writing file" , level: .verbose)
                     try file.write(string: string)
                 }
-                print (fs.currentFolder.path)
+                Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
+                
                 if bone.targetNames.count > 0 {
                     let projectName = fs.currentFolder.subfolders
                         .filter ({ $0.name.contains(".xcodeproj") })
                         .map ({ $0.nameExcludingExtension }).first
-                    print ("Editing project \"\(projectName ?? "")\"")
+                    Logger.log("Editing project \"\(projectName ?? "")\"", level: .verbose)
                     if let projectName = projectName,
                         bone.targetNames.count > 0 {
                         
@@ -288,14 +285,14 @@ public final class Template {
                             "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap{ $0 })).filter {$0.count > 0}.joined(separator:"|"))\"",
                             "\"\((bone.targetNames).joined(separator:"|"))\"",
                         ]
-                        print (args)
+                        Logger.log("Updating xcodeproj with arguments: \(args)", level: .verbose)
                         try shellOut(to: "ruby",
                                      arguments:args)
                     }
                 }
             }
         }
-        print ("Parsing \(bone.name) subBones")
+        Logger.log("Parsing \(bone.name) subBones", level: .verbose)
         try bone.subBones.compactMap {
             boneList.bones[$0]
             }.forEach {
@@ -342,7 +339,8 @@ public final class Template {
             }
             bonesFolder = localFolder
         }
-        print (bonesFolder.path)
+        
+        Logger.log(bonesFolder.path, level: .verbose)
         guard
             let templatesFolder = try? bonesFolder.subfolder(named: boneList.name).subfolder(atPath: boneList.sourcesBaseFolder) else {
                 throw Error.missingSubfolder

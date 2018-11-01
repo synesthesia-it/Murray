@@ -11,7 +11,7 @@ let package = Package(
     .package(url: "https://github.com/onevcat/Rainbow", from: "3.0.0"),
 	.package(
             url: "https://github.com/johnsundell/files.git",
-            from: "1.0.0"
+            from: "2.0.0"
         ),
     .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0"),
         .package(url: "https://github.com/kylef/Commander.git", from: "0.8.0")
