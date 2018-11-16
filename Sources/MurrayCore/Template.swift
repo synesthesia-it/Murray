@@ -103,7 +103,7 @@ public final class Template {
     }
     public static func list() throws {
         try self.bones().forEach { spec in
-            Logger.log("Spec detail: \(spec.printableDescription)", level: .verbose)
+            Logger.log("Spec detail: \(spec.printableDescription)", level: .none)
         }
     }
     
