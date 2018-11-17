@@ -79,6 +79,11 @@ public final class Project {
                                    arguments:["exec","pod","install","--repo-update"]))
             }
             print("Git initialization")
+            
+            if (try? folder.file(named: "Bonefile")) != nil {
+                print ("Installing Murray templates")
+                print (try shellOut(to: "murray", arguments: ["template", "install"]))
+            }
             print(try shellOut(to: .gitInit()))
             
             print ("Opening project")

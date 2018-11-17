@@ -9,6 +9,14 @@ Basically, it's like having the XCode template features without having to deal w
 
 # Installation
 
+Murray requires [xcodeproj](https://github.com/CocoaPods/Xcodeproj) to be installed in order to interact with XCode projects.
+xcodeproj usually comes with Cocoapods, otherwise it can be installed with
+
+```
+gem install xcodeproj
+```
+
+To compile and install murray, run
 ```
 curl -fsSL https://raw.githubusercontent.com/synesthesia-it/Murray/master/install.sh | sh
 ```
