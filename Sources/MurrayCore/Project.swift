@@ -34,7 +34,7 @@ public final class Project {
     }
     
     public func run() throws {
-
+        
         // The first argument is the execution path
         
         do {
@@ -56,26 +56,30 @@ public final class Project {
             try murrayFolder.subfolder(named: ".git").delete()
             
             print ("Renaming project")
-            let proj = try murrayFolder.subfolder(named: "App.xcodeproj")
-            try proj.rename(to: "\(projectName).xcodeproj")
-    
+            if let proj = murrayFolder.subfolders.filter ({ ($0.extension ?? "") == "xcodeproj" }).first {
+                //                let proj = try murrayFolder.subfolder(named: "App.xcodeproj")
+                try proj.rename(to: "\(projectName).xcodeproj")
+            }
+            
             print ("Moving contents to proper folder")
             try murrayFolder.moveContents(to: folder, includeHidden: true)
             
             print ("Deleting skeleton folder")
             try murrayFolder.delete()
-            
-            print ("Installing bundle")
-            try shellOut(to: "bundle",
-                         arguments:["install","--path","vendor/bundle"])
-            
-            print ("Installing pods")
-            
-            try shellOut(to: "bundle",
-                         arguments:["exec","pod","install","--repo-update"])
-            
+            if (try? folder.file(named: "Gemfile")) != nil {
+                print ("Installing bundle")
+                print (try shellOut(to: "bundle",
+                                    arguments:["install","--path","vendor/bundle"]))
+            }
+            if (try? folder.file(named: "Podfile")) != nil {
+                //TODO bundle exec only if gemfile
+                print ("Installing pods")
+                //
+                print(try shellOut(to: "bundle",
+                                   arguments:["exec","pod","install","--repo-update"]))
+            }
             print("Git initialization")
-            try shellOut(to: .gitInit())
+            print(try shellOut(to: .gitInit()))
             
             print ("Opening project")
             try shellOut(to: "open",
@@ -100,12 +104,12 @@ public extension Project {
         case existingFolder
         case gitError
         case shellError
-    
-    public var description: String {
-        return self.rawValue
-    }
-    public var localizedDescription: String {
-        return self.rawValue
-    }
+        
+        public var description: String {
+            return self.rawValue
+        }
+        public var localizedDescription: String {
+            return self.rawValue
+        }
     }
 }

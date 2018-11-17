@@ -131,6 +131,7 @@ public final class Template {
             } catch let error {
                 //                print (error)
                 //                throw Error.bonespecParsingError
+                Logger.log(error.localizedDescription, level: .error)
                 list = BoneList.list(name: listName)
             }
         } else {
