@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 import Files
-import MurrayCore
+import MurrayKit
 
 class CommandLineToolTests: XCTestCase {
     

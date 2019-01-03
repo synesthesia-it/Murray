@@ -1,4 +1,4 @@
-import MurrayCore
+import MurrayKit
 
 let tool = Menu.menu
 tool.run()

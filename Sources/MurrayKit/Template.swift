@@ -63,8 +63,15 @@ public final class Template {
             throw Error.existingFolder
         }
         let urls = try self.urlsFromBonefile()
+        let fileManager = FileManager.default
         try urls.forEach { git in
-            FileManager.default.changeCurrentDirectoryPath(folder.path)
+            //File manager path should always restored to its original value after execution.
+            //This helps testing and doesn't allow any subsequent operation to depend upon directory switching
+            let defaultFolder = fileManager.currentDirectoryPath
+            defer {
+                fileManager.changeCurrentDirectoryPath(defaultFolder)
+            }
+            fileManager.changeCurrentDirectoryPath(folder.path)
             Logger.log("Cloning bones app from \(git.absoluteString)", level: .normal)
             
             try shellOut(to:.gitClone(url:git))
