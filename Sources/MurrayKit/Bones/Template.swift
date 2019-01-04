@@ -398,14 +398,7 @@ fileprivate extension Template {
     """
 }
 
-public extension String {
-    func firstLowercased() -> String {
-        return self.prefix(1).lowercased() + self.dropFirst()
-    }
-    func firstUppercased() -> String {
-        return self.prefix(1).uppercased() + self.dropFirst()
-    }
-}
+
 
 public extension Template {
     enum Error: String, Swift.Error, CustomStringConvertible {

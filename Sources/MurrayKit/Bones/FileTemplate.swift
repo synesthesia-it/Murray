@@ -29,8 +29,7 @@ public final class FileTemplate {
         let environment = Environment(extensions:[ext])
         
         let rendered = try environment.renderTemplate(string: contents, context: context)
-//        let rendered = try environment.renderTemplate(name: "article_list.html", context: context)
-        print (rendered)
+
         return rendered
     }
     
