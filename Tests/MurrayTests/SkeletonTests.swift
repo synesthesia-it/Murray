@@ -15,20 +15,12 @@ class SkeletonSpec: QuickSpec {
     override func spec() {
         
         let projectName = "MurrayProjectTest"
-        
         let fs = FileSystem()
         
         beforeEach {
             Logger.logLevel = .verbose
-            //            DependencyManager.shared = TestDependency()
-            
-            //            let fileSystem = FileSystem()
-            //            let tempFolder = fileSystem.temporaryFolder
-            //            let testFolder = try! tempFolder.createSubfolderIfNeeded(
-            //                withName: projectName
-            //            )
-            //            print (testFolder.path)
         }
+        
         context("in real environment") {
             let url = URL(string: "https://github.com/synesthesia-it/Skeleton.git")!
             beforeEach {
@@ -41,7 +33,7 @@ class SkeletonSpec: QuickSpec {
                     let defaultFolder = FileManager.default.currentDirectoryPath
                     expect { try project.run() }.notTo(throwError())
                     expect(FileManager.default.currentDirectoryPath) == defaultFolder
-            }
+                }
             }
         }
         context("in mocked environment") {
@@ -72,8 +64,8 @@ class SkeletonSpec: QuickSpec {
                     expect(testFolder??.containsFile(named: "MurrayProjectTestTestFile1.txt")) == true
                     expect(testFolder??.containsFile(named: "MurrayProjectTestTestFile2.txt")) == true
                     expect(testFolder??.containsFile(named: "UntouchedTestFile1.txt")) == true
-                    
                 }
+                
                 it ("should create a folder named \(projectName)") {
                     print (fs.currentFolder.path)
                     expect { try fs.currentFolder.subfolder(named: projectName) }.notTo(throwError())
