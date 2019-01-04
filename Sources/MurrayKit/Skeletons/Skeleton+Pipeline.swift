@@ -18,8 +18,6 @@ public final class Skeleton {
 
     public func run() throws {
 
-        // The first argument is the execution path
-
         do {
             let fs = FileSystem(using: fileManager)
             //File manager path should always restored to its original value after execution.
@@ -37,16 +35,16 @@ public final class Skeleton {
 
             fileManager.changeCurrentDirectoryPath(folder.path)
 
-            print ("Cloning skeleton app from \(git.absoluteString)")
+            Logger.log("Cloning skeleton app from \(git.absoluteString)", level: .verbose)
             try DependencyManager.shared.cloneProject(from: git)
 
-            print ("Reorganizing folders")
+            Logger.log("Reorganizing folders", level: .verbose)
             //let murrayFolder = try folder.subfolder(named: "Skeleton")
             guard let skeletonFolder = folder.subfolders.filter ({ $0.nameExcludingExtension.count > 0}).first else {
                 throw Error.gitEmpty
             }
 
-            print ("Removing useless folders from cloned template")
+            Logger.log ("Removing useless folders from cloned template", level: .verbose)
             try skeletonFolder.subfolder(named: ".git").delete()
 
             let spec = try SkeletonSpec.parse(from: skeletonFolder)
@@ -54,7 +52,7 @@ public final class Skeleton {
             try spec.filesToRename?
                 .map { try skeletonFolder.file(atPath: $0) }
                 .forEach { file throws in
-                let newName = file.name.replacingOccurrences(of: spec.filePlaceholder, with: projectName)
+                    let newName = file.name.replacingOccurrences(of: spec.filePlaceholder, with: projectName)
                     try file.rename(to: newName)
             }
 
@@ -64,50 +62,28 @@ public final class Skeleton {
                 .map { try skeletonFolder.subfolder(atPath: $0) }
                 .compactMap {$0}
                 .forEach { folder in
-                let newName = folder.name
-                    .replacingOccurrences(of: spec.filePlaceholder, with: projectName)
+                    let newName = folder.name
+                        .replacingOccurrences(of: spec.filePlaceholder, with: projectName)
                     try folder.rename(to: newName)
             }
-
-//            if let proj = skeletonFolder.subfolders.filter ({ ($0.extension ?? "") == "xcodeproj" }).first {
-//                //                let proj = try murrayFolder.subfolder(named: "App.xcodeproj")
-//                try proj.rename(to: "\(projectName).xcodeproj")
-//            }
-
-            print ("Moving contents to proper folder")
+            Logger.log ("Moving contents to proper folder", level: .verbose)
             try skeletonFolder.moveContents(to: folder, includeHidden: true)
 
-            print ("Deleting skeleton folder")
+            Logger.log ("Deleting skeleton folder", level: .verbose)
             try skeletonFolder.delete()
-            /*if (try? folder.file(named: "Gemfile")) != nil {
-                print ("Installing bundle")
-                print (try shellOut(to: "bundle",
-                                    arguments:["install","--path","vendor/bundle"]))
-            }*/
-            /*if (try? folder.file(named: "Podfile")) != nil {
-                //TODO bundle exec only if gemfile
-                print ("Installing pods")
-                //
-                print(try shellOut(to: "bundle",
-                                   arguments:["exec","pod","install","--repo-update"]))
-            }
-            */
-
             if (try? folder.file(named: "Bonefile")) != nil {
-                print ("Installing Murray templates")
+                Logger.log("Installing Murray templates", level: .verbose)
                 try Template.setup()
-                //print (try shellOut(to: "murray", arguments: ["template", "install"]))
             }
-            print("Git initialization")
-            print(try shellOut(to: .gitInit()))
+            Logger.log("Git initialization", level: .verbose)
+            Logger.log(try shellOut(to: .gitInit()), level: .verbose)
 
+            Logger.log("Running custom scripts", level: .verbose)
             let scripts = spec.scripts?.filter { $0.count > 0 }
             if let scripts = scripts, scripts.count > 0 {
                 try shellOut(to: scripts)
             }
-
-            //try shellOut(to: ["sh install.sh"])
-            print ("Done!")
+            Logger.log("Done!", level: .verbose)
 
         } catch let error {
             if error is Error {
