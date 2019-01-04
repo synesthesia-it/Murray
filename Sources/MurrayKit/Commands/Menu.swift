@@ -12,7 +12,7 @@ public class Menu {
     public static var menu: Group {
         return Group {
             Skeleton.commands(for: $0)
-            Template.commands(for: $0)
+            Bone.commands(for: $0)
         }
     }
 

@@ -39,11 +39,15 @@ class TemplateSpec: QuickSpec {
                 let fileString = "This is a test named {{ test|firstUppercase }}"
                 let template = FileTemplate(fileContents: fileString, context: ["test": "foo"])
                 expect { try template.render() } == "This is a test named Foo"
+                let numberTemplate = FileTemplate(fileContents: fileString, context: ["test": 1])
+                expect { try numberTemplate.render() } == "This is a test named 1"
             }
             it("should change simple placeholders in file and lowercase first letter") {
                 let fileString = "This is a test named {{ test|firstLowercase }}"
                 let template = FileTemplate(fileContents: fileString, context: ["test": "FoO"])
                 expect { try template.render() } == "This is a test named foO"
+                let numberTemplate = FileTemplate(fileContents: fileString, context: ["test": 1])
+                expect { try numberTemplate.render() } == "This is a test named 1"
             }
 
             it("should change complex placeholders in file") {

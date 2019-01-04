@@ -10,11 +10,15 @@ import ShellOut
 
 ///Mainly used for dependency injection in tests
 public protocol Dependency {
-    func cloneProject(from: URL) throws
+    func cloneSkeleton(from: URL) throws
+    func cloneBones(from: URL) throws
 }
 
 private class DefaultDependency: Dependency {
-    func cloneProject(from git: URL) throws {
+    func cloneSkeleton(from git: URL) throws {
+        try shellOut(to: .gitClone(url: git))
+    }
+    func cloneBones(from git: URL) throws {
         try shellOut(to: .gitClone(url: git))
     }
 }

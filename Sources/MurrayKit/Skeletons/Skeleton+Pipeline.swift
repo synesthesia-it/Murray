@@ -36,7 +36,7 @@ public final class Skeleton {
             fileManager.changeCurrentDirectoryPath(folder.path)
 
             Logger.log("Cloning skeleton app from \(git.absoluteString)", level: .verbose)
-            try DependencyManager.shared.cloneProject(from: git)
+            try DependencyManager.shared.cloneSkeleton(from: git)
 
             Logger.log("Reorganizing folders", level: .verbose)
             //let murrayFolder = try folder.subfolder(named: "Skeleton")
@@ -73,7 +73,7 @@ public final class Skeleton {
             try skeletonFolder.delete()
             if (try? folder.file(named: "Bonefile")) != nil {
                 Logger.log("Installing Murray templates", level: .verbose)
-                try Template.setup()
+                try Bone.setup()
             }
             Logger.log("Git initialization", level: .verbose)
             Logger.log(try shellOut(to: .gitInit()), level: .verbose)

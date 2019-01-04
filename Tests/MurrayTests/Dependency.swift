@@ -17,7 +17,8 @@ class TestDependency: Dependency {
         "filePlaceholder": "Skeleton"
     }
 """
-    func cloneProject(from git: URL) throws {
+
+    func cloneSkeleton(from git: URL) throws {
         let fs = FileSystem()
         try fs.createFolderIfNeeded(at: "Tests").delete()
         let main = try fs.createFolderIfNeeded(at: "Tests")
@@ -31,5 +32,9 @@ class TestDependency: Dependency {
         try main.createFile(named: "Skeletonspec.json", contents: skeletonSpec)
         print (main.path)
         print ("faking git clone from \(git)")
+    }
+    
+    func cloneBones(from git: URL) throws {
+        try self.boneSpecTest()
     }
 }
