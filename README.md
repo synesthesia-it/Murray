@@ -9,6 +9,12 @@ Basically, it's like having the XCode template features without having to deal w
 
 # Installation
 
+## Using *[Mint](https://github.com/yonaskolb/mint)*
+```
+mint install synesthesia-it/Murray
+
+```
+
 Murray requires [xcodeproj](https://github.com/CocoaPods/Xcodeproj) to be installed in order to interact with XCode projects.
 xcodeproj usually comes with Cocoapods, otherwise it can be installed with
 
@@ -27,7 +33,7 @@ Create a new skeleton app (defaults to [Skeleton](https://github.com/synesthesia
 After proper cloning and, the app's bundle is installed if a Gemfile is available
 
 ```
-$ murray project new CoolApp
+$ murray skeleton new CoolApp
 ```
 
 
