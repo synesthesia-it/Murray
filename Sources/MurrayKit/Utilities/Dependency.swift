@@ -15,7 +15,7 @@ public protocol Dependency {
 
 private class DefaultDependency: Dependency {
     func cloneProject(from git: URL) throws {
-        try shellOut(to:.gitClone(url: git))
+        try shellOut(to: .gitClone(url: git))
     }
 }
 public struct DependencyManager {

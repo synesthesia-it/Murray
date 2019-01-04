@@ -9,10 +9,10 @@ import Foundation
 import Files
 
 extension SkeletonSpec {
-    
+
     static func parse(from folder: Folder) throws -> SkeletonSpec {
         Logger.log("Looking for Spec", level: .verbose)
-        
+
         guard let spec = try? folder.file(named: "Skeletonspec.json") else {
             throw Skeleton.Error.missingSpec
         }
@@ -21,7 +21,7 @@ extension SkeletonSpec {
             throw Skeleton.Error.missingSpec
         }
         Logger.log("Parsing Spec", level: .verbose)
-        
+
         do {
             let spec = try JSONDecoder().decode(SkeletonSpec.self, from: data)
             return spec
@@ -31,4 +31,3 @@ extension SkeletonSpec {
         }
     }
 }
-

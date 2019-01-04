@@ -17,7 +17,7 @@ class TestDependency: Dependency {
         "filePlaceholder": "Skeleton"
     }
 """
-    func cloneProject(from git:URL) throws {
+    func cloneProject(from git: URL) throws {
         let fs = FileSystem()
         try fs.createFolderIfNeeded(at: "Tests").delete()
         let main = try fs.createFolderIfNeeded(at: "Tests")

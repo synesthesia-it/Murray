@@ -13,14 +13,14 @@ import Files
 
 class SkeletonSpec: QuickSpec {
     override func spec() {
-        
+
         let projectName = "MurrayProjectTest"
         let fs = FileSystem()
-        
+
         beforeEach {
             Logger.logLevel = .verbose
         }
-        
+
         context("in real environment") {
             let url = URL(string: "https://github.com/synesthesia-it/Skeleton.git")!
             beforeEach {
@@ -43,7 +43,7 @@ class SkeletonSpec: QuickSpec {
             }
             describe("creating a new Project") {
                 beforeEach {
-                    
+
                 }
                 it("should clone a repository") {
                     try? fs.currentFolder.subfolder(atPath: projectName).delete()
@@ -51,7 +51,7 @@ class SkeletonSpec: QuickSpec {
                     let defaultFolder = FileManager.default.currentDirectoryPath
                     expect { try project.run() }.notTo(throwError())
                     expect(FileManager.default.currentDirectoryPath) == defaultFolder
-                    
+
                     let projectFolder = try? fs.currentFolder.subfolder(named: projectName)
                     expect(projectFolder).notTo(beNil())
                     expect(projectFolder?.containsSubfolder(named: "MurrayProjectTestTestFolder")) == true
@@ -60,18 +60,18 @@ class SkeletonSpec: QuickSpec {
                     expect(projectFolder?.containsSubfolder(named: ".git")) == true
                     let testFolder = try? projectFolder?.subfolder(named: "MurrayProjectTestTestFolder")
                     expect(testFolder).notTo(beNil())
-                    
+
                     expect(testFolder??.containsFile(named: "MurrayProjectTestTestFile1.txt")) == true
                     expect(testFolder??.containsFile(named: "MurrayProjectTestTestFile2.txt")) == true
                     expect(testFolder??.containsFile(named: "UntouchedTestFile1.txt")) == true
                 }
-                
+
                 it ("should create a folder named \(projectName)") {
                     print (fs.currentFolder.path)
                     expect { try fs.currentFolder.subfolder(named: projectName) }.notTo(throwError())
                 }
             }
-            
+
         }
     }
 }

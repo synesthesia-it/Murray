@@ -16,7 +16,7 @@ public enum LogLevel: Int {
     case error = 100
     case normal = 200
     case none = 1000
-    
+
     func colorize(string: String) -> String {
         switch self {
         case .verbose : return string
@@ -38,11 +38,11 @@ public enum LogLevel: Int {
 }
 
 public final class Logger {
-    
+
     public static var logLevel: LogLevel = .network
     public static func log(_ message: String, level: LogLevel = .error, tag: String? = nil) {
         if (self.logLevel.rawValue > level.rawValue) { return }
-        
+
         let string =
         """
         \([
@@ -51,6 +51,6 @@ public final class Logger {
         )
         """
         print (string)
-        
+
     }
 }

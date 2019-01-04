@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Skeleton {
-    enum Error: String, Swift.Error, CustomStringConvertible{
+    enum Error: String, Swift.Error, CustomStringConvertible {
         case missingProjectName
         case existingFolder
         case gitError

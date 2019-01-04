@@ -9,13 +9,11 @@ import Foundation
 import Commander
 
 public class Menu {
-    public static var menu : Group {
+    public static var menu: Group {
         return Group {
             Skeleton.commands(for: $0)
             Template.commands(for: $0)
         }
     }
-    
-    
-    
+
 }

@@ -15,10 +15,9 @@ public final class FileTemplate {
         self.contents = fileContents
         self.context = context
     }
-    
+
     func render() throws -> String {
-        
-        
+
         let ext = Extension()
         ext.registerFilter("firstLowercase") { (value: Any?) in
                 return (value as? String)?.firstLowercased() ?? value
@@ -26,11 +25,11 @@ public final class FileTemplate {
         ext.registerFilter("firstUppercase") { (value: Any?) in
             return (value as? String)?.firstUppercased() ?? value
         }
-        let environment = Environment(extensions:[ext])
-        
+        let environment = Environment(extensions: [ext])
+
         let rendered = try environment.renderTemplate(string: contents, context: context)
 
         return rendered
     }
-    
+
 }
