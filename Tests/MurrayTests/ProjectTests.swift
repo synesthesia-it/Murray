@@ -34,7 +34,7 @@ class ProjectSpec: QuickSpec {
                 
             }
             it("should clone a repository") {
-                let project = Project(projectName: projectName, git: url)
+                let project = Skeleton(projectName: projectName, git: url)
                 let defaultFolder = FileManager.default.currentDirectoryPath
                 expect { try project.run() }.notTo(throwError())
                 expect(FileManager.default.currentDirectoryPath) == defaultFolder
