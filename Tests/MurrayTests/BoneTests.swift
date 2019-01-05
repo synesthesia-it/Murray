@@ -70,7 +70,19 @@ bone "https://github.com/synesthesia-it/Bones.git"
                     print (fs.currentFolder.path)
                     expect { try Bone.setup() }.notTo(throwError())
                     //                    expect { try project.run() }.notTo(throwError())
-                    expect { try fs.currentFolder.subfolder(named: ".murray")}.notTo(throwError())
+                    let murrayFolder = try? fs.currentFolder.subfolder(named: ".murray")
+                    expect(murrayFolder).notTo(beNil())
+                    
+                    let bonesFolder = try? murrayFolder!.subfolder(named: "Bones")
+                    expect(bonesFolder).notTo(beNil())
+                    expect(bonesFolder!.containsFile(named: "Bonespec.json")) == true
+                    let sourcesFolder = try? bonesFolder!.subfolder(named: "Files")
+                    expect(sourcesFolder).notTo(beNil())
+                    let source = try? sourcesFolder!.file(named: "Bone.swift")
+                    expect(source).notTo(beNil())
+                    let contents = try? source!.readAsString()
+                    expect(contents).notTo(beNil())
+                    expect(contents) == TestDependency().boneTemplate
                     FileManager.default.changeCurrentDirectoryPath(defaultFolder)
                     expect(FileManager.default.currentDirectoryPath) == defaultFolder
                 }

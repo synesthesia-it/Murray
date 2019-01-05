@@ -30,14 +30,17 @@ extension TestDependency {
     }
     
     var boneTemplate: String {
-        return "OK"
+        return "Some template with a {{ name }} placeholder"
+    }
+    func templateResolved(with name: String) -> String {
+        return boneTemplate.replacingOccurrences(of: "{{ name }}", with: name)
     }
     
     func boneSpecTest() throws {
         let fs = FileSystem()
-        let murray = fs.currentFolder
-        try murray.createFile(named: "Bonespec.json", contents: bonespec)
-        let files = try murray.createSubfolder(named: "Files")
+        let bones = try fs.currentFolder.createSubfolder(named: "Bones")
+        try bones.createFile(named: "Bonespec.json", contents: bonespec)
+        let files = try bones.createSubfolder(named: "Files")
         try files.createFile(named: "Bone.swift", contents: boneTemplate)
     }
 }
