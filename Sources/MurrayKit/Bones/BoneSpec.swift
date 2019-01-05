@@ -10,7 +10,7 @@ import Rainbow
 
 class BoneItem: Codable {
     var name = ""
-    
+
     var description: String {
         get { return _description ?? "" }
         set { _description = newValue}
@@ -23,12 +23,12 @@ class BoneItem: Codable {
         get { return _subBones ?? [] }
         set { _subBones = newValue }
     }
-    
+
     var folders: [String] {
         get {return _folderPath?.components(separatedBy: "/") ?? [] }
         set { _folderPath = newValue.joined(separator: "/")}
     }
-    
+
     var placeholder: String {
         get { return _placeholder ?? "Bone" }
         set { _placeholder = newValue }
@@ -41,7 +41,7 @@ class BoneItem: Codable {
         get { return _createSubfolder ?? true }
         set { _createSubfolder = newValue }
     }
-    
+
     private var _createSubfolder: Bool?
     private var _subBones: [String]?
     private var _files: [String]?
@@ -49,7 +49,7 @@ class BoneItem: Codable {
     private var _description: String?
     private var _placeholder: String?
     private var _targetNames: [String]?
-    
+
     enum CodingKeys: String, CodingKey {
         case _subBones = "subBones"
         case _files = "files"
@@ -60,7 +60,7 @@ class BoneItem: Codable {
         case _targetNames = "targets"
         case _createSubfolder = "createSubfolder"
     }
-    
+
     init(name: String, files: [String]) {
         self.name = name
         self.files = files.map { name + "/" + $0 }
@@ -103,11 +103,11 @@ class BoneSpec: Codable {
     }
 
     var printableDescription: String {
-        return "\n" + self._bones
-            .map { [$0.name.green, $0.description]
+        return self._bones
+            .map { ["\(self.name.blue).\($0.name.green)", $0.description]
                 .compactMap {$0}
                 .joined(separator: " - ") }
-            .joined(separator: "\n\n") + "\n"
+            .joined(separator: "\n\n")
     }
 
     private init() {

@@ -31,13 +31,13 @@ class BoneFile {
                         strings.count == 2,
                         command == "bone"
                         else { return nil }
-                    
+
                     return strings.last?.replacingOccurrences(of: "\"", with: "")
-                    
+
                 }
                 .compactMap { URL(string: $0) }
             )
             .map {$0}
-        
+
     }
 }

@@ -13,36 +13,36 @@ import Files
 @testable import MurrayKit
 
 class BoneSpec: QuickSpec {
-    
-    override func spec() {
 
+    override func spec() {
+        var defaultFolder = ""
         let projectName = "MurrayBonesTest"
         let fs = FileSystem()
         let boneFileSample = """
 bone "https://github.com/synesthesia-it/Bones.git"
 """
-        
+
         var folder: Folder!
-        
+
         let reset = {
              try? fs.currentFolder.subfolder(atPath: projectName).delete()
              folder = try fs.currentFolder.createSubfolder(named: projectName)
              _ = try folder.createFile(named: "Bonefile", contents: boneFileSample)
         }
-        
+
         beforeEach {
             Logger.logLevel = .verbose
         }
-        
+
         context("in real environment") {
             beforeEach {
                 DependencyManager.reset()
                 try! reset()
-                
+
             }
             describe("setup from Bonefile") {
                 it("should clone a Bones repository") {
-                    
+
 //                    let project = Skeleton(projectName: projectName, git: url)
                     let defaultFolder = FileManager.default.currentDirectoryPath
                     FileManager.default.changeCurrentDirectoryPath(projectName)
@@ -61,18 +61,16 @@ bone "https://github.com/synesthesia-it/Bones.git"
             }
             describe("setup from Bonefile") {
                 beforeEach {
-                    DependencyManager.shared = TestDependency()
                     try! reset()
                 }
                 it("should create files in specific directories") {
                     let defaultFolder = FileManager.default.currentDirectoryPath
                     FileManager.default.changeCurrentDirectoryPath(projectName)
-                    print (fs.currentFolder.path)
                     expect { try Bone.setup() }.notTo(throwError())
                     //                    expect { try project.run() }.notTo(throwError())
                     let murrayFolder = try? fs.currentFolder.subfolder(named: ".murray")
                     expect(murrayFolder).notTo(beNil())
-                    
+
                     let bonesFolder = try? murrayFolder!.subfolder(named: "Bones")
                     expect(bonesFolder).notTo(beNil())
                     expect(bonesFolder!.containsFile(named: "Bonespec.json")) == true
@@ -86,10 +84,63 @@ bone "https://github.com/synesthesia-it/Bones.git"
                     FileManager.default.changeCurrentDirectoryPath(defaultFolder)
                     expect(FileManager.default.currentDirectoryPath) == defaultFolder
                 }
-
-                
             }
+            describe("Listing bones") {
+               
+                describe("When single boneSpec is provided") {
 
+                beforeEach {
+                    try! reset()
+                    defaultFolder = FileManager.default.currentDirectoryPath
+                    FileManager.default.changeCurrentDirectoryPath(projectName)
+                    try! Bone.setup()
+                }
+                it("should should include everything") {
+                    expect { try! Bone.list() }.to(equal(["Bones.test - A test"]))
+                }
+                    afterEach {
+                        FileManager.default.changeCurrentDirectoryPath(defaultFolder)
+                    }
+                }
+                describe("When multiple boneSpec is provided") {
+
+                    beforeEach {
+                        try! reset()
+                        defaultFolder = FileManager.default.currentDirectoryPath
+                        FileManager.default.changeCurrentDirectoryPath(projectName)
+                        DependencyManager.shared = MultipleBonesTestDependency()
+                        try! Bone.setup()
+                    }
+                it ("should namespace each bone in list if more than one bonespec is provided") {
+                    expect { try! Bone.list() }.to(equal(["Bones.test - A test", "TestB.test - A test"]))
+                }
+                    afterEach {
+                        FileManager.default.changeCurrentDirectoryPath(defaultFolder)
+                    }
+                }
+
+            }
         }
+            describe("creating a new bone") {
+                var sources: Folder!
+                beforeEach {
+                    try! reset()
+                    defaultFolder = FileManager.default.currentDirectoryPath
+                    FileManager.default.changeCurrentDirectoryPath(projectName)
+                    try! Bone.setup()
+                    sources = try! fs.createFolder(at: "Sources")
+                }
+                it("should create files in specific directories") {
+                    
+                    expect {try Bone.newTemplate(bone: "test", name: "Test") }.notTo(throwError())
+                    let file = try? sources.file(named: "Test.swift")
+                    expect(file).notTo(beNil())
+                    expect { try! file!.readAsString()} == TestDependency().templateResolved(with: "Test")
+                    
+                    }
+                afterEach {
+                    FileManager.default.changeCurrentDirectoryPath(defaultFolder)
+                }
+            }
     }
 }

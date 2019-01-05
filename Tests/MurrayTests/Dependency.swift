@@ -8,7 +8,7 @@
 import Foundation
 import MurrayKit
 import Files
-class TestDependency: Dependency {
+open class TestDependency: Dependency {
     let skeletonSpec = """
     {
         "scripts": [""],
@@ -18,7 +18,7 @@ class TestDependency: Dependency {
     }
 """
 
-    func cloneSkeleton(from git: URL) throws {
+    open func cloneSkeleton(from git: URL) throws {
         let fs = FileSystem()
         try fs.createFolderIfNeeded(at: "Tests").delete()
         let main = try fs.createFolderIfNeeded(at: "Tests")
@@ -33,8 +33,15 @@ class TestDependency: Dependency {
         print (main.path)
         print ("faking git clone from \(git)")
     }
-    
-    func cloneBones(from git: URL) throws {
-        try self.boneSpecTest()
+
+    open func cloneBones(from git: URL) throws {
+        try self.boneSpecTest(named: "Bones")
+    }
+}
+
+class MultipleBonesTestDependency: TestDependency {
+    override func cloneBones(from: URL) throws {
+        try self.boneSpecTest(named: "Bones")
+        try self.boneSpecTest(named: "TestB")
     }
 }

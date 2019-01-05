@@ -12,21 +12,21 @@ import ShellOut
 extension Bone {
     public static func setup() throws {
         let fs = FileSystem()
-        
+
         guard let boneFileReference = try? fs.currentFolder.file(named: "Bonefile"),
             let contents = try? boneFileReference.readAsString()
             else {
                 throw Bone.Error.missingBonefile
         }
-        
+
         let boneFile = BoneFile(fileContents: contents)
         Logger.log("Removing old setup", level: .verbose)
         try? FileManager.default.removeItem(atPath: murrayTemplatesFolderName)
-        
+
         guard let folder = try? fs.createFolder(at: murrayTemplatesFolderName) else {
             throw Error.existingFolder
         }
-        
+
         let fileManager = FileManager.default
         try boneFile.urls.forEach { git in
             //File manager path should always restored to its original value after execution.
@@ -37,7 +37,7 @@ extension Bone {
             }
             fileManager.changeCurrentDirectoryPath(folder.path)
             Logger.log("Cloning bones app from \(git.absoluteString)", level: .normal)
-            
+
             try DependencyManager.shared.cloneBones(from: git)
             guard let boneFolder = folder.subfolders.first else {
                 throw Error.missingSubfolder

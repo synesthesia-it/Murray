@@ -18,11 +18,13 @@ extension Bone {
                 _ in
                 try Bone.setup()
             }
-            
+
             $0.command("list") {
-                try Bone.list()
+                try Bone.list().forEach {
+                    Logger.log("Spec detail: \($0)", level: .none)
+                }
             }
-            
+
             $0.command("create",
                        Argument<String>("boneName", description: ""),
                        Argument<String>("filenames", description: "Filenames separated by | "),
@@ -30,7 +32,7 @@ extension Bone {
             ) { name, files, listName in
                 try Bone.newBone(listName: listName, name: name, files: files.components(separatedBy: "|"))
             }
-            
+
             $0.command("new",
                        Argument<String>("bone", description: ""),
                        Argument<String>("name", description: ""),
@@ -38,7 +40,7 @@ extension Bone {
                        Option<String>("targetName", default: "", description: "")
             ) { bone, name, listName, targetName in
                 try Bone.newTemplate(bone: bone, name: name, listName: listName, targetName: targetName)
-                
+
             }
         }
     }

@@ -19,7 +19,7 @@ extension BoneSpec {
             throw Bone.Error.missingBonespec
         }
         Logger.log("Parsing Bonespec", level: .verbose)
-        
+
         do {
             let list = try JSONDecoder().decode(BoneSpec.self, from: data)
             list.bones.forEach { (key, value) in
