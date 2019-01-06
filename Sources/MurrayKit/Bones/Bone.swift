@@ -11,7 +11,7 @@ import ShellOut
 import Commander
 
 public final class Bone {
-    typealias Context = [String: Any]
+    public typealias Context = [String: Any]
     static let murrayTemplatesFolderName = ".murray"
     static let murrayLocalTemplatesFolderName = "MurrayTemplates"
     
@@ -19,7 +19,7 @@ public final class Bone {
     var name: String
     var context: Context
     let listName: String
-    init(boneName: String, mainPlaceholder: String? = nil,  context: Context = [:]) throws {
+    public init(boneName: String, mainPlaceholder: String? = nil,  context: Context = [:]) throws {
         
         let splits = boneName.components(separatedBy: ".")
         if splits.count > 1, let listName = splits.first {

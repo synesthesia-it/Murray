@@ -7,7 +7,7 @@
 
 import Foundation
 import Commander
-
+import MurrayKit
 extension Skeleton {
 
     static func commands(for group: Group) {

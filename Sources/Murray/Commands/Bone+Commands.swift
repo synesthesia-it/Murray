@@ -7,7 +7,7 @@
 
 import Foundation
 import Commander
-
+import MurrayKit
 extension Bone {
     static func commands(for group: Group) {
         group.group("bone") {
@@ -40,7 +40,7 @@ extension Bone {
             ) { boneName, mainPlaceholder, contextString in
                 
                 guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
-                    let context = jsonConversion as? Context else {
+                    let context = jsonConversion as? Bone.Context else {
                     throw Error.invalidContext
                 }
                 
