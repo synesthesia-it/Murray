@@ -19,7 +19,7 @@ class BoneSpec: QuickSpec {
         let projectName = "MurrayBonesTest"
         let fs = FileSystem()
         let boneFileSample = """
-bone "https://github.com/synesthesia-it/Bones.git"
+bone "https://github.com/synesthesia-it/Bones.git@develop"
 """
 
         var folder: Folder!

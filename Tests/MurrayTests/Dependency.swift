@@ -34,13 +34,13 @@ open class TestDependency: Dependency {
         print ("faking git clone from \(git)")
     }
 
-    open func cloneBones(from git: URL) throws {
+    open func cloneBones(from git: URL, branch: String) throws {
         try self.boneSpecTest(named: "Bones")
     }
 }
 
 class MultipleBonesTestDependency: TestDependency {
-    override func cloneBones(from: URL) throws {
+    override func cloneBones(from: URL, branch: String) throws {
         try self.boneSpecTest(named: "Bones")
         try self.boneSpecTest(named: "TestB")
     }

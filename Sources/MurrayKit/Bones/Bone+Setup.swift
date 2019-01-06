@@ -19,7 +19,7 @@ extension Bone {
                 throw Bone.Error.missingBonefile
         }
 
-        let boneFile = BoneFile(fileContents: contents)
+        let boneFile = try BoneFile(fileContents: contents)
         Logger.log("Removing old setup", level: .verbose)
         try? FileManager.default.removeItem(atPath: murrayTemplatesFolderName)
 
@@ -28,7 +28,7 @@ extension Bone {
         }
 
         let fileManager = FileManager.default
-        try boneFile.urls.forEach { git in
+        try boneFile.parts.forEach { part in
             //File manager path should always restored to its original value after execution.
             //This helps testing and doesn't allow any subsequent operation to depend upon directory switching
             let defaultFolder = fileManager.currentDirectoryPath
@@ -36,9 +36,9 @@ extension Bone {
                 fileManager.changeCurrentDirectoryPath(defaultFolder)
             }
             fileManager.changeCurrentDirectoryPath(folder.path)
-            Logger.log("Cloning bones app from \(git.absoluteString)", level: .normal)
+            Logger.log("Cloning bones app from \(part.url.absoluteString)", level: .normal)
 
-            try DependencyManager.shared.cloneBones(from: git)
+            try DependencyManager.shared.cloneBones(from: part.url, branch: part.branch)
             guard let boneFolder = folder.subfolders.first else {
                 throw Error.missingSubfolder
             }

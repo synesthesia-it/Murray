@@ -20,6 +20,7 @@ public extension Bone {
         case shellError
         case missingBonespec
         case missingBonefile
+        case invalidBonefile
         case bonespecParsingError
         case unknownBone
         case multipleBones
