@@ -21,6 +21,7 @@ public extension Bone {
         case missingBonespec
         case missingBonefile
         case invalidBonefile
+        case invalidContext
         case bonespecParsingError
         case unknownBone
         case multipleBones

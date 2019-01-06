@@ -35,12 +35,13 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
         }
 
         context("in real environment") {
-            beforeEach {
-                DependencyManager.reset()
-                try! reset()
-
-            }
+            
             describe("setup from Bonefile") {
+                beforeEach {
+                    DependencyManager.reset()
+                    try! reset()
+                    
+                }
                 it("should clone a Bones repository") {
 
 //                    let project = Skeleton(projectName: projectName, git: url)
@@ -50,14 +51,29 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     expect { try Bone.setup() }.notTo(throwError())
 //                    expect { try project.run() }.notTo(throwError())
                     expect { try fs.currentFolder.subfolder(named: ".murray")}.notTo(throwError())
+                    
+                    let tests = try? fs.currentFolder.createSubfolder(named: "Tests")
+                    try? tests?.createSubfolder(named: "ModelLayerTests")
+                    
+                    let sources = try? fs.currentFolder.createSubfolder(named: "Sources")
+                    let modelLayer = try? sources?.createSubfolder(named: "ModelLayer")
+                    try? modelLayer??.createSubfolder(named: "Models")
+                    
+                    
+                    expect { try Bone(boneName: "modelWithTests", mainPlaceholder: "Test", context: [:]).run()
+                    }.notTo(throwError())
+                    
                     FileManager.default.changeCurrentDirectoryPath(defaultFolder)
                     expect(FileManager.default.currentDirectoryPath) == defaultFolder
+                    
+                    
                 }
             }
         }
         context("in mocked environment") {
             beforeEach {
                 DependencyManager.shared = TestDependency()
+                try! reset()
             }
             describe("setup from Bonefile") {
                 beforeEach {

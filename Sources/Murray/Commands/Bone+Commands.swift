@@ -10,9 +10,9 @@ import Commander
 
 extension Bone {
     static func commands(for group: Group) {
-        group.group("template") {
+        group.group("bone") {
             $0.command(
-                "install",
+                "setup",
                 //                Argument<String>("setup", description: "Setup templates in current folder"),
             Option<String>("boneFile", default: "", description: "Project's Bonefile")) {
                 _ in
@@ -25,7 +25,7 @@ extension Bone {
                 }
             }
 
-            $0.command("create",
+            $0.command("scaffold",
                        Argument<String>("boneName", description: ""),
                        Argument<String>("filenames", description: "Filenames separated by | "),
                        Option<String>("specName", default: "Custom", description: "")
@@ -34,13 +34,17 @@ extension Bone {
             }
 
             $0.command("new",
-                       Argument<String>("bone", description: ""),
-                       Argument<String>("name", description: ""),
-                       Option<String>("boneListName", default: "", description: ""),
-                       Option<String>("targetName", default: "", description: "")
-            ) { bone, name, listName, targetName in
+                       Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
+                       Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),
+                       Option<String>("context", default: "{}", description: "A JSON string with context information used by Stencil template")
+            ) { boneName, mainPlaceholder, contextString in
                 
-                try Bone(boneName: bone, mainPlaceholder: name, context: [:]).run()
+                guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
+                    let context = jsonConversion as? Context else {
+                    throw Error.invalidContext
+                }
+                
+                try Bone(boneName: boneName, mainPlaceholder: mainPlaceholder, context: context).run()
                 
                 //try Bone.newTemplate(bone: bone, name: name, listName: listName, targetName: targetName)
 
