@@ -39,7 +39,10 @@ extension Bone {
                        Option<String>("boneListName", default: "", description: ""),
                        Option<String>("targetName", default: "", description: "")
             ) { bone, name, listName, targetName in
-                try Bone.newTemplate(bone: bone, name: name, listName: listName, targetName: targetName)
+                
+                try Bone(boneName: bone, mainPlaceholder: name, context: [:]).run()
+                
+                //try Bone.newTemplate(bone: bone, name: name, listName: listName, targetName: targetName)
 
             }
         }

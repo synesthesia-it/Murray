@@ -14,6 +14,7 @@ public extension Bone {
         case missingSubfolder
         case missingLocalSubfolder
         case missingProjectName
+        case missingMainPlaceholder
         case existingFolder
         case gitError
         case shellError
@@ -21,6 +22,7 @@ public extension Bone {
         case missingBonefile
         case bonespecParsingError
         case unknownBone
+        case multipleBones
         public var description: String {
             return self.rawValue
         }

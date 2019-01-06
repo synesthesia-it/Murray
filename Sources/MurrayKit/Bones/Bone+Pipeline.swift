@@ -10,46 +10,55 @@ import Files
 import ShellOut
 
 extension Bone {
-    static func newTemplate(bone boneName: String, name: String, listName: String = "", targetName: String = "") throws {
-        let fs = FileSystem()
     
-        guard var bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
+    public func run() throws {
+        let fs = FileSystem()
+        
+        guard var bonesFolder = try? fs.currentFolder.subfolder(named: Bone.murrayTemplatesFolderName) else {
             throw Error.missingSetup
         }
-        let scriptPath = "\(murrayTemplatesFolderName)/script.rb"
+        let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
+        
         FileManager.default.createFile(atPath: scriptPath, contents: nil, attributes: nil)
         let script = try File(path: scriptPath, using: FileManager.default)
         try script.write(string: Bone.rubyScript)
         
-        let lists = try self.bones()
-
-        let tuple:(list: BoneSpec, bone: BoneItem)? = lists
-            .filter { listName.count == 0 || $0.name == listName }
-            .reduce(nil) { acc, list in
-                if acc != nil { return acc }
-                //            let folder = try bonesFolder.subfolder(named: list.name)
-                //            let bonelist = try self.bonespec(from: folder)
-
-                if let rootBone = list.bones[boneName] {
+        let lists = try Bone.bones()
+        
+        let tuples:[(list: BoneSpec, bone: BoneItem)] = try lists
+            .filter { self.listName.count == 0 || $0.name == self.listName }
+            .compactMap { list in
+                if let rootBone = list.bones[self.boneName] {
                     return (list, rootBone)
                 } else {
                     return nil
                 }
         }
-        guard let root = tuple else {
+        guard let root = tuples.first else {
             throw Error.unknownBone
         }
+        if tuples.count != 1 {
+            throw Error.multipleBones
+        }
+//            .reduce(nil) { acc, list in
+//                if acc != nil { return acc }
+//                if let rootBone = list.bones[boneName] {
+//                    return (list, rootBone)
+//                } else {
+//                    return nil
+//                }
+//        }
         
         let boneList = root.list
         let rootBone = root.bone
-
+        
         if boneList.isLocal {
-            guard let localFolder = try? fs.currentFolder.subfolder(named: murrayLocalTemplatesFolderName) else {
+            guard let localFolder = try? fs.currentFolder.subfolder(named: Bone.murrayLocalTemplatesFolderName) else {
                 throw Error.missingLocalSubfolder
             }
             bonesFolder = localFolder
         }
-
+        
         Logger.log(bonesFolder.path, level: .verbose)
         guard
             let templatesFolder = try? bonesFolder.subfolder(named: boneList.name).subfolder(atPath: boneList.sourcesBaseFolder) else {
@@ -61,10 +70,9 @@ extension Bone {
         
         
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
-
     }
-
-    private static func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context:[String: Any]) throws {
+    
+    private func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context:[String: Any]) throws {
         var context = context
         context["name"] = context["name"] ?? name
         

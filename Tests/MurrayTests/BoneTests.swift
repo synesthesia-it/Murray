@@ -131,13 +131,34 @@ bone "https://github.com/synesthesia-it/Bones.git"
                     sources = try! fs.createFolder(at: "Sources")
                 }
                 it("should create files in specific directories") {
-                    
-                    expect {try Bone.newTemplate(bone: "test", name: "Test") }.notTo(throwError())
+                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: "Test", context: [:])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.notTo(throwError())
                     let file = try? sources.file(named: "Test.swift")
                     expect(file).notTo(beNil())
-                    expect { try! file!.readAsString()} == TestDependency().templateResolved(with: "Test")
-                    
-                    }
+                    expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
+                }
+                it("should use the name value in context if no main placeholder is provided") {
+                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: nil, context: ["name":"Test"])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.notTo(throwError())
+                    let file = try? sources.file(named: "Test.swift")
+                    expect(file).notTo(beNil())
+                    expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
+                }
+                it("should use the main placeholder over the name value in context if both are provided") {
+                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: "Test", context: ["name":"Not to be used value"])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.notTo(throwError())
+                    let file = try? sources.file(named: "Test.swift")
+                    expect(file).notTo(beNil())
+                    expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
+                }
+                it ("should error out if multiple boneSpecs are provided and boneName is not in keyPath format") {
+                    let bone = try? Bone(boneName: "test", mainPlaceholder: "Test", context: [:])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.to(throwError(Bone.Error.multipleBones))
+                }
                 afterEach {
                     FileManager.default.changeCurrentDirectoryPath(defaultFolder)
                 }

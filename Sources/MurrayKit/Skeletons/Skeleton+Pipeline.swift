@@ -20,7 +20,7 @@ public final class Skeleton {
 
         do {
             let fs = FileSystem(using: fileManager)
-            //File manager path should always restored to its original value after execution.
+            //File manager path should always be restored to its original value after execution.
             //This helps testing and doesn't allow any subsequent operation to depend upon directory switching
             let defaultFolder = fileManager.currentDirectoryPath
             defer {
