@@ -1,26 +1,24 @@
 # Murray
-Murray is a CLI for creating and managing XCode applications.
-Basically, it's like having the XCode template features without having to deal with the Template.plist
+
+Murray is a CLI written in Swift for skeleton-based software development.
+
+A *skeleton*-based software is generated from a pre-defined structure, usually a fixed set of folders and files that can be compiled and launch out of the box (like the classic `HelloWorld` project).
+
+This kind of software is usually expanded through boilerplate files (*Bones*) that share common *structure* code (class initialization, methods of interfaces that always needs to be implemented, unit test files, etc...)
 
 ## Key Features
 
-- Clone a skeleton template from a remote repository and setup it to be compile-ready
-- Use *Bones* to insert a file (or a group of files) in your project string-replacing your placeholders.
+- Clone a *skeleton* project from a remote repository, customize it with your project name and properties and have it ready to run
+- Develop your project with *bones*: template files *you* design that gets easily installed in your structure
 
 # Installation
 
 ## Using *[Mint](https://github.com/yonaskolb/mint)*
 ```
 mint install synesthesia-it/Murray
-
 ```
 
-Murray requires [xcodeproj](https://github.com/CocoaPods/Xcodeproj) to be installed in order to interact with XCode projects.
-xcodeproj usually comes with Cocoapods, otherwise it can be installed with
-
-```
-gem install xcodeproj
-```
+## Compiling from source
 
 To compile and install murray, run
 ```
@@ -55,20 +53,23 @@ bone "https://github.com/synesthesia-it/Bone"
 You can then setup your project with
 
 ```
-$ murray template install
+$ murray bone install
 ```
 
 Install a Bone into your current project
 In this case, a `viewSection` is created by replacing placeholders inside the template file with `Product`
 
 ```
-$ murray template new viewSection Product
+$ murray bone new viewSection Product
 ```
 
 List all templates available for current project
 ```
-$ murray template list
+$ murray bone list
 ```
+
+# Skeletons and Skeletonspec.json
+-- TODO
 
 # Bones and Bonespec.json
 -- TODO

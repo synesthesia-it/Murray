@@ -4,14 +4,14 @@ import ShellOut
 
 public final class Skeleton {
 
-    var git: URL
+    var repository: Repository
     var projectName: String
     var projectPath: String
     var fileManager: FileManager
 
-    public init(projectName: String, git: URL, projectPath: String? = nil) {
+    public init(projectName: String, repository: Repository, projectPath: String? = nil) {
         self.projectName = projectName
-        self.git = git
+        self.repository = repository
         self.projectPath = "\(projectPath ?? ".")/\(projectName)"
         self.fileManager = FileManager()
     }
@@ -34,9 +34,9 @@ public final class Skeleton {
             }
 
             fileManager.changeCurrentDirectoryPath(folder.path)
-
-            Logger.log("Cloning skeleton app from \(git.absoluteString)", level: .verbose)
-            try DependencyManager.shared.cloneSkeleton(from: git)
+            
+            Logger.log("Cloning skeleton app from \(repository.name)@\(repository.namedVersion)", level: .verbose)
+            try DependencyManager.shared.cloneSkeleton(from: repository)
 
             Logger.log("Reorganizing folders", level: .verbose)
             //let murrayFolder = try folder.subfolder(named: "Skeleton")

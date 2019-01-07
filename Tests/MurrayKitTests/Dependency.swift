@@ -18,7 +18,7 @@ open class TestDependency: Dependency {
     }
 """
 
-    open func cloneSkeleton(from git: URL) throws {
+    open func cloneSkeleton(from repository: Repository) throws {
         let fs = FileSystem()
         try fs.createFolderIfNeeded(at: "Tests").delete()
         let main = try fs.createFolderIfNeeded(at: "Tests")
@@ -31,16 +31,16 @@ open class TestDependency: Dependency {
         try skeletonTestFolder.createFile(named: "UntouchedTestFile1.txt")
         try main.createFile(named: "Skeletonspec.json", contents: skeletonSpec)
         print (main.path)
-        print ("faking git clone from \(git)")
+        print ("faking git clone from \(repository.name)")
     }
 
-    open func cloneBones(from git: URL, branch: String) throws {
+    open func cloneBones(from repository: Repository) throws {
         try self.boneSpecTest(named: "Bones")
     }
 }
 
 class MultipleBonesTestDependency: TestDependency {
-    override func cloneBones(from: URL, branch: String) throws {
+    override func cloneBones(from repository: Repository) throws {
         try self.boneSpecTest(named: "Bones")
         try self.boneSpecTest(named: "TestB")
     }

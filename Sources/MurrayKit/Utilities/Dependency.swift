@@ -10,19 +10,20 @@ import ShellOut
 
 ///Mainly used for dependency injection in tests
 public protocol Dependency {
-    func cloneSkeleton(from: URL) throws
-    func cloneBones(from: URL, branch: String) throws
+    func cloneSkeleton(from repository: Repository) throws
+    func cloneBones(from repository: Repository) throws
 }
 
 private class DefaultDependency: Dependency {
-    func cloneSkeleton(from git: URL) throws {
-        try shellOut(to: .gitClone(url: git))
-    }
-    func cloneBones(from git: URL, branch: String) throws {
-
-        let command = "git clone --single-branch --branch \(branch) \(git.absoluteString)"
+    private func clone(from repository: Repository) throws {
+        let command = "git clone --single-branch --branch \(repository.version) \(repository.repo)"
         try shellOut(to: command)
-//        try shellOut(to: .gitClone(url: git))
+    }
+    func cloneSkeleton(from repository: Repository) throws {
+        try clone(from: repository)
+    }
+    func cloneBones(from repository: Repository) throws {
+        try clone(from: repository)
     }
 }
 public struct DependencyManager {

@@ -10,7 +10,12 @@ import Quick
 import Nimble
 import Files
 @testable import MurrayKit
-
+fileprivate extension Skeleton {
+    convenience init(projectName: String, git: URL) {
+        let repo = Repository(package: git.absoluteString)
+        self.init(projectName: projectName, repository: repo)
+    }
+}
 class SkeletonSpec: QuickSpec {
     override func spec() {
 

@@ -9,34 +9,15 @@ import Foundation
 import Files
 
 class BoneFile {
-    struct Part {
-        let url: URL
-        let branch: String
-        init(string: String) throws {
-            let parts = string.components(separatedBy: "@")
-            guard let urlString = parts.first,
-            let url = URL(string: urlString)
-            else {
-                throw Bone.Error.invalidBonefile
-            }
-            self.url = url
-            if parts.count > 1 {
-                self.branch = parts[1]
-            } else {
-                branch = "master"
-            }
-
-        }
-    }
 
     let contents: String
-    var parts: [Part] = []
-    init(fileContents: String) throws {
+    var repositories: [Repository] = []
+    init(fileContents: String) {
 
         self.contents = fileContents
-        parts = try partsFromBonefile()
+        repositories = parseRepositories()
     }
-    private func partsFromBonefile() throws -> [Part] {
+    private func parseRepositories() -> [Repository] {
 //        let fs = FileSystem()
 //        guard let boneFile = try? fs.currentFolder.file(named: "Bonefile") else {
 //            throw Template.Error.missingBonefile
@@ -59,7 +40,7 @@ class BoneFile {
                 .compactMap { $0 }
 //                .map { try Part(string: $0) }
             )
-        return try set.map { try Part(string: $0)}
+        return set.map { Repository(package: $0)}
 
     }
 }
