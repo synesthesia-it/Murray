@@ -25,15 +25,14 @@ class BoneFile {
             } else {
                 branch = "master"
             }
-            
+
         }
     }
-    
-    
+
     let contents: String
     var parts: [Part] = []
     init(fileContents: String) throws {
-        
+
         self.contents = fileContents
         parts = try partsFromBonefile()
     }

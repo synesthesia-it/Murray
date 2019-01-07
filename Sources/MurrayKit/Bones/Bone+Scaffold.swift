@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Files 
+import Files
 extension Bone {
     public static func newBone(listName: String = "Custom", name: String, files: [String]) throws {
 

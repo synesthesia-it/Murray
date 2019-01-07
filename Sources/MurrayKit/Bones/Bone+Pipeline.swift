@@ -10,21 +10,21 @@ import Files
 import ShellOut
 
 extension Bone {
-    
+
     public func run() throws {
         let fs = FileSystem()
-        
+
         guard var bonesFolder = try? fs.currentFolder.subfolder(named: Bone.murrayTemplatesFolderName) else {
             throw Error.missingSetup
         }
         let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
-        
+
         FileManager.default.createFile(atPath: scriptPath, contents: nil, attributes: nil)
         let script = try File(path: scriptPath, using: FileManager.default)
         try script.write(string: Bone.rubyScript)
-        
+
         let lists = try Bone.bones()
-        
+
         let tuples:[(list: BoneSpec, bone: BoneItem)] = try lists
             .filter { self.listName.count == 0 || $0.name == self.listName }
             .compactMap { list in
@@ -48,34 +48,33 @@ extension Bone {
 //                    return nil
 //                }
 //        }
-        
+
         let boneList = root.list
         let rootBone = root.bone
-        
+
         if boneList.isLocal {
             guard let localFolder = try? fs.currentFolder.subfolder(named: Bone.murrayLocalTemplatesFolderName) else {
                 throw Error.missingLocalSubfolder
             }
             bonesFolder = localFolder
         }
-        
+
         Logger.log(bonesFolder.path, level: .verbose)
         guard
             let templatesFolder = try? bonesFolder.subfolder(named: boneList.name).subfolder(atPath: boneList.sourcesBaseFolder) else {
                 throw Error.missingSubfolder
         }
-        
-        var context:[String: Any] = [:]
+
+        var context: [String: Any] = [:]
         //TODO convert inputstring into dictionary
-        
-        
+
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
     }
-    
-    private func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context:[String: Any]) throws {
+
+    private func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context: [String: Any]) throws {
         var context = context
         context["name"] = context["name"] ?? name
-        
+
         Logger.log("Starting \(bone.name) bone", level: .verbose)
         if bone.files.count > 0 {
             let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"

@@ -35,12 +35,12 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
         }
 
         context("in real environment") {
-            
+
             describe("setup from Bonefile") {
                 beforeEach {
                     DependencyManager.reset()
                     try! reset()
-                    
+
                 }
                 it("should clone a Bones repository") {
 
@@ -51,22 +51,20 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     expect { try Bone.setup() }.notTo(throwError())
 //                    expect { try project.run() }.notTo(throwError())
                     expect { try fs.currentFolder.subfolder(named: ".murray")}.notTo(throwError())
-                    
+
                     let tests = try? fs.currentFolder.createSubfolder(named: "Tests")
                     try? tests?.createSubfolder(named: "ModelLayerTests")
-                    
+
                     let sources = try? fs.currentFolder.createSubfolder(named: "Sources")
                     let modelLayer = try? sources?.createSubfolder(named: "ModelLayer")
                     try? modelLayer??.createSubfolder(named: "Models")
-                    
-                    
+
                     expect { try Bone(boneName: "modelWithTests", mainPlaceholder: "Test", context: [:]).run()
                     }.notTo(throwError())
-                    
+
                     FileManager.default.changeCurrentDirectoryPath(defaultFolder)
                     expect(FileManager.default.currentDirectoryPath) == defaultFolder
-                    
-                    
+
                 }
             }
         }
@@ -102,7 +100,7 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                 }
             }
             describe("Listing bones") {
-               
+
                 describe("When single boneSpec is provided") {
 
                 beforeEach {
@@ -155,7 +153,7 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
                 }
                 it("should use the name value in context if no main placeholder is provided") {
-                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: nil, context: ["name":"Test"])
+                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: nil, context: ["name": "Test"])
                     expect(bone).notTo(beNil())
                     expect { try bone!.run() }.notTo(throwError())
                     let file = try? sources.file(named: "Test.swift")
@@ -163,7 +161,7 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
                 }
                 it("should use the main placeholder over the name value in context if both are provided") {
-                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: "Test", context: ["name":"Not to be used value"])
+                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: "Test", context: ["name": "Not to be used value"])
                     expect(bone).notTo(beNil())
                     expect { try bone!.run() }.notTo(throwError())
                     let file = try? sources.file(named: "Test.swift")

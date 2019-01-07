@@ -38,14 +38,14 @@ extension Bone {
                        Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),
                        Option<String>("context", default: "{}", description: "A JSON string with context information used by Stencil template")
             ) { boneName, mainPlaceholder, contextString in
-                
+
                 guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
                     let context = jsonConversion as? Bone.Context else {
                     throw Error.invalidContext
                 }
-                
+
                 try Bone(boneName: boneName, mainPlaceholder: mainPlaceholder, context: context).run()
-                
+
                 //try Bone.newTemplate(bone: bone, name: name, listName: listName, targetName: targetName)
 
             }

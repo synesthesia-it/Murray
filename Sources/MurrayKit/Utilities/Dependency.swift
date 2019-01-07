@@ -19,7 +19,7 @@ private class DefaultDependency: Dependency {
         try shellOut(to: .gitClone(url: git))
     }
     func cloneBones(from git: URL, branch: String) throws {
-        
+
         let command = "git clone --single-branch --branch \(branch) \(git.absoluteString)"
         try shellOut(to: command)
 //        try shellOut(to: .gitClone(url: git))
