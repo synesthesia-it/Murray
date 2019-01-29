@@ -15,7 +15,7 @@ extension Skeleton {
             $0.command(
                 "new",
                 Argument<String>("projectName", description: "Name of project"),
-                Option<String>("git", default: "https://github.com/synesthesia-it/Skeleton.git", description: "Project's template git url")) {
+                Option<String>("git", default: "", description: "Url of remote git to clone. Use @branch or @tag for specific versions.")) {
                     projectName, git in
                     let repository = Repository(package: git)
                     try Skeleton(projectName: projectName, repository: repository).run()
