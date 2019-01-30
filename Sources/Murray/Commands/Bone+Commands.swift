@@ -41,7 +41,7 @@ extension Bone {
                        
             ) { boneName, mainPlaceholder, contextString, params in
 
-                
+                Logger.logLevel = .verbose
                 guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
                     var context = jsonConversion as? Bone.Context else {
                     throw Error.invalidContext
