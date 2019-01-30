@@ -62,7 +62,7 @@ class ProductsViewController: UIViewController {
 
 automatically moved to predefined custom folder and also installed in XCode project.
 
-See [Wiki](wiki) for more examples.
+See [Wiki](https://github.com/synesthesia-it/Murray/wiki) for more examples.
 
 
 
@@ -132,7 +132,7 @@ $ murray bone new viewSection Product
 ```
 
 In this particular case, a `viewSection` bone is created in your project by copying all source file related to `viewSection` (one or more, depending on what you wrote in the `Bonespec.json`) by renaming each file replacing the bone placeholder with Product and by parsing internal text contents through Stencil.
-See the [Bones](wiki) wiki page for more details.
+See the [Bones](https://github.com/synesthesia-it/Murray/wiki) wiki page for more details.
 
 
 List all templates available for current project
@@ -142,7 +142,7 @@ $ murray bone list
 
 # Documentation
 
-See [Wiki](wiki) pages
+See [Wiki](https://github.com/synesthesia-it/Murray/wiki) pages
 
 # FAQ
 
