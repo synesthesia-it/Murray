@@ -39,12 +39,13 @@ extension TestDependency {
     }
 
     var boneTemplate: String {
-        return "Some template with a {{ name }} placeholder, also uppercased {{ name|uppercase }}"
+        return "Some template with a {{ name }} placeholder, also uppercased {{ name|uppercase }} and with global {{ mainPlaceholder }}"
     }
     func templateResolved(with name: String) -> String {
         return boneTemplate
             .replacingOccurrences(of: "{{ name }}", with: name)
             .replacingOccurrences(of: "{{ name|uppercase }}", with: name.uppercased())
+            .replacingOccurrences(of: "{{ mainPlaceholder }}", with: "PLACEHOLDER")
     }
 //    func boneSpecTest() throws {
 //        try boneSpecTest(named: "testA")
@@ -52,6 +53,7 @@ extension TestDependency {
 //    }
     func boneSpecTest(named name: String) throws {
         let fs = FileSystem()
+        try fs.currentFolder.parent?.createFile(named: "Skeletonspec.json", contents: skeletonSpec)
         let bones = try fs.currentFolder.createSubfolder(named: name)
         try bones.createFile(named: "Bonespec.json", contents: bonespec(named: name))
         let files = try bones.createSubfolder(named: "Files")

@@ -67,14 +67,20 @@ extension Bone {
 
         var context: [String: Any] = [:]
         //TODO convert inputstring into dictionary
-
+        if let skeleton = try? SkeletonSpec.parse(from: fs.currentFolder) {
+            skeleton.environmentPlaceholders?.forEach {
+                if context[$0.key] == nil {
+                    context [$0.key] = $0.value
+                }
+            }
+        }
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
     }
-
+    
     private func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context: [String: Any]) throws {
         var context = context
         context["name"] = context["name"] ?? name
-
+        
         Logger.log("Starting \(bone.name) bone", level: .verbose)
         if bone.files.count > 0 {
             let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
@@ -95,6 +101,7 @@ extension Bone {
                         throw Error.missingSubfolder
             }
             Logger.log("Parsing \(bone.name) files", level: .verbose)
+            
             try bone.files.forEach { path in
                 Logger.log(templatesFolder.path + "/" + path, level: .verbose)
 
@@ -115,6 +122,7 @@ extension Bone {
                     }
                     Logger.log("Reading file", level: .verbose)
                     var string = try file.readAsString()
+                    
                     let template = FileTemplate(fileContents: string, context: context)
                     let rendered = try template.render()
 //                    let innerPlaceholder = "___\(placeholder)Placeholder___"

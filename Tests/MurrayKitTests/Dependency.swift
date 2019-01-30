@@ -14,6 +14,9 @@ open class TestDependency: Dependency {
         "scripts": [""],
         "foldersToRename" : ["SkeletonTestFolder", "Skeleton.xcodeproj"],
         "filesToRename" : ["SkeletonTestFolder/SkeletonTestFile1.txt","SkeletonTestFolder/SkeletonTestFile2.txt"],
+        "environmentPlaceholders": {
+            "mainPlaceholder": "PLACEHOLDER"
+        },
         "filePlaceholder": "Skeleton"
     }
 """

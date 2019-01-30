@@ -12,12 +12,14 @@ class SkeletonSpec: Codable {
     var scripts: [String]?
     var foldersToRename: [String]?
     var filesToRename: [String]?
+    var environmentPlaceholders: [String: String]?
     private var _filePlaceholder: String?
 
     enum CodingKeys: String, CodingKey {
         case scripts
         case foldersToRename
         case filesToRename
+        case environmentPlaceholders
         case _filePlaceholder = "filePlaceholder"
     }
 

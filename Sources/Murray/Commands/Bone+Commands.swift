@@ -10,6 +10,7 @@ import Commander
 import MurrayKit
 extension Bone {
     static func commands(for group: Group) {
+        
         group.group("bone") {
             $0.command(
                 "setup",
@@ -35,14 +36,29 @@ extension Bone {
             $0.command("new",
                        Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
                        Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),
-                       Option<String>("context", default: "{}", description: "A JSON string with further context information used by Stencil template")
-            ) { boneName, mainPlaceholder, contextString in
+                       Option<String>("context", default: "{}", description: "A JSON string with further context information used by Stencil template"),
+                       VariadicOption<String>("param", default: [""], flag: Character("p"), description: "")
+                       
+            ) { boneName, mainPlaceholder, contextString, params in
 
+                
                 guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
-                    let context = jsonConversion as? Bone.Context else {
+                    var context = jsonConversion as? Bone.Context else {
                     throw Error.invalidContext
                 }
-
+                
+                params.map {
+                    $0.components(separatedBy: ":")
+                }
+                    .filter { $0.count == 2}
+                    .map { $0.map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)}}
+                    .compactMap {array -> (key: String, value:String)? in
+                        guard let key = array.first,
+                            let value = array.last else { return nil }
+                        return (key: key, value: value)}
+                    .forEach {
+                        context[$0.key] = $0.value
+                }
                 try Bone(boneName: boneName, mainPlaceholder: mainPlaceholder, context: context).run()
             }
         }
