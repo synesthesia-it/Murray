@@ -26,7 +26,7 @@ For instance, a classic HTML website always consists of pages with same `head` a
 
 Single-file template in Swift for iOS named `listViewController` in file BonesViewController (placeholder keyword in filename is `Bone`):
 
-```
+```swift
 import UIKit
 class {{ name|firstUppercase }}sViewController: UIViewController {
 
@@ -46,7 +46,7 @@ murray bone new listViewController Product
 
 resulting in file `ProductsViewController` with contents:
 
-```
+```swift
 import UIKit
 class ProductsViewController: UIViewController {
 
