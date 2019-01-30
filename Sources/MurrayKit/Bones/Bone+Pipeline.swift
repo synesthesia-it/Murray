@@ -109,7 +109,9 @@ extension Bone {
                 let placeholder = bone.placeholder
                 if placeholder.count > 0 {
                     if let filename = path.split(separator: "/").last {
-                        try file.rename(to: filename.replacingOccurrences(of: placeholder, with: name))
+                        let resolvedName = try FileTemplate(fileContents: bone.placeholderReplaceRule, context: ["name": name]).render()
+                        
+                        try file.rename(to: filename.replacingOccurrences(of: placeholder, with: resolvedName))
                     }
                     Logger.log("Reading file", level: .verbose)
                     var string = try file.readAsString()

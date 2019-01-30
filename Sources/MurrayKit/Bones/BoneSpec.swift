@@ -41,6 +41,11 @@ class BoneItem: Codable {
         get { return _createSubfolder ?? true }
         set { _createSubfolder = newValue }
     }
+    var placeholderReplaceRule: String {
+        get { return _placeholderReplaceRule ?? "{{name}}" }
+        set { _placeholderReplaceRule = newValue }
+    }
+    
 
     private var _createSubfolder: Bool?
     private var _subBones: [String]?
@@ -49,12 +54,14 @@ class BoneItem: Codable {
     private var _description: String?
     private var _placeholder: String?
     private var _targetNames: [String]?
-
+    private var _placeholderReplaceRule: String?
+    
     enum CodingKeys: String, CodingKey {
         case _subBones = "subBones"
         case _files = "files"
         case name = "name"
         case _folderPath = "folderPath"
+        case _placeholderReplaceRule = "placeholderReplaceRule"
         case _placeholder = "placeholder"
         case _description = "description"
         case _targetNames = "targets"

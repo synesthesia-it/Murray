@@ -110,7 +110,7 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     try! Bone.setup()
                 }
                 it("should should include everything") {
-                    expect { try! Bone.list() }.to(equal(["Bones.test - A test"]))
+                    expect { try! Bone.list() }.to(equal(["Bones.test - A test\n\nBones.testLowercased - A test"]))
                 }
                     afterEach {
                         FileManager.default.changeCurrentDirectoryPath(defaultFolder)
@@ -126,7 +126,7 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                         try! Bone.setup()
                     }
                 it ("should namespace each bone in list if more than one bonespec is provided") {
-                    expect { try! Bone.list() }.to(equal(["Bones.test - A test", "TestB.test - A test"]))
+                    expect { try! Bone.list() }.to(equal(["Bones.test - A test\n\nBones.testLowercased - A test", "TestB.test - A test\n\nTestB.testLowercased - A test"]))
                 }
                     afterEach {
                         FileManager.default.changeCurrentDirectoryPath(defaultFolder)
@@ -151,6 +151,15 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     let file = try? sources.file(named: "Test.swift")
                     expect(file).notTo(beNil())
                     expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
+                }
+                it("should create files in specific directories and follow specific placeholderReplace rule") {
+                    let bone = try? Bone(boneName: "Bones.testLowercased", mainPlaceholder: "TEST", context: [:])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.notTo(throwError())
+                    let file = try? sources.file(named: "tEST.swift")
+                    expect(file).notTo(beNil())
+                    expect(file?.name) == "tEST.swift"
+                    expect { try file?.readAsString()} == TestDependency().templateResolved(with: "TEST")
                 }
                 it("should use the name value in context if no main placeholder is provided") {
                     let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: nil, context: ["name": "Test"])

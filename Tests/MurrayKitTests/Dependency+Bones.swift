@@ -24,6 +24,15 @@ extension TestDependency {
         "createSubfolder": false,
         "targets" : ["Test"],
         "files": ["Bone.swift"]
+        },
+        {
+        "name": "testLowercased",
+        "description": "A test",
+        "folderPath": "Sources",
+        "placeholderReplaceRule": "{{ name|firstLowercase }}",
+        "createSubfolder": false,
+        "targets" : ["Test"],
+        "files": ["Bone.swift"]
         }]
         }
 """
