@@ -25,6 +25,19 @@ public final class FileTemplate {
         ext.registerFilter("firstUppercase") { (value: Any?) in
             return (value as? String)?.firstUppercased() ?? value
         }
+        
+        ext.registerFilter("swiftType") { (value: Any?) in
+            guard let v = value else { return value }
+            
+            switch v {
+            case is Int: return "Int"
+            case is Bool: return "Bool"
+            case is Double: return "Double"
+            case is Float: return "Float"
+            case is String: return "String"
+            default: return "Any"
+            }
+        }
         let environment = Environment(extensions: [ext])
 
         let rendered = try environment.renderTemplate(string: contents, context: context)

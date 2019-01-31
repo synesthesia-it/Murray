@@ -48,3 +48,8 @@ class MultipleBonesTestDependency: TestDependency {
         try self.boneSpecTest(named: "TestB")
     }
 }
+class JSONBonesTestDependency: TestDependency {
+    override func cloneBones(from repository: Repository) throws {
+        try self.boneSpecJSONTest(named: "Bones")
+    }
+}

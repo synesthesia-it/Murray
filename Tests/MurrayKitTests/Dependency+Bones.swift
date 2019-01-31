@@ -41,6 +41,26 @@ extension TestDependency {
     var boneTemplate: String {
         return "Some template with a {{ name }} placeholder, also uppercased {{ name|uppercase }} and with global {{ mainPlaceholder }}"
     }
+    
+
+    
+    var jsonTemplate: String {
+        return """
+        import Foundation
+        
+        struct {{ name }}: Codable {
+        {% for key, value in json %}
+        let {{ key|firstLowercase }}: {{ value|swiftType }}
+        {% endfor %}
+            enum CodingKeys: String, CodingKey {
+            {% for key, value in json %}
+                case {{ key|firstLowercase }} = "{{ key }}"
+            {% endfor %}
+            }
+        }
+        """
+    }
+    
     func templateResolved(with name: String, customPlaceholder: String = "PLACEHOLDER") -> String {
         return boneTemplate
             .replacingOccurrences(of: "{{ name }}", with: name)
@@ -58,5 +78,13 @@ extension TestDependency {
         try bones.createFile(named: "Bonespec.json", contents: bonespec(named: name))
         let files = try bones.createSubfolder(named: "Files")
         try files.createFile(named: "Bone.swift", contents: boneTemplate)
+    }
+    func boneSpecJSONTest(named name: String) throws {
+        let fs = FileSystem()
+        try fs.currentFolder.parent?.createFile(named: "Skeletonspec.json", contents: skeletonSpec)
+        let bones = try fs.currentFolder.createSubfolder(named: name)
+        try bones.createFile(named: "Bonespec.json", contents: bonespec(named: name))
+        let files = try bones.createSubfolder(named: "Files")
+        try files.createFile(named: "Bone.swift", contents: jsonTemplate)
     }
 }
