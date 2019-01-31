@@ -14,12 +14,16 @@ extension Bone {
         group.group("bone") {
             $0.command(
                 "setup",
-            Option<String>("boneFile", default: "", description: "Project's Bonefile. Currently not implemented")) {
-                _ in
+            Option<String>("boneFile", default: "", description: "Project's Bonefile. Currently not implemented"),
+            Flag("verbose")) {
+                _, verbose in
+                if verbose { Logger.logLevel = .verbose }
                 try Bone.setup()
             }
 
-            $0.command("list", description: "Lists all bones in current setup.") {
+            $0.command("list",Flag("verbose"), description: "Lists all bones in current setup."
+                       ) { verbose in
+                if verbose { Logger.logLevel = .verbose }
                 try Bone.list().forEach {
                     Logger.log("Spec detail: \($0)", level: .none)
                 }
@@ -28,8 +32,10 @@ extension Bone {
             $0.command("scaffold",
                        Argument<String>("boneName", description: ""),
                        Argument<String>("filenames", description: "Filenames separated by | "),
-                       Option<String>("specName", default: "Custom", description: "")
-            ) { name, files, listName in
+                       Option<String>("specName", default: "Custom", description: ""),
+                       Flag("verbose")
+            ) { name, files, listName, verbose in
+                if verbose { Logger.logLevel = .verbose }
                 try Bone.newBone(listName: listName, name: name, files: files.components(separatedBy: "|"))
             }
 
@@ -37,16 +43,16 @@ extension Bone {
                        Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
                        Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),
                        Option<String>("context", default: "{}", description: "A JSON string with further context information used by Stencil template"),
-                       VariadicOption<String>("param", default: [""], flag: Character("p"), description: "")
+                       VariadicOption<String>("param", default: [""], flag: Character("p"), description: ""),
+                       Flag("verbose")
                        
-            ) { boneName, mainPlaceholder, contextString, params in
+            ) { boneName, mainPlaceholder, contextString, params, verbose in
 
-                Logger.logLevel = .verbose
+                if verbose { Logger.logLevel = .verbose }
                 guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
                     var context = jsonConversion as? Bone.Context else {
                     throw Error.invalidContext
                 }
-                
                 params.map {
                     $0.components(separatedBy: ":")
                 }

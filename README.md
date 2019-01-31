@@ -103,7 +103,7 @@ alias murray='/opt/Murray/murray'
 Create a new skeleton app by cloning any remote repository with a `Skeletonspec.json` file in its root folder.
 
 ```
-$ murray skeleton new CoolApp --git <your_remote_repo>
+$ murray skeleton new CoolApp <your_remote_repo>
 ```
 
 Next commands should all be used inside your freshly created project's directory.
