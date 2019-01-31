@@ -161,6 +161,14 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     expect(file?.name) == "tEST.swift"
                     expect { try file?.readAsString()} == TestDependency().templateResolved(with: "TEST")
                 }
+                it("should use the context values over skeleton's") {
+                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: "Test", context: ["mainPlaceholder": "Another custom placeholder"])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.notTo(throwError())
+                    let file = try? sources.file(named: "Test.swift")
+                    expect(file).notTo(beNil())
+                    expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test", customPlaceholder: "Another custom placeholder")
+                }
                 it("should use the name value in context if no main placeholder is provided") {
                     let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: nil, context: ["name": "Test"])
                     expect(bone).notTo(beNil())

@@ -65,7 +65,7 @@ extension Bone {
                 throw Error.missingSubfolder
         }
 
-        var context: [String: Any] = [:]
+        var context: [String: Any] = self.context
         //TODO convert inputstring into dictionary
         if let skeleton = try? SkeletonSpec.parse(from: fs.currentFolder) {
             skeleton.environmentPlaceholders?.forEach {

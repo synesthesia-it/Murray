@@ -41,11 +41,11 @@ extension TestDependency {
     var boneTemplate: String {
         return "Some template with a {{ name }} placeholder, also uppercased {{ name|uppercase }} and with global {{ mainPlaceholder }}"
     }
-    func templateResolved(with name: String) -> String {
+    func templateResolved(with name: String, customPlaceholder: String = "PLACEHOLDER") -> String {
         return boneTemplate
             .replacingOccurrences(of: "{{ name }}", with: name)
             .replacingOccurrences(of: "{{ name|uppercase }}", with: name.uppercased())
-            .replacingOccurrences(of: "{{ mainPlaceholder }}", with: "PLACEHOLDER")
+            .replacingOccurrences(of: "{{ mainPlaceholder }}", with: customPlaceholder)
     }
 //    func boneSpecTest() throws {
 //        try boneSpecTest(named: "testA")
