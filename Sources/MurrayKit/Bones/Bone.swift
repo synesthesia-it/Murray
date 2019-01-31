@@ -8,7 +8,6 @@
 import Foundation
 import Files
 import ShellOut
-import Commander
 
 public final class Bone {
     public typealias Context = [String: Any]
