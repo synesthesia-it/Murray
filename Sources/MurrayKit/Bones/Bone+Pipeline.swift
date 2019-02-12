@@ -158,7 +158,9 @@ extension Bone {
             }
         }
         Logger.log("Parsing \(bone.name) subBones", level: .verbose)
-        try bone.subBones.compactMap {
+        try bone.subBones
+            .filter { bone.name != $0 }
+            .compactMap {
             boneList.bones[$0]
             }.forEach {
                 try self.createSubBone(boneList: boneList, bone: $0, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
