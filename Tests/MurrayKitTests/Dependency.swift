@@ -12,6 +12,7 @@ open class TestDependency: Dependency {
     let skeletonSpec = """
     {
         "scripts": [""],
+        "initGit": true,
         "foldersToRename" : ["SkeletonTestFolder", "Skeleton.xcodeproj"],
         "filesToRename" : ["SkeletonTestFolder/SkeletonTestFile1.txt","SkeletonTestFolder/SkeletonTestFile2.txt"],
         "environmentPlaceholders": {

@@ -75,9 +75,10 @@ public final class Skeleton {
                 Logger.log("Installing Murray templates", level: .verbose)
                 try Bone.setup()
             }
-            Logger.log("Git initialization", level: .verbose)
-            Logger.log(try shellOut(to: .gitInit()), level: .verbose)
-
+            if spec.initGit {
+                Logger.log("Git initialization", level: .verbose)
+                Logger.log(try shellOut(to: .gitInit()), level: .verbose)
+            }
             Logger.log("Running custom scripts", level: .verbose)
             let scripts = spec.scripts?.filter { $0.count > 0 }
             if let scripts = scripts, scripts.count > 0 {
