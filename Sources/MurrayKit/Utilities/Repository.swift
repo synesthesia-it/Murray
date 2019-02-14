@@ -8,17 +8,24 @@
 
 import Foundation
 
-public class Repository {
-    
+public class Repository: Hashable {
+    public var hashValue: Int {
+        return repo.hashValue
+    }
     public var repo: String
     public var version: String
-    
-    public init(repo: String, version: String = "") {
+    public var package:String
+    public init(repo: String, version: String = "", package: String? = nil) {
         self.repo = repo
         self.version = version
+        self.package = package ?? [repo,version]
+            .map { $0.trimmingCharacters(in: .whitespaces)}
+            .filter { $0.count > 0 }
+            .joined(separator: "@")
     }
     
     public convenience init(package: String) {
+        
         let packageParts = package.components(separatedBy: "@")
             .map { $0.trimmingCharacters(in: .whitespaces) }
         
@@ -39,7 +46,7 @@ public class Repository {
             repo = package
             version = "master"
         }
-        self.init(repo: repo, version: version)
+        self.init(repo: repo, version: version, package: package)
     }
     
     public var namedVersion: String {

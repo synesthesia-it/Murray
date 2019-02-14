@@ -18,16 +18,14 @@ class BoneSpec: QuickSpec {
         var defaultFolder = ""
         let projectName = "MurrayBonesTest"
         let fs = FileSystem()
-        let boneFileSample = """
-bone "https://github.com/synesthesia-it/Bones.git@develop"
-"""
+        
 
         var folder: Folder!
 
         let reset = {
              try? fs.currentFolder.subfolder(atPath: projectName).delete()
              folder = try fs.currentFolder.createSubfolder(named: projectName)
-             _ = try folder.createFile(named: "Bonefile", contents: boneFileSample)
+            try folder.createFile(named: "Skeletonspec.json", contents: TestDependency().skeletonSpec)
         }
 
         beforeEach {
@@ -35,7 +33,9 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
         }
 
         context("in real environment") {
-
+            beforeEach {
+//                try! Skeleton(projectName: "test", repository: Repository(package: "https://github.com/synesthesia-it/Skeleton.git")).run()
+            }
             describe("setup from Bonefile") {
                 beforeEach {
                     DependencyManager.reset()
@@ -84,10 +84,10 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     //                    expect { try project.run() }.notTo(throwError())
                     let murrayFolder = try? fs.currentFolder.subfolder(named: ".murray")
                     expect(murrayFolder).notTo(beNil())
-
+                    if murrayFolder == nil { return }
                     let bonesFolder = try? murrayFolder!.subfolder(named: "Bones")
                     expect(bonesFolder).notTo(beNil())
-                    expect(bonesFolder!.containsFile(named: "Bonespec.json")) == true
+                    expect { bonesFolder!.containsFile(named: "Bonespec.json") } == true
                     let sourcesFolder = try? bonesFolder!.subfolder(named: "Files")
                     expect(sourcesFolder).notTo(beNil())
                     let source = try? sourcesFolder!.file(named: "Bone.swift")

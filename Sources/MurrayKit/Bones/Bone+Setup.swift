@@ -12,14 +12,11 @@ import ShellOut
 extension Bone {
     public static func setup() throws {
         let fs = FileSystem()
-
-        guard let boneFileReference = try? fs.currentFolder.file(named: "Bonefile"),
-            let contents = try? boneFileReference.readAsString()
-            else {
-                throw Bone.Error.missingBonefile
+        
+        guard let skeleton = try? SkeletonSpec.parse(from: fs.currentFolder) else {
+            throw Skeleton.Error.missingSpec
         }
-
-        let boneFile = BoneFile(fileContents: contents)
+        
         Logger.log("Removing old setup", level: .verbose)
         try? FileManager.default.removeItem(atPath: murrayTemplatesFolderName)
 
@@ -28,7 +25,7 @@ extension Bone {
         }
 
         let fileManager = FileManager.default
-        try boneFile.repositories.forEach { repository in
+        try skeleton.repositories.forEach { repository in
             //File manager path should always restored to its original value after execution.
             //This helps testing and doesn't allow any subsequent operation to depend upon directory switching
             let defaultFolder = fileManager.currentDirectoryPath

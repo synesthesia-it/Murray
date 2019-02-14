@@ -11,6 +11,7 @@ public extension Skeleton {
     enum Error: String, Swift.Error, CustomStringConvertible {
         case missingProjectName
         case existingFolder
+        case alreadyExistingSpec
         case gitError
         case gitEmpty
         case shellError

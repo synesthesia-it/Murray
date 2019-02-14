@@ -17,12 +17,13 @@ class BoneFile {
         self.contents = fileContents
         repositories = parseRepositories()
     }
+    
+    init (repositories: [Repository]) {
+        self.contents = ""
+        self.repositories = Array(Set(repositories))
+    }
     private func parseRepositories() -> [Repository] {
-//        let fs = FileSystem()
-//        guard let boneFile = try? fs.currentFolder.file(named: "Bonefile") else {
-//            throw Template.Error.missingBonefile
-//        }
-//        let contents = try boneFile.readAsString()
+
         let set = Set(
             self.contents.components(separatedBy: "\n")
                 .map {$0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)}

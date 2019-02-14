@@ -13,6 +13,7 @@ open class TestDependency: Dependency {
     {
         "scripts": [""],
         "initGit": true,
+        "remoteBones": ["https://github.com/synesthesia-it/Bones.git@develop"],
         "foldersToRename" : ["SkeletonTestFolder", "Skeleton.xcodeproj"],
         "filesToRename" : ["SkeletonTestFolder/SkeletonTestFile1.txt","SkeletonTestFolder/SkeletonTestFile2.txt"],
         "environmentPlaceholders": {

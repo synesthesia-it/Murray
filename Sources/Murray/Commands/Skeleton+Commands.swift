@@ -22,6 +22,14 @@ extension Skeleton {
                     let repository = Repository(package: git)
                     try Skeleton(projectName: projectName, repository: repository).run()
             }
+            
+            $0.command(
+            "scaffold",
+            Flag("verbose")) {
+                verbose in
+                if verbose { Logger.logLevel = .verbose }
+                try Skeleton.scaffold()
+            }
         }
     }
 }

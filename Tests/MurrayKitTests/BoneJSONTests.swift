@@ -18,16 +18,14 @@ class BoneJSONSpec: QuickSpec {
         var defaultFolder = ""
         let projectName = "MurrayBonesTest"
         let fs = FileSystem()
-        let boneFileSample = """
-bone "https://github.com/synesthesia-it/Bones.git@develop"
-"""
+    
 
-        var folder: Folder!
+        
 
         let reset = {
              try? fs.currentFolder.subfolder(atPath: projectName).delete()
-             folder = try fs.currentFolder.createSubfolder(named: projectName)
-             _ = try folder.createFile(named: "Bonefile", contents: boneFileSample)
+             let folder = try fs.currentFolder.createSubfolder(named: projectName)
+            try folder.createFile(named: "Skeletonspec.json", contents: TestDependency().skeletonSpec)
         }
 
         beforeEach {
@@ -46,7 +44,7 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     try! reset()
                     defaultFolder = FileManager.default.currentDirectoryPath
                     FileManager.default.changeCurrentDirectoryPath(projectName)
-                    try! Bone.setup()
+                    try? Bone.setup()
                     sources = try! fs.createFolder(at: "Sources")
                 }
                 it("should create files in specific directories") {
@@ -60,7 +58,7 @@ bone "https://github.com/synesthesia-it/Bones.git@develop"
                     expect { try bone!.run() }.notTo(throwError())
                     let file = try? sources.file(named: "Test.swift")
                     expect(file).notTo(beNil())
-                    print (try! file!.readAsString())
+//                    print (try? file!.readAsString())
                     //expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
                 }
                 
