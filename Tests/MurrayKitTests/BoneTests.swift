@@ -190,6 +190,15 @@ class BoneSpec: QuickSpec {
                     expect(bone).notTo(beNil())
                     expect { try bone!.run() }.to(throwError(Bone.Error.multipleBones))
                 }
+                
+                it ("should replace occurrences in another files if provider in spec") {
+                    let bone = try? Bone(boneName: "Bones.test", mainPlaceholder: "Test", context: [:])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.notTo(throwError())
+                    let file = try? sources.parent!.file(named: "replace.txt")
+                    expect(file).notTo(beNil())
+                    expect { try file?.readAsString()} == "replace Test\n// TEXT TO REPLACE"
+                }
                 afterEach {
                     FileManager.default.changeCurrentDirectoryPath(defaultFolder)
                 }

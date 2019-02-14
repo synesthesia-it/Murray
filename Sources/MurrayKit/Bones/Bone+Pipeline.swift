@@ -134,7 +134,21 @@ extension Bone {
                     try file.write(string: rendered)
                 }
                 Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
-
+                
+                bone.otherFilesRules.forEach { rule in
+                    Logger.log("Looking for file \(rule.filePath)", level: .verbose)
+                    if let file = try? fs.currentFolder.file(atPath: rule.filePath),
+                        let contents = try? file.readAsString(encoding: .utf8),
+                        let resolved = try? FileTemplate(fileContents: rule.text, context: context).render(){
+                        
+                        let newContents = contents.replacingOccurrences(of: rule.placeholder, with: resolved + rule.placeholder)
+                        try? file.write(string: newContents)
+                        
+                    } else {
+                        Logger.log("Unable to read file \(rule.filePath), skipping", level: .verbose)
+                    }
+                }
+                
                 if bone.targetNames.count > 0 {
                     let projectName = fs.currentFolder.subfolders
                         .filter ({ $0.name.contains(".xcodeproj") })

@@ -22,6 +22,13 @@ extension TestDependency {
         "description": "A test",
         "folderPath": "Sources",
         "createSubfolder": false,
+        "otherFilesRules": [
+        {
+        "placeholder": "\\n// TEXT TO REPLACE",
+        "filePath": "replace.txt",
+        "text": "replace {{ name }}"
+        }
+        ],
         "targets" : ["Test"],
         "files": ["Bone.swift"]
         },
@@ -74,10 +81,12 @@ extension TestDependency {
     func boneSpecTest(named name: String) throws {
         let fs = FileSystem()
         try fs.currentFolder.parent?.createFile(named: "Skeletonspec.json", contents: skeletonSpec)
+        try fs.currentFolder.parent?.createFile(named: "replace.txt", contents: "\n// TEXT TO REPLACE")
         let bones = try fs.currentFolder.createSubfolder(named: name)
         try bones.createFile(named: "Bonespec.json", contents: bonespec(named: name))
         let files = try bones.createSubfolder(named: "Files")
         try files.createFile(named: "Bone.swift", contents: boneTemplate)
+        
     }
     func boneSpecJSONTest(named name: String) throws {
         let fs = FileSystem()
