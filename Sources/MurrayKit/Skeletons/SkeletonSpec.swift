@@ -49,7 +49,14 @@ class SkeletonSpec: Codable {
         set { _initGit = newValue }
     }
     init() {
-        
+        self.repositories = []
+        self.filePlaceholder = "Bone"
+        self.initGit = false
+        self.scripts = []
+        self.foldersToRename = []
+        self.filesToRename = []
+        self.environmentPlaceholders = [:]
+        self.repositories = []
     }
 
 }
