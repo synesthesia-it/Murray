@@ -8,7 +8,7 @@
 import Foundation
 import Rainbow
 
-class BoneItem: Codable {
+public class BoneItem: Codable {
     var name = ""
 
     var description: String {
@@ -97,7 +97,7 @@ class BoneReplace: Codable {
     var text: String
 }
 
-class BoneSpec: Codable {
+public class BoneSpec: Codable {
     private var _bones: [BoneItem]
     lazy var bones: [String: BoneItem] = {
         return _bones.reduce([:], { a, b in

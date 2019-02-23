@@ -9,10 +9,30 @@ import Foundation
 import Files
 
 public protocol Plugin: class {
-    func finalize(bone: Bone)
+    
     static func getInstance() -> Plugin
 }
-extension Plugin {
+
+public struct BonePluginContext {
+    public let boneSpec: BoneSpec?
+    public let currentBone: BoneItem?
+    public let context: [String: Any]
+    init(boneSpec: BoneSpec? = nil, currentBone: BoneItem? = nil, context:[String: Any] = [:]) {
+        self.boneSpec = boneSpec
+        self.currentBone = currentBone
+        self.context = context
+    }
+}
+
+public protocol BonePlugin: Plugin {
+    func finalize(context: BonePluginContext)
+}
+
+
+struct PluginManager {
+    static func bones() -> [BonePlugin] {
+        return (try? all().compactMap {$0 as? BonePlugin}) ?? []
+    }
     static func all() throws -> [Plugin] {
         let path = "~/.murray/Plugins"
         guard let folder = try? Folder(path: path) else {
@@ -23,7 +43,6 @@ extension Plugin {
             .filter { $0.extension == "framework" }
             .compactMap { Bundle(path: $0.path)?.executablePath }
             .compactMap { LoadPlugin(dylib: $0).getInstance() }
-        
     }
 }
 func LoadPlugin(dylib: String) -> Plugin.Type {

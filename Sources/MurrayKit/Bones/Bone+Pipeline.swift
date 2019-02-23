@@ -149,6 +149,11 @@ extension Bone {
                     }
                 }
                 
+                let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: bone, context: context )
+                PluginManager.bones().forEach {
+                    $0.finalize(context: pluginContext)
+                }
+                
                 if bone.targetNames.count > 0 {
                     let projectName = fs.currentFolder.subfolders
                         .filter ({ $0.name.contains(".xcodeproj") })
