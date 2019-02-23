@@ -25,7 +25,7 @@ extension Bone {
 
         let lists = try Bone.bones()
 
-        let tuples:[(list: BoneSpec, bone: BoneItem)] = try lists
+        let tuples:[(list: BoneSpec, bone: BoneItem)] = lists
             .filter { self.listName.count == 0 || $0.name == self.listName }
             .compactMap { list in
                 if let rootBone = list.bones[self.boneName] {
