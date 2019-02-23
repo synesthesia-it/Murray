@@ -9,7 +9,9 @@ import Foundation
 import Files
 
 open class Plugin {
-    
+    public init() {
+        
+    }
     open func finalize(bone: Bone) {
         
     }
