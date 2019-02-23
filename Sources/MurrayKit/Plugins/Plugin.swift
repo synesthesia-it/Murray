@@ -10,7 +10,7 @@ import Files
 
 public protocol Plugin: class {
     func finalize(bone: Bone)
-    func getInstance() -> Plugin
+    static func getInstance() -> Plugin
 }
 extension Plugin {
     static func all() throws -> [Plugin] {
@@ -26,7 +26,7 @@ extension Plugin {
         
     }
 }
-func LoadPlugin(dylib: String) -> Plugin {
+func LoadPlugin(dylib: String) -> Plugin.Type {
     guard let handle = dlopen(dylib, RTLD_NOW) else {
         fatalError("Could not open \(dylib) \(String(cString: dlerror()))")
     }
@@ -37,7 +37,7 @@ func LoadPlugin(dylib: String) -> Plugin {
     
     let replacement = unsafeBitCast(principalClass,
                                     to: (@convention (c) () -> UnsafeRawPointer).self)
-    return unsafeBitCast(replacement(), to: Plugin.self)
+    return unsafeBitCast(replacement(), to: Plugin.Type.self)
 }
 
 
