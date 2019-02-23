@@ -10,21 +10,21 @@ import Files
 import ShellOut
 
 extension Bone {
-
+    
     public func run() throws {
         let fs = FileSystem()
-
+        
         guard var bonesFolder = try? fs.currentFolder.subfolder(named: Bone.murrayTemplatesFolderName) else {
             throw Error.missingSetup
         }
         let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
-
+        
         FileManager.default.createFile(atPath: scriptPath, contents: nil, attributes: nil)
         let script = try File(path: scriptPath, using: FileManager.default)
         try script.write(string: Bone.rubyScript)
-
+        
         let lists = try Bone.bones()
-
+        
         let tuples:[(list: BoneSpec, bone: BoneItem)] = lists
             .filter { self.listName.count == 0 || $0.name == self.listName }
             .compactMap { list in
@@ -40,31 +40,31 @@ extension Bone {
         if tuples.count != 1 {
             throw Error.multipleBones
         }
-//            .reduce(nil) { acc, list in
-//                if acc != nil { return acc }
-//                if let rootBone = list.bones[boneName] {
-//                    return (list, rootBone)
-//                } else {
-//                    return nil
-//                }
-//        }
-
+        //            .reduce(nil) { acc, list in
+        //                if acc != nil { return acc }
+        //                if let rootBone = list.bones[boneName] {
+        //                    return (list, rootBone)
+        //                } else {
+        //                    return nil
+        //                }
+        //        }
+        
         let boneList = root.list
         let rootBone = root.bone
-
+        
         if boneList.isLocal {
             guard let localFolder = try? fs.currentFolder.subfolder(named: Bone.murrayLocalTemplatesFolderName) else {
                 throw Error.missingLocalSubfolder
             }
             bonesFolder = localFolder
         }
-
+        
         Logger.log(bonesFolder.path, level: .verbose)
         guard
             let templatesFolder = try? bonesFolder.subfolder(named: boneList.name).subfolder(atPath: boneList.sourcesBaseFolder) else {
                 throw Error.missingSubfolder
         }
-
+        
         var context: [String: Any] = self.context
         //TODO convert inputstring into dictionary
         if let skeleton = try? SkeletonSpec.parse(from: fs.currentFolder) {
@@ -94,7 +94,7 @@ extension Bone {
             guard let containingFolder = sourcesFolder else {
                 throw Error.missingSubfolder
             }
-
+            
             guard let finalFolder =
                 bone.createSubfolder == false ? containingFolder :
                     (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
@@ -104,7 +104,7 @@ extension Bone {
             
             try bone.files.forEach { path in
                 Logger.log(templatesFolder.path + "/" + path, level: .verbose)
-
+                
                 guard let templateFile = try? templatesFolder.file(named: path) else {
                     throw Error.missingFile
                 }
@@ -125,12 +125,12 @@ extension Bone {
                     
                     let template = FileTemplate(fileContents: string, context: context)
                     let rendered = try template.render()
-//                    let innerPlaceholder = "___\(placeholder)Placeholder___"
-//                    let innerPlaceholderLowercased = "___\(placeholder)PlaceholderFirstLowercased___"
-//                    string = string
-//                        .replacingOccurrences(of: innerPlaceholder, with: name)
-//                        .replacingOccurrences(of: innerPlaceholderLowercased, with: name.firstLowercased())
-//                    Logger.log("Writing file", level: .verbose)
+                    //                    let innerPlaceholder = "___\(placeholder)Placeholder___"
+                    //                    let innerPlaceholderLowercased = "___\(placeholder)PlaceholderFirstLowercased___"
+                    //                    string = string
+                    //                        .replacingOccurrences(of: innerPlaceholder, with: name)
+                    //                        .replacingOccurrences(of: innerPlaceholderLowercased, with: name.firstLowercased())
+                    //                    Logger.log("Writing file", level: .verbose)
                     try file.write(string: rendered)
                 }
                 Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
@@ -161,7 +161,7 @@ extension Bone {
                     Logger.log("Editing project \"\(projectName ?? "")\"", level: .verbose)
                     if let projectName = projectName,
                         bone.targetNames.count > 0 {
-
+                        
                         let args = [
                             scriptPath,
                             projectName,
@@ -180,7 +180,7 @@ extension Bone {
         try bone.subBones
             .filter { bone.name != $0 }
             .compactMap {
-            boneList.bones[$0]
+                boneList.bones[$0]
             }.forEach {
                 try self.createSubBone(boneList: boneList, bone: $0, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
         }
