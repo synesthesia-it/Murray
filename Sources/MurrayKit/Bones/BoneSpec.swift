@@ -85,7 +85,6 @@ public class BoneItem: Codable {
     init(name: String, files: [String]) {
         self.name = name
         self.files = files.map { name + "/" + $0 }
-        self.targetNames = []
         self.createSubfolder = true
         self.placeholder = "Bone"
         self.folders = []
@@ -107,7 +106,7 @@ public class BoneReplace: Codable {
 }
 
 
-extension Optional {
+public extension Optional {
     public func resolve(with error: @autoclosure () -> Error) throws -> Wrapped {
         switch self {
         case .none: throw error()
