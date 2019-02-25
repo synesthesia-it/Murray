@@ -9,27 +9,27 @@ import Foundation
 import Rainbow
 
 public class BoneItem: Codable {
-    var name = ""
+    public var name = ""
 
-    var description: String {
+    public var description: String {
         get { return _description ?? "" }
         set { _description = newValue}
     }
-    var files: [String] {
+    public var files: [String] {
         get {return _files ?? [] }
         set { _files = newValue }
     }
-    var subBones: [String] {
+    public var subBones: [String] {
         get { return _subBones ?? [] }
         set { _subBones = newValue }
     }
 
-    var folders: [String] {
+    public var folders: [String] {
         get {return _folderPath?.components(separatedBy: "/") ?? [] }
         set { _folderPath = newValue.joined(separator: "/")}
     }
 
-    var placeholder: String {
+    public var placeholder: String {
         get { return _placeholder ?? "Bone" }
         set { _placeholder = newValue }
     }
@@ -37,16 +37,16 @@ public class BoneItem: Codable {
         get {return _targetNames ?? [] }
         set { _targetNames = newValue }
     }
-    var createSubfolder: Bool {
+    public var createSubfolder: Bool {
         get { return _createSubfolder ?? true }
         set { _createSubfolder = newValue }
     }
-    var placeholderReplaceRule: String {
+    public var placeholderReplaceRule: String {
         get { return _placeholderReplaceRule ?? "{{name}}" }
         set { _placeholderReplaceRule = newValue }
     }
     
-    var otherFilesRules: [BoneReplace] {
+    public var otherFilesRules: [BoneReplace] {
         get { return _otherFilesRules ?? [] }
         set { _otherFilesRules = newValue }
     }
@@ -86,20 +86,20 @@ public class BoneItem: Codable {
     }
 }
 
-class BoneReplace: Codable {
+public class BoneReplace: Codable {
     enum CodingKeys: String, CodingKey {
         case filePath
         case placeholder
         case text
     }
-    var filePath: String
-    var placeholder: String
-    var text: String
+    public var filePath: String
+    public var placeholder: String
+    public var text: String
 }
 
 public class BoneSpec: Codable {
     private var _bones: [BoneItem]
-    lazy var bones: [String: BoneItem] = {
+    public lazy var bones: [String: BoneItem] = {
         return _bones.reduce([:], { a, b in
             var acc = a
             acc[b.name] = b
@@ -109,10 +109,10 @@ public class BoneSpec: Codable {
     func append(_ boneItem: BoneItem) {
         _bones = _bones + [boneItem]
     }
-    var name: String = ""
-    var sourcesBaseFolder: String = ""
+    public var name: String = ""
+    public var sourcesBaseFolder: String = ""
     private var destinationBaseFolder: String = "Sources"
-    var folders: [String] {
+    public var folders: [String] {
         get {
             return destinationBaseFolder.components(separatedBy: "/")
 

@@ -17,11 +17,7 @@ extension Bone {
         guard var bonesFolder = try? fs.currentFolder.subfolder(named: Bone.murrayTemplatesFolderName) else {
             throw Error.missingSetup
         }
-        let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
-        
-        FileManager.default.createFile(atPath: scriptPath, contents: nil, attributes: nil)
-        let script = try File(path: scriptPath, using: FileManager.default)
-        try script.write(string: Bone.rubyScript)
+
         
         let lists = try Bone.bones()
         
@@ -74,15 +70,20 @@ extension Bone {
                 }
             }
         }
+        let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: nil, context: context )
+        PluginManager.initializeBones(context: pluginContext)
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
+        PluginManager.finalizeBones(context: pluginContext)
     }
     
     private func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context: [String: Any]) throws {
         var context = context
         context["name"] = context["name"] ?? name
-        
+         let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: bone, context: context )
         Logger.log("Starting \(bone.name) bone", level: .verbose)
+       
         if bone.files.count > 0 {
+            PluginManager.beforeReplace(context: pluginContext)
             let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
             let subfolders = boneList.folders + bone.folders
             Logger.log("Subfolders: \(subfolders)", level: .verbose)
@@ -149,31 +150,9 @@ extension Bone {
                     }
                 }
                 
-                let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: bone, context: context )
-                PluginManager.bones().forEach {
-                    $0.finalize(context: pluginContext)
-                }
-                
-                if bone.targetNames.count > 0 {
-                    let projectName = fs.currentFolder.subfolders
-                        .filter ({ $0.name.contains(".xcodeproj") })
-                        .map ({ $0.nameExcludingExtension }).first
-                    Logger.log("Editing project \"\(projectName ?? "")\"", level: .verbose)
-                    if let projectName = projectName,
-                        bone.targetNames.count > 0 {
-                        
-                        let args = [
-                            scriptPath,
-                            projectName,
-                            file.path,
-                            "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap { $0 })).filter {$0.count > 0}.joined(separator: "|"))\"",
-                            "\"\((bone.targetNames).joined(separator: "|"))\""
-                        ]
-                        Logger.log("Updating xcodeproj with arguments: \(args)", level: .verbose)
-                        try shellOut(to: "ruby",
-                                     arguments: args)
-                    }
-                }
+               
+                PluginManager.afterReplace(context: pluginContext)
+
             }
         }
         Logger.log("Parsing \(bone.name) subBones", level: .verbose)
@@ -187,41 +166,3 @@ extension Bone {
     }
 }
 
-fileprivate extension Bone {
-    static let rubyScript = """
-
-        require 'xcodeproj'
-        project_name = ARGV[0]
-        file_path = ARGV[1]
-        destination_folder_string = ARGV[2]
-        targets_string = ARGV[3]
-
-        destination_folders = destination_folder_string.split('|')
-        target_names = targets_string.split('|')
-
-        project_path = "./#{project_name}.xcodeproj"
-        project = Xcodeproj::Project.open(project_path)
-
-        reference = project
-        path = "./"
-        destination_folders.each do |f|
-          path = path + "/" + f
-          if reference[f] != nil
-            reference = reference[f]
-          else
-            reference = reference.new_group(f, f, :group)
-          end
-        end
-
-        file = Xcodeproj::Project::Object::FileReferencesFactory.new_reference(reference , file_path , :group)
-
-        reference << file
-
-        project.targets
-                .select { |t| target_names.include?(t.name)}
-                .each do |t|
-                  t.source_build_phase.add_file_reference(file)
-                end
-        project.save
-    """
-}

@@ -25,6 +25,9 @@ public struct BonePluginContext {
 }
 
 public protocol BonePlugin: Plugin {
+    func initialize(context: BonePluginContext)
+    func beforeReplace(context: BonePluginContext)
+    func afterReplace(context: BonePluginContext)
     func finalize(context: BonePluginContext)
 }
 
@@ -42,16 +45,31 @@ struct PluginManager {
         return folder.subfolders
             .filter { $0.extension == "framework" }
             .compactMap { Bundle(path: $0.path)?.executablePath }
-            .compactMap { LoadPlugin(dylib: $0).getInstance() }
+            .compactMap { LoadPlugin(dylib: $0)?.getInstance() }
     }
 }
-func LoadPlugin(dylib: String) -> Plugin.Type {
+
+extension PluginManager {
+    static func initializeBones(context: BonePluginContext) {
+        bones().forEach { $0.initialize(context: context) }
+    }
+    static func beforeReplace(context: BonePluginContext) {
+        bones().forEach { $0.beforeReplace(context: context) }
+    }
+    static func afterReplace(context: BonePluginContext) {
+        bones().forEach { $0.afterReplace(context: context) }
+    }
+    static func finalizeBones(context: BonePluginContext) {
+        bones().forEach { $0.finalize(context: context) }
+    }
+}
+func LoadPlugin(dylib: String) -> Plugin.Type? {
     guard let handle = dlopen(dylib, RTLD_NOW) else {
-        fatalError("Could not open \(dylib) \(String(cString: dlerror()))")
+        return nil
     }
     
     guard let principalClass = dlsym(handle, "mainClass") else {
-        fatalError("Could not locate principalClass function")
+        return nil
     }
     
     let replacement = unsafeBitCast(principalClass,

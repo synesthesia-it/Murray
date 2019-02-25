@@ -18,8 +18,9 @@ class PluginsSpec: QuickSpec {
     override func spec() {
         
         it("test") {
-            try? Plugin.all().forEach {
-                $0.finalize(bone: try! Bone(boneName: "test", mainPlaceholder: "test", context: [:]))
+            PluginManager.bones()
+                .forEach { plugin in
+                    plugin.finalize(context: BonePluginContext(boneSpec: nil, currentBone: nil, context: [:]))
             }
         }
     }
