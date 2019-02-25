@@ -26,8 +26,8 @@ public struct BonePluginContext {
 
 public protocol BonePlugin: Plugin {
     func initialize(context: BonePluginContext)
-    func beforeReplace(context: BonePluginContext)
-    func afterReplace(context: BonePluginContext)
+    func beforeReplace(context: BonePluginContext, file: File)
+    func afterReplace(context: BonePluginContext, file: File)
     func finalize(context: BonePluginContext)
 }
 
@@ -53,11 +53,11 @@ extension PluginManager {
     static func initializeBones(context: BonePluginContext) {
         bones().forEach { $0.initialize(context: context) }
     }
-    static func beforeReplace(context: BonePluginContext) {
-        bones().forEach { $0.beforeReplace(context: context) }
+    static func beforeReplace(context: BonePluginContext, file: File) {
+        bones().forEach { $0.beforeReplace(context: context, file: file) }
     }
-    static func afterReplace(context: BonePluginContext) {
-        bones().forEach { $0.afterReplace(context: context) }
+    static func afterReplace(context: BonePluginContext, file: File) {
+        bones().forEach { $0.afterReplace(context: context, file: file) }
     }
     static func finalizeBones(context: BonePluginContext) {
         bones().forEach { $0.finalize(context: context) }

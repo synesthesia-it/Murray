@@ -83,7 +83,7 @@ extension Bone {
         Logger.log("Starting \(bone.name) bone", level: .verbose)
        
         if bone.files.count > 0 {
-            PluginManager.beforeReplace(context: pluginContext)
+            
             let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
             let subfolders = boneList.folders + bone.folders
             Logger.log("Subfolders: \(subfolders)", level: .verbose)
@@ -114,6 +114,7 @@ extension Bone {
                     throw Error.missingFile
                 }
                 Logger.log("Renaming", level: .verbose)
+                PluginManager.beforeReplace(context: pluginContext, file: file)
                 let placeholder = bone.placeholder
                 if placeholder.count > 0 {
                     if let filename = path.split(separator: "/").last {
@@ -151,7 +152,7 @@ extension Bone {
                 }
                 
                
-                PluginManager.afterReplace(context: pluginContext)
+                PluginManager.afterReplace(context: pluginContext, file: file)
 
             }
         }
