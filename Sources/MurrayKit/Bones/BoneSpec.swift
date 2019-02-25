@@ -122,6 +122,8 @@ public extension Optional {
     }
 }
 
+
+
 public enum JSONValue: Codable {
     public func encode(to encoder: Encoder) throws {
         
@@ -133,6 +135,17 @@ public enum JSONValue: Codable {
     case bool(Bool)
     case object([String: JSONValue])
     case array([JSONValue])
+    
+    public func unwrap<T>() -> T? {
+        switch self {
+        case .string(let s): return s as? T
+        case .int(let s): return s as? T
+        case .double(let s): return s as? T
+        case .bool(let s): return s as? T
+        case .object(let obj): return obj as? T
+        case .array(let a): return a as? T
+        }
+    }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
