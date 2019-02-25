@@ -70,7 +70,7 @@ extension Bone {
                 }
             }
         }
-        let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: nil, context: context )
+        let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: nil, name: name, context: context )
         PluginManager.initializeBones(context: pluginContext)
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
         PluginManager.finalizeBones(context: pluginContext)
@@ -79,12 +79,11 @@ extension Bone {
     private func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context: [String: Any]) throws {
         var context = context
         context["name"] = context["name"] ?? name
-         let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: bone, context: context )
+        let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: bone, name: name, context: context )
         Logger.log("Starting \(bone.name) bone", level: .verbose)
        
         if bone.files.count > 0 {
             
-            let scriptPath = "\(Bone.murrayTemplatesFolderName)/script.rb"
             let subfolders = boneList.folders + bone.folders
             Logger.log("Subfolders: \(subfolders)", level: .verbose)
             let sourcesFolder: Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in

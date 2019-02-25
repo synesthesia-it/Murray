@@ -16,11 +16,13 @@ public protocol Plugin: class {
 public struct BonePluginContext {
     public let boneSpec: BoneSpec?
     public let currentBone: BoneItem?
+    public let name: String?
     public let context: [String: Any]
-    init(boneSpec: BoneSpec? = nil, currentBone: BoneItem? = nil, context:[String: Any] = [:]) {
+    init(boneSpec: BoneSpec? = nil, currentBone: BoneItem? = nil,name: String? = nil, context:[String: Any] = [:]) {
         self.boneSpec = boneSpec
         self.currentBone = currentBone
         self.context = context
+        self.name = name
     }
 }
 

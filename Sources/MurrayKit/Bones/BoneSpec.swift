@@ -33,10 +33,10 @@ public class BoneItem: Codable {
         get { return _placeholder ?? "Bone" }
         set { _placeholder = newValue }
     }
-    var targetNames: [String] {
-        get {return _targetNames ?? [] }
-        set { _targetNames = newValue }
-    }
+//    var targetNames: [String] {
+//        get {return _targetNames ?? [] }
+//        set { _targetNames = newValue }
+//    }
     public var createSubfolder: Bool {
         get { return _createSubfolder ?? true }
         set { _createSubfolder = newValue }
@@ -63,7 +63,7 @@ public class BoneItem: Codable {
     private var _folderPath: String?
     private var _description: String?
     private var _placeholder: String?
-    private var _targetNames: [String]?
+//    private var _targetNames: [String]?
     private var _placeholderReplaceRule: String?
     
     private var _pluginData: JSONValue?
@@ -78,7 +78,7 @@ public class BoneItem: Codable {
         case _placeholderReplaceRule = "placeholderReplaceRule"
         case _placeholder = "placeholder"
         case _description = "description"
-        case _targetNames = "targets"
+//        case _targetNames = "targets"
         case _createSubfolder = "createSubfolder"
     }
 
@@ -108,7 +108,7 @@ public class BoneReplace: Codable {
 
 
 extension Optional {
-    func resolve(with error: @autoclosure () -> Error) throws -> Wrapped {
+    public func resolve(with error: @autoclosure () -> Error) throws -> Wrapped {
         switch self {
         case .none: throw error()
         case .some(let wrapped): return wrapped
