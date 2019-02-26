@@ -11,7 +11,7 @@ import Files
 open class Plugin {
     open var pluginName: String { return "" }
     public init() {}
-    open static func getInstance() -> Plugin { return Plugin() }
+    open class func getInstance() -> Plugin { return Plugin() }
 }
 
 public struct BonePluginContext {
