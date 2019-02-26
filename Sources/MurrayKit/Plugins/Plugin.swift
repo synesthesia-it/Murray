@@ -41,9 +41,11 @@ struct PluginManager {
     }
     static func all() throws -> [Plugin] {
         let path = "~/.murray/Plugins"
+        Logger.log("Exploring \(path), looking for plugins", level: .verbose, tag: nil)
         guard let folder = try? Folder(path: path) else {
             throw PluginError.pluginNotFound
         }
+        
 //        return []
         return folder.subfolders
             .filter { $0.extension == "framework" }
@@ -67,17 +69,22 @@ extension PluginManager {
     }
 }
 func LoadPlugin(dylib: String) -> Plugin.Type? {
+    Logger.log("Trying to load \(dylib)", level: .verbose, tag: nil)
     guard let handle = dlopen(dylib, RTLD_NOW) else {
+        Logger.log("Failed to load \(dylib)", level: .verbose, tag: nil)
         return nil
     }
     
     guard let principalClass = dlsym(handle, "mainClass") else {
+         Logger.log("Failed to load main class of \(dylib)", level: .verbose, tag: nil)
         return nil
     }
     
     let replacement = unsafeBitCast(principalClass,
                                     to: (@convention (c) () -> UnsafeRawPointer).self)
-    return unsafeBitCast(replacement(), to: Plugin.Type.self)
+    let cast =  unsafeBitCast(replacement(), to: Plugin.Type.self)
+     Logger.log("Successfully loaded \(dylib) as \(cast)", level: .verbose, tag: nil)
+    return cast
 }
 
 
