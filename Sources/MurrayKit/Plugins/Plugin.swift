@@ -39,6 +39,11 @@ struct PluginManager {
     static func bones() throws -> [Plugin] {
         return try all()
     }
+    
+    static func local() -> [Plugin] {
+        return [XcodePlugin.getInstance()]
+    }
+    
     static func all() throws -> [Plugin] {
         let path = "~/.murray/Plugins"
         Logger.log("Exploring \(path), looking for plugins", level: .verbose, tag: nil)
@@ -52,6 +57,7 @@ struct PluginManager {
             .compactMap { $0.path }
             //.compactMap { Bundle(path: $0.path)?.executablePath }
             .compactMap { LoadPlugin(dylib: $0)?.getInstance() }
+        + local()
     }
 }
 
