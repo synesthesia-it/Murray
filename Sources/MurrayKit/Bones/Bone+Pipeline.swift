@@ -71,9 +71,9 @@ extension Bone {
             }
         }
         let pluginContext = BonePluginContext(boneSpec: boneList, currentBone: nil, name: name, context: context )
-        PluginManager.initializeBones(context: pluginContext)
+        try PluginManager.initializeBones(context: pluginContext)
         try self.createSubBone(boneList: boneList, bone: rootBone, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
-        PluginManager.finalizeBones(context: pluginContext)
+        try PluginManager.finalizeBones(context: pluginContext)
     }
     
     private func createSubBone(boneList: BoneSpec, bone: BoneItem, templatesFolder: Folder, name: String, fs: FileSystem, context: [String: Any]) throws {
@@ -113,7 +113,7 @@ extension Bone {
                     throw Error.missingFile
                 }
                 Logger.log("Renaming", level: .verbose)
-                PluginManager.beforeReplace(context: pluginContext, file: file)
+                try PluginManager.beforeReplace(context: pluginContext, file: file)
                 let placeholder = bone.placeholder
                 if placeholder.count > 0 {
                     if let filename = path.split(separator: "/").last {
@@ -151,7 +151,7 @@ extension Bone {
                 }
                 
                
-                PluginManager.afterReplace(context: pluginContext, file: file)
+                try PluginManager.afterReplace(context: pluginContext, file: file)
 
             }
         }
