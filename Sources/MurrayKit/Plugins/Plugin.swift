@@ -12,6 +12,11 @@ open class Plugin {
     open var pluginName: String { return "" }
     public init() {}
     open class func getInstance() -> Plugin { return Plugin() }
+    
+    open func initializeBones(context: BonePluginContext) throws {}
+    open func beforeReplace(context: BonePluginContext, file: File) throws {}
+    open func afterReplace(context: BonePluginContext, file: File) throws {}
+    open func finalizeBones(context: BonePluginContext) throws {}
 }
 
 public struct BonePluginContext {
@@ -27,17 +32,12 @@ public struct BonePluginContext {
     }
 }
 
-public protocol BonePlugin {
-    func initializeBones(context: BonePluginContext) throws
-    func beforeReplace(context: BonePluginContext, file: File) throws
-    func afterReplace(context: BonePluginContext, file: File) throws
-    func finalizeBones(context: BonePluginContext) throws
-}
+
 
 
 struct PluginManager {
-    static func bones() -> [BonePlugin] {
-        return (try? all().compactMap {$0 as? BonePlugin}) ?? []
+    static func bones() throws -> [Plugin] {
+        return try all()
     }
     static func all() throws -> [Plugin] {
         let path = "~/.murray/Plugins"
@@ -57,7 +57,9 @@ struct PluginManager {
 
 extension PluginManager {
     static func initializeBones(context: BonePluginContext) throws {
-       try bones().forEach { try $0.initializeBones(context: context) }
+       try bones().forEach {
+        Logger.log("Initializing \($0.pluginName)", level: .verbose, tag: nil)
+        try $0.initializeBones(context: context) }
     }
     static func beforeReplace(context: BonePluginContext, file: File) throws {
        try bones().forEach { try $0.beforeReplace(context: context, file: file) }
