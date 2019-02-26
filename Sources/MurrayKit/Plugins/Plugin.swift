@@ -8,9 +8,10 @@
 import Foundation
 import Files
 
-public protocol Plugin: class {
-    var pluginName: String { get }
-    static func getInstance() -> Plugin
+public class Plugin {
+    public var pluginName: String { return "" }
+    public init() {}
+    public static func getInstance() -> Plugin { return Plugin() }
 }
 
 public struct BonePluginContext {
@@ -26,11 +27,11 @@ public struct BonePluginContext {
     }
 }
 
-public protocol BonePlugin: Plugin {
-    func initialize(context: BonePluginContext) throws
+public protocol BonePlugin {
+    func initializeBones(context: BonePluginContext) throws
     func beforeReplace(context: BonePluginContext, file: File) throws
     func afterReplace(context: BonePluginContext, file: File) throws
-    func finalize(context: BonePluginContext) throws
+    func finalizeBones(context: BonePluginContext) throws
 }
 
 
@@ -53,7 +54,7 @@ struct PluginManager {
 
 extension PluginManager {
     static func initializeBones(context: BonePluginContext) throws {
-       try bones().forEach { try $0.initialize(context: context) }
+       try bones().forEach { try $0.initializeBones(context: context) }
     }
     static func beforeReplace(context: BonePluginContext, file: File) throws {
        try bones().forEach { try $0.beforeReplace(context: context, file: file) }
@@ -62,7 +63,7 @@ extension PluginManager {
        try bones().forEach { try $0.afterReplace(context: context, file: file) }
     }
     static func finalizeBones(context: BonePluginContext) throws {
-       try bones().forEach { try $0.finalize(context: context) }
+       try bones().forEach { try $0.finalizeBones(context: context) }
     }
 }
 func LoadPlugin(dylib: String) -> Plugin.Type? {

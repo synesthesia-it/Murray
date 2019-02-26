@@ -18,10 +18,11 @@ class PluginsSpec: QuickSpec {
     override func spec() {
         
         it("test") {
-            PluginManager.bones()
-                .forEach { plugin in
-                    plugin.finalize(context: BonePluginContext(boneSpec: nil, currentBone: nil, context: [:]))
-            }
+            expect { try PluginManager.initializeBones(context: BonePluginContext()) }.notTo(throwError())
+//            PluginManager.bones()
+//                .forEach { plugin in
+//                    try plugin.finalize(context: BonePluginContext(boneSpec: nil, currentBone: nil, context: [:]))
+//            }
         }
     }
 }
