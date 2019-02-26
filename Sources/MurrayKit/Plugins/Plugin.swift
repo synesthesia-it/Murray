@@ -8,10 +8,10 @@
 import Foundation
 import Files
 
-public class Plugin {
-    public var pluginName: String { return "" }
+open class Plugin {
+    open var pluginName: String { return "" }
     public init() {}
-    public static func getInstance() -> Plugin { return Plugin() }
+    open static func getInstance() -> Plugin { return Plugin() }
 }
 
 public struct BonePluginContext {
