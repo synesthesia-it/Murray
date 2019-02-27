@@ -21,7 +21,7 @@ extension Bone {
         try? FileManager.default.removeItem(atPath: murrayTemplatesFolderName)
 
         guard let folder = try? fs.createFolder(at: murrayTemplatesFolderName) else {
-            throw Error.existingFolder
+            throw Error.existingFolder("\(fs.currentFolder.path)/\(murrayTemplatesFolderName)")
         }
 
         let fileManager = FileManager.default
@@ -37,7 +37,7 @@ extension Bone {
 
             try DependencyManager.shared.cloneBones(from: repository)
             guard let boneFolder = folder.subfolders.first else {
-                throw Error.missingSubfolder
+                throw Error.missingSubfolder(folder.path)
             }
             //try? folder.subfolders.first?.moveContents(to: folder)
             _ = try BoneSpec.parse(from: boneFolder)

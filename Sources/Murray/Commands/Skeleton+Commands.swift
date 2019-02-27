@@ -25,7 +25,9 @@ extension Skeleton {
             
             $0.command(
             "scaffold",
-            Flag("verbose")) {
+            Flag("verbose"),
+            description: "Creates an empty Skeletonspec.json. To be used in projects *NOT* generated from a Skeleton template (example: already existing projects)."
+            ) {
                 verbose in
                 if verbose { Logger.logLevel = .verbose }
                 try Skeleton.scaffold()

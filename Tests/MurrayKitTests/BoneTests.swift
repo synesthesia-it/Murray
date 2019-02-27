@@ -188,7 +188,7 @@ class BoneSpec: QuickSpec {
                 it ("should error out if multiple boneSpecs are provided and boneName is not in keyPath format") {
                     let bone = try? Bone(boneName: "test", mainPlaceholder: "Test", context: [:])
                     expect(bone).notTo(beNil())
-                    expect { try bone!.run() }.to(throwError(Bone.Error.multipleBones))
+                    expect { try bone!.run() }.to(throwError(Bone.Error.multipleBones("",[])))
                 }
                 
                 it ("should replace occurrences in another files if provider in spec") {
