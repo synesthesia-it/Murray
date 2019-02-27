@@ -24,8 +24,10 @@ extension Bone {
             $0.command("list",Flag("verbose"), description: "Lists all bones in current setup."
                        ) { verbose in
                 if verbose { Logger.logLevel = .verbose }
+                        
+                Logger.log("Listing all bones:\n\n\n", level: .none)
                 try Bone.list().forEach {
-                    Logger.log("Spec detail: \($0)", level: .none)
+                    Logger.log($0 + "\n", level: .none)
                 }
             }
 
