@@ -11,8 +11,8 @@ import ShellOut
 
 public final class Bone {
     public typealias Context = [String: Any]
-    static let murrayTemplatesFolderName = ".murray"
-    static let murrayLocalTemplatesFolderName = "MurrayTemplates"
+    public static let murrayTemplatesFolderName = ".murray"
+    public static let murrayLocalTemplatesFolderName = "MurrayTemplates"
 
     var boneName: String
     var name: String
