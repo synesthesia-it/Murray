@@ -12,15 +12,15 @@ extension Bone {
 
         let fs = FileSystem()
         guard let bonesFolder = try? fs.currentFolder.createSubfolderIfNeeded(withName: murrayLocalTemplatesFolderName) else {
-            throw Error.missingSubfolder
+            throw Error.missingSubfolder(fs.currentFolder.path + "/" + murrayLocalTemplatesFolderName)
         }
 
         guard let listFolder = try? bonesFolder.createSubfolderIfNeeded(withName: listName) else {
-            throw Error.missingSubfolder
+            throw Error.missingSubfolder(bonesFolder.path + "/" + listName)
         }
 
         guard let spec = try? listFolder.createFileIfNeeded(withName: "Bonespec.json") else {
-            throw Error.missingBonespec
+            throw Error.missingBonespec(listFolder.path)
         }
         let list: BoneSpec
         if let data = try? spec.read() {
@@ -41,13 +41,12 @@ extension Bone {
 
         let bone = BoneItem(name: name, files: files)
         if list.bones[name] != nil {
-            //TODO existing bone
-            throw Error.existingFolder
+            throw Error.existingBone(name)
         }
         //        list.bones[name] = bone
         list.append(bone)
         guard let nameFolder = try? listFolder.createSubfolderIfNeeded(withName: name) else {
-            throw Error.missingSubfolder
+            throw Error.missingSubfolder(listFolder.path + "/" + name)
         }
 
         try files.forEach {
@@ -56,13 +55,13 @@ extension Bone {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         guard let jsonData = try? encoder.encode(list) else {
-            //TODO proper error
-            throw Error.missingBonespec
+            
+            throw Error.bonespecGeneration
         }
 
         guard let string = String(data: jsonData, encoding: .utf8) else {
-            //TODO proper erro
-            throw Error.missingBonespec
+            
+            throw Error.bonespecGeneration
         }
 
         try spec.write(string: string)

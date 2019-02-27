@@ -12,11 +12,11 @@ extension BoneSpec {
      static func parse(from folder: Folder) throws -> BoneSpec {
         Logger.log("Looking for Bonespec", level: .verbose)
         guard let spec = try? folder.file(named: "Bonespec.json") else {
-            throw Bone.Error.missingBonespec
+            throw Bone.Error.missingBonespec(folder.path)
         }
         Logger.log("Reading Bonespec", level: .verbose)
         guard let data = try? spec.read() else {
-            throw Bone.Error.missingBonespec
+            throw Bone.Error.invalidBonespec(spec.path)
         }
         Logger.log("Parsing Bonespec", level: .verbose)
 
@@ -28,7 +28,7 @@ extension BoneSpec {
             return list
         } catch let error {
             Logger.log(error.localizedDescription, level: .verbose)
-            throw Bone.Error.bonespecParsingError
+            throw Bone.Error.bonespecParsing(spec.path)
         }
     }
 }

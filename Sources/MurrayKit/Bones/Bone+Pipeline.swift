@@ -31,10 +31,10 @@ extension Bone {
                 }
         }
         guard let root = tuples.first else {
-            throw Error.unknownBone
+            throw Error.unknownBone(self.boneName)
         }
         if tuples.count != 1 {
-            throw Error.multipleBones
+            throw Error.multipleBones(self.boneName, tuples)
         }
         //            .reduce(nil) { acc, list in
         //                if acc != nil { return acc }
@@ -50,7 +50,7 @@ extension Bone {
         
         if boneList.isLocal {
             guard let localFolder = try? fs.currentFolder.subfolder(named: Bone.murrayLocalTemplatesFolderName) else {
-                throw Error.missingLocalSubfolder
+                throw Error.missingLocalSubfolder(fs.currentFolder.path + "/" + Bone.murrayLocalTemplatesFolderName)
             }
             bonesFolder = localFolder
         }
@@ -58,7 +58,7 @@ extension Bone {
         Logger.log(bonesFolder.path, level: .verbose)
         guard
             let templatesFolder = try? bonesFolder.subfolder(named: boneList.name).subfolder(atPath: boneList.sourcesBaseFolder) else {
-                throw Error.missingSubfolder
+                throw Error.missingSubfolder(bonesFolder.path + "/" + boneList.name + "/" + boneList.sourcesBaseFolder)
         }
         
         var context: [String: Any] = self.context
@@ -92,13 +92,13 @@ extension Bone {
             }
             Logger.log("SourcesFolder: \(sourcesFolder?.path ?? "unknown")", level: .verbose)
             guard let containingFolder = sourcesFolder else {
-                throw Error.missingSubfolder
+                throw Error.missingSubfolder("")
             }
             
             guard let finalFolder =
                 bone.createSubfolder == false ? containingFolder :
                     (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
-                        throw Error.missingSubfolder
+                        throw Error.missingSubfolder(containingFolder.path + "/" + name)
             }
             Logger.log("Parsing \(bone.name) files", level: .verbose)
             
@@ -106,11 +106,11 @@ extension Bone {
                 Logger.log(templatesFolder.path + "/" + path, level: .verbose)
                 
                 guard let templateFile = try? templatesFolder.file(named: path) else {
-                    throw Error.missingFile
+                    throw Error.missingFile(templatesFolder.path + "/" + path)
                 }
                 Logger.log("Moving to destination", level: .verbose)
                 guard let file = try? templateFile.copy(to: finalFolder) else {
-                    throw Error.missingFile
+                    throw Error.missingFile(finalFolder.path + "/" + templateFile.name)
                 }
                 Logger.log("Renaming", level: .verbose)
                 try PluginManager.beforeReplace(context: pluginContext, file: file)
@@ -122,16 +122,9 @@ extension Bone {
                         try file.rename(to: filename.replacingOccurrences(of: placeholder, with: resolvedName))
                     }
                     Logger.log("Reading file", level: .verbose)
-                    var string = try file.readAsString()
-                    
+                    let string = try file.readAsString()
                     let template = FileTemplate(fileContents: string, context: context)
                     let rendered = try template.render()
-                    //                    let innerPlaceholder = "___\(placeholder)Placeholder___"
-                    //                    let innerPlaceholderLowercased = "___\(placeholder)PlaceholderFirstLowercased___"
-                    //                    string = string
-                    //                        .replacingOccurrences(of: innerPlaceholder, with: name)
-                    //                        .replacingOccurrences(of: innerPlaceholderLowercased, with: name.firstLowercased())
-                    //                    Logger.log("Writing file", level: .verbose)
                     try file.write(string: rendered)
                 }
                 Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
