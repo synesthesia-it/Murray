@@ -6,7 +6,7 @@ Murray is a CLI written in Swift for skeleton-based software development.
 
 For instance, a classic HTML website always consists of pages with same `head` and `body`, filled with custom data in repeating structures.
 
-**Murray** purpose is to standardize any development pipeline in order to speed-up development, reduce unsafe copy-pasting from/to different projects and eventually give order in codebases  without focusing on a single development platform.
+**Murray**s purpose is to standardize any development pipeline in order to speed-up development, reduce unsafe copy-pasting from/to different projects and help complex projects to keep a well-defined internal structure.
 
 ## Key Features
 
@@ -100,7 +100,7 @@ alias murray='/opt/Murray/murray'
 
 # Usage
 
-Create a new skeleton app by cloning any remote repository with a `Skeletonspec.json` file in its root folder.
+- Create a new skeleton app by cloning any remote repository with a `Skeletonspec.json` file in its root folder.
 
 ```
 $ murray skeleton new CoolApp <your_remote_repo>
@@ -110,22 +110,27 @@ Next commands should all be used inside your freshly created project's directory
 (remind to `cd CoolApp` ;) )
 
 
-Create a Bonefile, containg one or more remote repositories with your Bones.
+Your Skeleton project must declare a `Skeletonspec.json` file in its root folder, containing a list of remote repositories containing **Bones**. 
 
 Example:
-```
-bone "https://github.com/synesthesia-it/Bone"
+```javascript
+...
+ remoteBones: ["https://github.com/synesthesia-it/Bones@develop"],
+ ...
 ```
 
-A bone is a set of file templates described by a `Bonespec.json`
+If you want to add Bones features to an already existing project, just create a `Skeletonspec.json` file in your root folder by using `murray skeleton scaffold` and edit it by adding one or more Bones repositories.
 
-Setup your project with
+- Setup your project with
 
 ```
 $ murray bone setup
 ```
 
-Install a Bone into your current project
+This will clone all bones repositories in a local folder. You can update them by calling same command again.
+
+
+- Install a Bone template into your current project
 
 ```
 $ murray bone new viewSection Product
@@ -135,7 +140,7 @@ In this particular case, a `viewSection` bone is created in your project by copy
 See the [Bones](https://github.com/synesthesia-it/Murray/wiki) wiki page for more details.
 
 
-List all templates available for current project
+- List all templates available for current project
 ```
 $ murray bone list
 ```
