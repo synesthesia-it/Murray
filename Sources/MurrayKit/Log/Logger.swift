@@ -46,8 +46,8 @@ public final class Logger {
         let string =
         """
         \([
-        [level.symbol, tag].compactMap {$0}.joined(separator: " "),
-        level.colorize(string: message)].compactMap { $0 }.joined(separator: ": ")
+        [level.symbol, tag].compactMap {$0}.filter { $0.count > 0 }.joined(separator: " "),
+        level.colorize(string: message)].compactMap { $0 }.filter { $0.count > 0 }.joined(separator: ": ")
         )
         """
         print (string)

@@ -25,7 +25,7 @@ extension Bone {
                        ) { verbose in
                 if verbose { Logger.logLevel = .verbose }
                         
-                Logger.log("Listing all bones:\n\n\n", level: .none)
+                Logger.log("Listing all bones:\n", level: .none)
                 try Bone.list().forEach {
                     Logger.log($0 + "\n", level: .none)
                 }
