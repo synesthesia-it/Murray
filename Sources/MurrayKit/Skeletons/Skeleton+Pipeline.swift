@@ -27,10 +27,10 @@ public final class Skeleton {
                 fileManager.changeCurrentDirectoryPath(defaultFolder)
             }
             if fs.currentFolder.containsSubfolder(named: projectPath) {
-                throw Error.existingFolder
+                throw Error.existingFolder(fs.currentFolder.path + "/" + projectPath)
             }
             guard let folder = try? fs.createFolder(at: projectPath) else {
-                throw Error.existingFolder
+                throw Error.existingFolder(fs.currentFolder.path + "/" + projectPath)
             }
 
             fileManager.changeCurrentDirectoryPath(folder.path)
