@@ -15,13 +15,16 @@ extension Bone {
             $0.command(
                 "setup",
             Option<String>("boneFile", default: "", description: "Project's Bonefile. Currently not implemented"),
-            Flag("verbose")) {
+            Flag("verbose"),
+            description: "Setup project to use bones cloned from repositories specified in Skeletonspec.json") {
                 _, verbose in
                 if verbose { Logger.logLevel = .verbose }
                 try Bone.setup()
             }
 
-            $0.command("list",Flag("verbose"), description: "Lists all bones in current setup."
+            $0.command("list",
+                       Flag("verbose"),
+                       description: "Lists all bones in current setup."
                        ) { verbose in
                 if verbose { Logger.logLevel = .verbose }
                         
@@ -32,10 +35,11 @@ extension Bone {
             }
 
             $0.command("scaffold",
-                       Argument<String>("boneName", description: ""),
-                       Argument<String>("filenames", description: "Filenames separated by | "),
-                       Option<String>("specName", default: "Custom", description: ""),
-                       Flag("verbose")
+                       Argument<String>("boneName", description: "Name of custom bone that will be created and added to Bonespec.json"),
+                       Argument<String>("filenames", description: "Filenames separated by `|` (pipe). Empty files will be created."),
+                       Option<String>("specName", default: "Custom", description: "Name of bonespec. If a bonespec with same name is found, it will be updated, otherwise it will be created."),
+                       Flag("verbose"),
+                       description: "Creates or updates a custom Bonespec"
             ) { name, files, listName, verbose in
                 if verbose { Logger.logLevel = .verbose }
                 try Bone.newBone(listName: listName, name: name, files: files.components(separatedBy: "|"))
@@ -45,8 +49,9 @@ extension Bone {
                        Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
                        Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),
                        Option<String>("context", default: "{}", description: "A JSON string with further context information used by Stencil template"),
-                       VariadicOption<String>("param", default: [""], flag: Character("p"), description: ""),
-                       Flag("verbose")
+                       VariadicOption<String>("param", default: [""], flag: Character("p"), description: "Custom parameters that will be resolved in Stencil templates"),
+                       Flag("verbose"),
+                       description: "Resolves a bone template with provided parameters and installs it in target path (according to Bonespec.json)"
                        
             ) { boneName, mainPlaceholder, contextString, params, verbose in
 
