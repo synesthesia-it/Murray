@@ -56,9 +56,15 @@ public class BoneItem: Codable {
         set { _pluginData = newValue}
     }
     
+    public var isPrivate: Bool {
+        get { return _isPrivate ?? false }
+        set { _isPrivate = newValue }
+    }
+    
     private var _otherFilesRules: [BoneReplace]?
     private var _createSubfolder: Bool?
     private var _subBones: [String]?
+    private var _isPrivate: Bool?
     private var _files: [String]?
     private var _folderPath: String?
     private var _description: String?
@@ -78,6 +84,7 @@ public class BoneItem: Codable {
         case _placeholderReplaceRule = "placeholderReplaceRule"
         case _placeholder = "placeholder"
         case _description = "description"
+        case _isPrivate = "isPrivate"
 //        case _targetNames = "targets"
         case _createSubfolder = "createSubfolder"
     }
@@ -191,6 +198,7 @@ public class BoneSpec: Codable {
 
     var printableDescription: String {
         return self._bones
+            .filter { !$0.isPrivate }
             .map { ["\(self.name.blue).\($0.name.green)", $0.description]
                 .compactMap {$0}
                 .joined(separator: " - ") }
