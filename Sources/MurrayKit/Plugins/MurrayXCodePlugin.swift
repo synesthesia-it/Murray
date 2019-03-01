@@ -42,7 +42,7 @@ class XcodePlugin: Plugin {
             let boneList = context.boneSpec,
             let name = context.name ?? (context.context["name"] as? String)
             else {
-                 Logger.log("Invalid parameters", level: .error, tag: nil)
+                 Logger.log("Invalid parameters", level: .warning, tag: nil)
                 return
         }
         let fs = FileSystem()
@@ -67,7 +67,7 @@ class XcodePlugin: Plugin {
             }
         }
         else {
-            Logger.log("No target names found", level: .error, tag: nil)
+            Logger.log("No target names found", level: .warning, tag: nil)
         }
     }
     override class func getInstance() -> Plugin {

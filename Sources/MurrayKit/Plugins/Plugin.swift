@@ -48,7 +48,9 @@ struct PluginManager {
         let path = "~/.murray/Plugins"
         Logger.log("Exploring \(path), looking for plugins", level: .verbose, tag: nil)
         guard let folder = try? Folder(path: path) else {
-            throw PluginError.pluginNotFound
+            Logger.log("No plugins found in \(path)", level: .verbose, tag: nil)
+            return []
+//            throw PluginError.pluginNotFound
         }
         
 //        return []
