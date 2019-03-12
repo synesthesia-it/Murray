@@ -49,7 +49,7 @@ struct PluginManager {
         Logger.log("Exploring \(path), looking for plugins", level: .verbose, tag: nil)
         guard let folder = try? Folder(path: path) else {
             Logger.log("No plugins found in \(path)", level: .verbose, tag: nil)
-            return []
+            return local()
 //            throw PluginError.pluginNotFound
         }
         
