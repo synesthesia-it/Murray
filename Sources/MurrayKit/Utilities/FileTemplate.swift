@@ -11,12 +11,12 @@ import Stencil
 public final class FileTemplate {
     private var contents: String
     private var context: [String: Any]
-    init(fileContents: String, context: [String: Any]) {
+    public init(fileContents: String, context: [String: Any]) {
         self.contents = fileContents
         self.context = context
     }
 
-    func render() throws -> String {
+    public func render() throws -> String {
 
         let ext = Extension()
         ext.registerFilter("firstLowercase") { (value: Any?) in
