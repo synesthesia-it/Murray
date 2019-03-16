@@ -9,7 +9,7 @@ import Foundation
 import Files
 
 extension Bone {
-    static func remoteBones() throws -> [BoneSpec] {
+    public static func remoteBones() throws -> [BoneSpec] {
         let fs = FileSystem()
         guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayTemplatesFolderName) else {
             throw Error.missingSetup
@@ -19,7 +19,7 @@ extension Bone {
         }
     }
 
-    static func localBones() throws -> [BoneSpec]? {
+    public static func localBones() throws -> [BoneSpec]? {
         let fs = FileSystem()
         guard let bonesFolder = try? fs.currentFolder.subfolder(named: murrayLocalTemplatesFolderName) else {
             return nil
@@ -30,7 +30,7 @@ extension Bone {
             return spec
         }
     }
-    static func bones() throws -> [BoneSpec] {
+    public static func bones() throws -> [BoneSpec] {
         return try remoteBones() + (localBones() ?? [])
     }
     public static func list() throws -> [String] {

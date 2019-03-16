@@ -9,8 +9,27 @@ import Foundation
 import Files
 import ShellOut
 
+public extension BoneItem {
+    public func files(from folder: Folder) throws -> [File] {
+        return try files.map { path in
+            Logger.log(folder.path + "/" + path, level: .verbose)
+            
+            guard let templateFile = try? folder.file(named: path) else {
+                throw Bone.Error.missingFile(folder.path + "/" + path)
+            }
+            return templateFile
+        }
+        
+    }
+    public func resolve(file: File, context: [String: Any]) throws -> String {
+        let string = try file.readAsString()
+        let template = FileTemplate(fileContents: string, context: context)
+        return try template.render()
+    }
+}
+
 extension Bone {
-    
+
     public func run() throws {
         let fs = FileSystem()
         
@@ -102,12 +121,8 @@ extension Bone {
             }
             Logger.log("Parsing \(bone.name) files", level: .verbose)
             
-            try bone.files.forEach { path in
-                Logger.log(templatesFolder.path + "/" + path, level: .verbose)
+            try bone.files(from: templatesFolder).forEach { templateFile in
                 
-                guard let templateFile = try? templatesFolder.file(named: path) else {
-                    throw Error.missingFile(templatesFolder.path + "/" + path)
-                }
                 Logger.log("Moving to destination", level: .verbose)
                 guard let file = try? templateFile.copy(to: finalFolder) else {
                     throw Error.missingFile(finalFolder.path + "/" + templateFile.name)
@@ -116,22 +131,16 @@ extension Bone {
                 try PluginManager.beforeReplace(context: pluginContext, file: file)
                 let placeholder = bone.placeholder
                 if placeholder.count > 0 {
-                    if let filename = path.split(separator: "/").last {
+                    if let filename = templateFile.path.split(separator: "/").last {
                         let resolvedName = try FileTemplate(fileContents: bone.placeholderReplaceRule, context: ["name": name]).render()
-                        
                         try file.rename(to: filename.replacingOccurrences(of: placeholder, with: resolvedName))
                     }
                     Logger.log("Reading file", level: .verbose)
-                    let string = try file.readAsString()
-                    let template = FileTemplate(fileContents: string, context: context)
-                    let rendered = try template.render()
+                    let rendered = try bone.resolve(file: file, context: context)
                     try file.write(string: rendered)
                 }
                 Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
-                
-           
-                
-               
+
                 try PluginManager.afterReplace(context: pluginContext, file: file)
 
             }
