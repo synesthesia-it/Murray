@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/johnsundell/files.git",
         "state": {
           "branch": null,
-          "revision": "06f95bd1bf4f8d5f50bc6bb30b808c253acd4c88",
-          "version": "2.2.1"
+          "revision": "a84615f4558151fab52ac38df697ce2442991f93",
+          "version": "2.3.0"
         }
       },
       {
@@ -77,9 +77,9 @@
         "package": "Stencil",
         "repositoryURL": "https://github.com/stencilproject/Stencil.git",
         "state": {
-          "branch": null,
-          "revision": "0e9a78d6584e3812cd9c09494d5c7b483e8f533c",
-          "version": "0.13.1"
+          "branch": "master",
+          "revision": "6addc466814225dcccc6c5ee71e223ddc94537c0",
+          "version": null
         }
       }
     ]
