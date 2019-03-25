@@ -160,7 +160,7 @@ extension Bone {
                 text = rule.text
             }
             
-            if let file = try? fs.currentFolder.file(atPath: rule.filePath),
+            if let file = try? templatesFolder.file(atPath: rule.filePath),
                 let contents = try? file.readAsString(encoding: .utf8),
                 let resolved = try? FileTemplate(fileContents: text, context: context).render(){
                 
