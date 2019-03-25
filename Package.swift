@@ -33,7 +33,7 @@ let package = Package(
         ),
         .testTarget(
             name: "MurrayKitTests",
-            dependencies: ["MurrayKit", "Files", "Quick", "Nimble"]
+            dependencies: ["MurrayKit", "Files", "Quick", "Nimble", "Rainbow"]
         )
     ]
 )

@@ -106,10 +106,12 @@ public class BoneReplace: Codable {
         case filePath
         case placeholder
         case text
+        case fileTemplate
     }
     public var filePath: String
     public var placeholder: String
     public var text: String
+    public var fileTemplate: String?
 }
 
 

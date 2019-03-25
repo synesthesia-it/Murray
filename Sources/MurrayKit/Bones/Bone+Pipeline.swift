@@ -147,9 +147,22 @@ extension Bone {
         }
         bone.otherFilesRules.forEach { rule in
             Logger.log("Looking for file \(rule.filePath)", level: .verbose)
+            let text: String
+            if let path = rule.fileTemplate {
+                if let file = try? fs.currentFolder.file(atPath: path),
+                    let contents = try? file.readAsString(encoding: .utf8) {
+                    text = contents
+                } else {
+                     Logger.log("Unable to read file \(path), skipping", level: .verbose)
+                    return
+                }
+            } else {
+                text = rule.text
+            }
+            
             if let file = try? fs.currentFolder.file(atPath: rule.filePath),
                 let contents = try? file.readAsString(encoding: .utf8),
-                let resolved = try? FileTemplate(fileContents: rule.text, context: context).render(){
+                let resolved = try? FileTemplate(fileContents: text, context: context).render(){
                 
                 let newContents = contents.replacingOccurrences(of: rule.placeholder, with: resolved + rule.placeholder)
                 try? file.write(string: newContents)

@@ -8,6 +8,7 @@
 import Foundation
 import Quick
 import Nimble
+import Rainbow
 import Files
 
 @testable import MurrayKit
@@ -110,7 +111,7 @@ class BoneSpec: QuickSpec {
                     try! Bone.setup()
                 }
                 it("should should include everything") {
-                    expect { try! Bone.list() }.to(equal(["Bones.test - A test\n\nBones.testLowercased - A test"]))
+                    expect { try! Bone.list().map {Rainbow.extractModes(for: $0).text} }.to(equal(["Bones.test - A test\n\nBones.testLowercased - A test"]))
                 }
                     afterEach {
                         FileManager.default.changeCurrentDirectoryPath(defaultFolder)
@@ -126,7 +127,7 @@ class BoneSpec: QuickSpec {
                         try! Bone.setup()
                     }
                 it ("should namespace each bone in list if more than one bonespec is provided") {
-                    expect { try! Bone.list() }.to(equal(["Bones.test - A test\n\nBones.testLowercased - A test", "TestB.test - A test\n\nTestB.testLowercased - A test"]))
+                    expect { try! Bone.list().map {Rainbow.extractModes(for: $0).text} }.to(equal(["Bones.test - A test\n\nBones.testLowercased - A test", "TestB.test - A test\n\nTestB.testLowercased - A test"]))
                 }
                     afterEach {
                         FileManager.default.changeCurrentDirectoryPath(defaultFolder)
