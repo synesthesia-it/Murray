@@ -149,7 +149,7 @@ extension Bone {
             Logger.log("Looking for file \(rule.filePath)", level: .verbose)
             let text: String
             if let path = rule.fileTemplate {
-                if let file = try? fs.currentFolder.file(atPath: path),
+                if let file = try? templatesFolder.file(atPath: path),
                     let contents = try? file.readAsString(encoding: .utf8) {
                     text = contents
                 } else {
@@ -160,7 +160,7 @@ extension Bone {
                 text = rule.text
             }
             
-            if let file = try? templatesFolder.file(atPath: rule.filePath),
+            if let file = try? fs.currentFolder.file(atPath: rule.filePath),
                 let contents = try? file.readAsString(encoding: .utf8),
                 let resolved = try? FileTemplate(fileContents: text, context: context).render(){
                 
