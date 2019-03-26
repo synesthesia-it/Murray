@@ -54,11 +54,11 @@ class BoneSpec: QuickSpec {
                     expect { try fs.currentFolder.subfolder(named: ".murray")}.notTo(throwError())
 
                     let tests = try? fs.currentFolder.createSubfolder(named: "Tests")
-                    try? tests?.createSubfolder(named: "ModelLayerTests")
+                    ((try? tests?.createSubfolder(named: "ModelLayerTests")) as Folder??)
 
                     let sources = try? fs.currentFolder.createSubfolder(named: "Sources")
-                    let modelLayer = try? sources?.createSubfolder(named: "ModelLayer")
-                    try? modelLayer??.createSubfolder(named: "Models")
+                    let modelLayer = ((try? sources?.createSubfolder(named: "ModelLayer")) as Folder??)
+                    ((try? modelLayer??.createSubfolder(named: "Models")) as Folder??)
 
                     expect { try Bone(boneName: "modelWithTests", mainPlaceholder: "Test", context: [:]).run()
                     }.notTo(throwError())

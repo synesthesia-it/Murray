@@ -63,7 +63,7 @@ class SkeletonSpec: QuickSpec {
                     expect(projectFolder?.containsSubfolder(named: "MurrayProjectTest.xcodeproj")) == true
                     expect(projectFolder?.containsSubfolder(named: "UntouchedTestFolder")) == true
                     expect(projectFolder?.containsSubfolder(named: ".git")) == true
-                    let testFolder = try? projectFolder?.subfolder(named: "MurrayProjectTestTestFolder")
+                    let testFolder = ((try? projectFolder?.subfolder(named: "MurrayProjectTestTestFolder")) as Folder??)
                     expect(testFolder).notTo(beNil())
 
                     expect(testFolder??.containsFile(named: "MurrayProjectTestTestFile1.txt")) == true
