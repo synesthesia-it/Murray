@@ -3,7 +3,7 @@
 #
 REPONAME="Murray"
 
-function installTemplates {
+function installMurray {
 
 	cd $REPONAME
 	swift build -c release
@@ -15,4 +15,4 @@ function installTemplates {
 
 cd /tmp/
 rm -rf $REPONAME
-git clone https://github.com/synesthesia-it/Murray.git && installTemplates
+git clone https://github.com/synesthesia-it/Murray.git && installMurray
