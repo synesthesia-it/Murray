@@ -6,7 +6,7 @@ REPONAME="Murray"
 function installTemplates {
 
 	cd $REPONAME
-	swift build -c release -Xswiftc -static-stdlib
+	swift build -c release
 	cp -f .build/release/Murray /usr/local/bin/murray
 	cd ..
 	rm -rf $REPONAME
