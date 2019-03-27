@@ -71,6 +71,9 @@ See [Wiki](https://github.com/synesthesia-it/Murray/wiki) for more examples.
 ## MacOS
 
 #### Using *[Mint](https://github.com/yonaskolb/mint)*
+
+**WARNING** as of today (27/03/19) Mint is not working on Swift 5. 
+
 ```
 mint install synesthesia-it/Murray
 ```
