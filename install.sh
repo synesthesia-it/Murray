@@ -10,7 +10,7 @@ function installTemplates {
 	cp -f .build/release/Murray /usr/local/bin/murray
 	cd ..
 	rm -rf $REPONAME
-	echo "Boomerang templates installed"
+	echo "Murray successfully installed!"
 }
 
 cd /tmp/
