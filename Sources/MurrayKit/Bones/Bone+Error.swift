@@ -17,6 +17,7 @@ public extension Bone {
         case missingProjectName
         case missingMainPlaceholder
         case existingFolder(String)
+        case existingFile(String)
         case gitError
         case shellError
         case missingBonespec(String)
@@ -31,6 +32,7 @@ public extension Bone {
         public var description: String {
             switch self {
             case .existingFolder(let path): return "Folder at \(path) already exists"
+            case .existingFile(let path): return "File at \(path) already exists"
             case .missingSubfolder(let path): return "Folder at \(path) has no subfolders "
             case .missingBonespec(let path): return "No Bonespec.json file found at \(path)"
             case .invalidBonespec(let path): return "Bonespec is unreadable at \(path)"

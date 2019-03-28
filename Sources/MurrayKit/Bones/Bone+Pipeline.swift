@@ -125,7 +125,13 @@ extension Bone {
                 
                 Logger.log("Moving to destination", level: .verbose)
                 guard let file = try? templateFile.copy(to: finalFolder) else {
-                    throw Error.missingFile(finalFolder.path + "/" + templateFile.name)
+                    do  {
+                        _ = try templateFile.readAsString(encoding: .utf8) 
+                    }
+                    catch {
+                        throw Error.missingFile(templateFile.path)
+                    }
+                    throw Error.existingFile(finalFolder.path + "/" + templateFile.name)
                 }
                 Logger.log("Renaming", level: .verbose)
                 try PluginManager.beforeReplace(context: pluginContext, file: file)
