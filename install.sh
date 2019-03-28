@@ -3,16 +3,16 @@
 #
 REPONAME="Murray"
 
-function installTemplates {
+function installMurray {
 
 	cd $REPONAME
-	swift build -c release -Xswiftc -static-stdlib
+	swift build -c release
 	cp -f .build/release/Murray /usr/local/bin/murray
 	cd ..
 	rm -rf $REPONAME
-	echo "Boomerang templates installed"
+	echo "Murray successfully installed!"
 }
 
 cd /tmp/
 rm -rf $REPONAME
-git clone https://github.com/synesthesia-it/Murray.git && installTemplates
+git clone https://github.com/synesthesia-it/Murray.git && installMurray
