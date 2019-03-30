@@ -16,6 +16,8 @@ For instance, a classic HTML website always consists of pages with same `head` a
 
 - Install bones templates from any number of different repositories: share your file templates with your team.
 
+- Automatically add slices of code to already existing files when adding new bones.
+
 - Easily manage and check your bones environment: see what's available directly from CLI
 
 - Design your **bones** with **[Stencil](https://github.com/stencilproject/Stencil)**
