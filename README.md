@@ -72,11 +72,11 @@ See [Wiki](https://github.com/synesthesia-it/Murray/wiki) for more examples.
 
 #### Using *[Mint](https://github.com/yonaskolb/mint)*
 
-**WARNING** as of today (27/03/19) Mint is not working on Swift 5. 
 
 ```
 mint install synesthesia-it/Murray
 ```
+Note: please ensure you're using at least Mint v0.12 (Swift 5)
 
 #### Compiling from source (latest version from *master* branch)
 
