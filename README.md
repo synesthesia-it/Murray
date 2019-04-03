@@ -16,6 +16,8 @@ For instance, a classic HTML website always consists of pages with same `head` a
 
 - Install bones templates from any number of different repositories: share your file templates with your team.
 
+- Automatically add slices of code to already existing files when adding new bones.
+
 - Easily manage and check your bones environment: see what's available directly from CLI
 
 - Design your **bones** with **[Stencil](https://github.com/stencilproject/Stencil)**
@@ -72,11 +74,11 @@ See [Wiki](https://github.com/synesthesia-it/Murray/wiki) for more examples.
 
 #### Using *[Mint](https://github.com/yonaskolb/mint)*
 
-**WARNING** as of today (27/03/19) Mint is not working on Swift 5. 
 
 ```
 mint install synesthesia-it/Murray
 ```
+Note: please ensure you're using at least Mint v0.12 (Swift 5)
 
 #### Compiling from source (latest version from *master* branch)
 
