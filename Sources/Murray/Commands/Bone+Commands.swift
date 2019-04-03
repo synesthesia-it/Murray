@@ -24,14 +24,20 @@ extension Bone {
 
             $0.command("list",
                        Flag("verbose"),
+                       Flag("json"),
                        description: "Lists all bones in current setup."
-                       ) { verbose in
+                       ) { verbose, json in
                 if verbose { Logger.logLevel = .verbose }
-                        
+                if json {
+                    let bones = try Bone.bones()
+                    let encoded = try JSONEncoder().encode(bones)
+                    print(String(data: encoded, encoding: .utf8) ?? "Unable to parse json")
+                } else {
                 Logger.log("Listing all bones:\n", level: .verbose)
                 try Bone.list().forEach {
                     Logger.log($0 + "\n", level: .none)
                 }
+                        }
             }
 
             $0.command("scaffold",
