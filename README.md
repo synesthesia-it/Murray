@@ -10,13 +10,13 @@ For instance, a classic HTML website always consists of pages with same `head` a
 
 ## Key Features
 
-- Clone a **skeleton** project from a remote repository, customize it with your project name and custom properties and have it ready to run
+- Clone a **skeleton** project from a remote repository, customize it with your project name and custom properties and have it ready to run. Murray supports **tags** and **branches** for remote repositories (`@develop` or `@1.0.0`)
 
-- Develop your project with **bones**: template files *you* design that gets easily integrated in your project structure
+- Develop your project with **bones**: template files *you* design that gets easily integrated in your project structure. If a adding a screen to your app requires 3 new files, you can design them with a template and have Murray resolve them for you and move the result in proper folders.
 
 - Install bones templates from any number of different repositories: share your file templates with your team.
 
-- Automatically add slices of code to already existing files when adding new bones.
+- Automatically add slices of code to already existing files when adding new bones (*example: Add a custom xml tag for your new Activity at the end of the Android manifest.xml when creating an Activity from a custom bone*).
 
 - Easily manage and check your bones environment: see what's available directly from CLI
 
@@ -66,7 +66,15 @@ automatically moved to predefined custom folder and also installed in XCode proj
 
 See [Wiki](https://github.com/synesthesia-it/Murray/wiki) for more examples.
 
+## Working Demo
 
+A very simple Murray project for iOS can be found [here](https://github.com/stefanomondino/MurrayDemo)
+
+You can automatically generate a project (named *MurrayProject* in this example) from this template by running 
+
+```
+murray skeleton new MurrayProject https://github.com/stefanomondino/MurrayDemo@master
+```
 
 # Installation
 
