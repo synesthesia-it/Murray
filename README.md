@@ -76,6 +76,8 @@ You can automatically generate a project (named *MurrayProject* in this example)
 murray skeleton new MurrayProject https://github.com/stefanomondino/MurrayDemo@master
 ```
 
+**Important**: please be sure to have Cocoapods v1.6.1 or higher installed on your system (thanks @bellots).
+
 # Installation
 
 ## MacOS
