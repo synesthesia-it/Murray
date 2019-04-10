@@ -160,9 +160,7 @@ extension Bone {
                     
                     try file.write(string: rendered)
                     Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
-                        if bone.scripts.count > 0 {
-                            try shellOut(to: bone.scripts)
-                        }
+                        
                     try PluginManager.afterReplace(context: pluginContext, file: file)
                     }
                 }
@@ -201,6 +199,9 @@ extension Bone {
                 boneList.bones[$0]
             }.forEach {
                 try self.createSubBone(boneList: boneList, bone: $0, templatesFolder: templatesFolder, name: name, fs: fs, context: context)
+        }
+        if bone.scripts.count > 0 {
+            try shellOut(to: bone.scripts)
         }
     }
 }
