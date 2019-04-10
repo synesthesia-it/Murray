@@ -160,6 +160,9 @@ extension Bone {
                     
                     try file.write(string: rendered)
                     Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
+                        if bone.scripts.count > 0 {
+                            try shellOut(to: bone.scripts)
+                        }
                     try PluginManager.afterReplace(context: pluginContext, file: file)
                     }
                 }
