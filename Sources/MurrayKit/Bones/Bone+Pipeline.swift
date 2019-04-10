@@ -10,7 +10,7 @@ import Files
 import ShellOut
 
 public extension BoneItem {
-    public func files(from folder: Folder) throws -> [File] {
+     func files(from folder: Folder) throws -> [File] {
         return try files.map { path in
             Logger.log(folder.path + "/" + path, level: .verbose)
             
@@ -21,8 +21,12 @@ public extension BoneItem {
         }
         
     }
-    public func resolve(file: File, context: [String: Any]) throws -> String {
+    
+    func resolve(file: File, context: [String: Any]) throws -> String {
         let string = try file.readAsString()
+        return try resolve(fileContents: string, context: context)
+    }
+     func resolve(fileContents string: String, context: [String: Any]) throws -> String {
         let template = FileTemplate(fileContents: string, context: context)
         return try template.render()
     }
@@ -124,31 +128,41 @@ extension Bone {
             try bone.files(from: templatesFolder).forEach { templateFile in
                 
                 Logger.log("Moving to destination", level: .verbose)
-                guard let file = try? templateFile.copy(to: finalFolder) else {
-                    do  {
-                        _ = try templateFile.readAsString(encoding: .utf8) 
-                    }
-                    catch {
-                        throw Error.missingFile(templateFile.path)
-                    }
-                    throw Error.existingFile(finalFolder.path + "/" + templateFile.name)
-                }
+//                guard let file = try? templateFile.copy(to: finalFolder) else {
+//                    do  {
+//                        _ = try templateFile.readAsString(encoding: .utf8)
+//                    }
+//                    catch {
+//                        throw Error.missingFile(templateFile.path)
+//                    }
+//                    throw Error.existingFile(finalFolder.path + "/" + templateFile.name)
+//                }
+                
+                
                 Logger.log("Renaming", level: .verbose)
-                try PluginManager.beforeReplace(context: pluginContext, file: file)
+                //try PluginManager.beforeReplace(context: pluginContext, file: file)
                 let placeholder = bone.placeholder
                 if placeholder.count > 0 {
                     if let filename = templateFile.path.split(separator: "/").last {
-                        let resolvedName = try FileTemplate(fileContents: bone.placeholderReplaceRule, context: ["name": name]).render()
-                        try file.rename(to: filename.replacingOccurrences(of: placeholder, with: resolvedName))
-                    }
+                        let resolvedName = try FileTemplate(fileContents: bone.placeholderReplaceRule, context: context ).render()
+                        let newFilename = filename.replacingOccurrences(of: placeholder, with: resolvedName)
+                        
+                    
                     Logger.log("Reading file", level: .verbose)
-                    let rendered = try bone.resolve(file: file, context: context)
+                    let rendered = try bone.resolve(file: templateFile, context: context)
+//                    let rendered = try bone.resolve(file: file, context: context)
+                        if finalFolder.containsFile(named: newFilename) {
+                            throw Error.existingFile(finalFolder.path + "" + newFilename)
+                        }
+                        guard let file = try? finalFolder.createFile(named: newFilename) else {
+                            throw Error.existingFile(finalFolder.path + "" + newFilename)
+                        }
+                    
                     try file.write(string: rendered)
+                    Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
+                    try PluginManager.afterReplace(context: pluginContext, file: file)
+                    }
                 }
-                Logger.log("Current folder: \(fs.currentFolder.path)", level: .verbose)
-
-                try PluginManager.afterReplace(context: pluginContext, file: file)
-
             }
         }
         bone.otherFilesRules.forEach { rule in
