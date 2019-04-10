@@ -135,6 +135,15 @@ public extension Optional {
 
 public enum JSONValue: Codable {
     public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        
+        
+        if let v: Int = self.unwrap() { try container.encode(v) }
+        if let v: String = self.unwrap() { try container.encode(v) }
+        if let v: Double = self.unwrap() { try container.encode(v) }
+        if let v: Bool = self.unwrap(){ try container.encode(v) }
+        if let v: [String: JSONValue] = self.unwrap()  { try container.encode(v) }
+        if let v: [JSONValue] = self.unwrap()  { try container.encode(v) }
         
     }
     
