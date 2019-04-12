@@ -180,8 +180,11 @@ extension Bone {
             } else {
                 text = rule.text
             }
-            
-            if let file = try? fs.currentFolder.file(atPath: rule.filePath),
+            guard let resolvedPath = try? FileTemplate(fileContents: rule.filePath, context: context).render() else {
+                Logger.log("Unable to read file \(rule.filePath), skipping", level: .verbose)
+                return
+            }
+            if let file = try? fs.currentFolder.file(atPath: resolvedPath),
                 let contents = try? file.readAsString(encoding: .utf8),
                 let resolved = try? FileTemplate(fileContents: text, context: context).render(){
                 
