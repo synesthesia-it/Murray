@@ -111,7 +111,7 @@ extension Bone {
             Logger.log("Subfolders: \(subfolders)", level: .verbose)
             let sourcesFolder: Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in
                 guard let f = acc else { return nil }
-                return try? f.subfolder(named: current)
+                return (try? f.subfolder(named: current)) ?? (try? f.createSubfolder(named: current))
             }
             Logger.log("SourcesFolder: \(sourcesFolder?.path ?? "unknown")", level: .verbose)
             guard let containingFolder = sourcesFolder else {
