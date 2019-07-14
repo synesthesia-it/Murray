@@ -60,7 +60,7 @@ class XcodePlugin: Plugin {
                     projectName,
                     file.path,
                     "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap { $0 })).filter {$0.count > 0}.joined(separator: "|"))\"",
-                    "\"\((bone.targetNames).joined(separator: "|"))\""
+                    "\"\((bone.targetNames.map { (try? $0.resolved(with: context.context )) ?? $0}).joined(separator: "|"))\""
                 ]
                 Logger.log("Updating xcodeproj with arguments: \(args)", level: .verbose)
                 try shellOut(to: "ruby", arguments: args)
