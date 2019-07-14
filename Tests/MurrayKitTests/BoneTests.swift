@@ -154,7 +154,8 @@ class BoneSpec: QuickSpec {
                     expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
                 }
                 it("should create files in specific subdirectories") {
-                    let bone = try? Bone(boneName: "Bones.testSubfodler", mainPlaceholder: "test", context: [:])
+                    sources = try! fs.createFolder(at: "SourcesForTest")
+                    let bone = try? Bone(boneName: "Bones.testSubfolder", mainPlaceholder: "test", context: [:])
                     expect(bone).notTo(beNil())
                     expect { try bone!.run() }.notTo(throwError())
                     let file = try? sources.subfolder(named: "TestFolder").file(named: "Test.swift")

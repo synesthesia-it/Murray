@@ -42,9 +42,9 @@ extension TestDependency {
         "files": ["Bone.swift"]
         },
         {
-        "name": "testSubfodler",
+        "name": "testSubfolder",
         "description": "A test",
-        "folderPath": "Sources",
+        "folderPath": "SourcesFor{{name|firstUppercase}}",
         "folderName": "{{ name|firstUppercase }}Folder",
         "createSubfolder": true,
         "otherFilesRules": [

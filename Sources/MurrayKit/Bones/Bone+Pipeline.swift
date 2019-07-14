@@ -107,9 +107,10 @@ extension Bone {
        
         if bone.files.count > 0 {
             
-            let subfolders = boneList.folders + bone.folders
+            let subfolders = (boneList.folders + bone.folders).compactMap { try? $0.resolved(with: context) }
             Logger.log("Subfolders: \(subfolders)", level: .verbose)
-            let sourcesFolder: Folder? = subfolders.reduce(fs.currentFolder) { acc, current -> Folder? in
+            let sourcesFolder: Folder? = subfolders
+                .reduce(fs.currentFolder) { acc, current -> Folder? in
                 guard let f = acc else { return nil }
                 return (try? f.subfolder(named: current)) ?? (try? f.createSubfolder(named: current))
             }
@@ -118,7 +119,7 @@ extension Bone {
                 throw Error.missingSubfolder("")
             }
             
-            var finalFolderName = try bone.folderName.resolved(with: context)
+            let finalFolderName = try bone.folderName.resolved(with: context)
             guard let finalFolder =
                 bone.createSubfolder == false ? containingFolder :
                     (try? containingFolder.subfolder(named: finalFolderName)) ?? (try? containingFolder.createSubfolder(named: finalFolderName)) else {
@@ -181,7 +182,7 @@ extension Bone {
             } else {
                 text = rule.text
             }
-            guard let resolvedPath = try? FileTemplate(fileContents: rule.filePath, context: context).render() else {
+            guard let resolvedPath = try?  rule.filePath.resolved(with: context) else {
                 Logger.log("Unable to read file \(rule.filePath), skipping", level: .verbose)
                 return
             }
