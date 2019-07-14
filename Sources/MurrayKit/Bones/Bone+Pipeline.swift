@@ -118,10 +118,11 @@ extension Bone {
                 throw Error.missingSubfolder("")
             }
             
+            var finalFolderName = try bone.folderName.resolved(with: context)
             guard let finalFolder =
                 bone.createSubfolder == false ? containingFolder :
-                    (try? containingFolder.subfolder(named: name)) ?? (try? containingFolder.createSubfolder(named: name)) else {
-                        throw Error.missingSubfolder(containingFolder.path + "/" + name)
+                    (try? containingFolder.subfolder(named: finalFolderName)) ?? (try? containingFolder.createSubfolder(named: finalFolderName)) else {
+                        throw Error.missingSubfolder(containingFolder.path + "/" + finalFolderName)
             }
             Logger.log("Parsing \(bone.name) files", level: .verbose)
             

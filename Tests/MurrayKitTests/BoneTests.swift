@@ -153,6 +153,14 @@ class BoneSpec: QuickSpec {
                     expect(file).notTo(beNil())
                     expect { try file?.readAsString()} == TestDependency().templateResolved(with: "Test")
                 }
+                it("should create files in specific subdirectories") {
+                    let bone = try? Bone(boneName: "Bones.testSubfodler", mainPlaceholder: "test", context: [:])
+                    expect(bone).notTo(beNil())
+                    expect { try bone!.run() }.notTo(throwError())
+                    let file = try? sources.subfolder(named: "TestFolder").file(named: "Test.swift")
+                    expect(file).notTo(beNil())
+                    expect { try file?.readAsString()} == TestDependency().templateResolved(with: "test")
+                }
                 it("should create files in specific directories and follow specific placeholderReplace rule") {
                     let bone = try? Bone(boneName: "Bones.testLowercased", mainPlaceholder: "TEST", context: [:])
                     expect(bone).notTo(beNil())
