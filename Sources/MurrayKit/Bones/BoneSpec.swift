@@ -123,7 +123,7 @@ public class BoneReplace: Codable {
 
 
 public extension Optional {
-    public func resolve(with error: @autoclosure () -> Error) throws -> Wrapped {
+    func resolve(with error: @autoclosure () -> Error) throws -> Wrapped {
         switch self {
         case .none: throw error()
         case .some(let wrapped): return wrapped
