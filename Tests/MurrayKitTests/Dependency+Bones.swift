@@ -40,11 +40,29 @@ extension TestDependency {
         "createSubfolder": false,
         "targets" : ["Test"],
         "files": ["Bone.swift"]
-        }]
+        },
+        {
+        "name": "testSubfolder",
+        "description": "A test",
+        "folderPath": "SourcesFor{{name|firstUppercase}}",
+        "folderName": "{{ name|firstUppercase }}Folder",
+        "createSubfolder": true,
+        "otherFilesRules": [
+        {
+        "placeholder": "\\n// TEXT TO REPLACE",
+        "filePath": "replace.txt",
+        "text": "replace {{ name }}"
+        }
+        ],
+        "targets" : ["Test"],
+        "files": ["Bone.swift"],
+        "isPrivate": true
+        }
+        ]
         }
 """
     }
-
+    
     var boneTemplate: String {
         return "Some template with a {{ name }} placeholder, also uppercased {{ name|uppercase }} and with global {{ mainPlaceholder }}"
     }

@@ -25,10 +25,15 @@ public class BoneItem: Codable {
     }
 
     public var folders: [String] {
-        get {return _folderPath?.components(separatedBy: "/") ?? [] }
+        get { return _folderPath?.components(separatedBy: "/") ?? [] }
         set { _folderPath = newValue.joined(separator: "/")}
     }
-
+    
+    public var folderName: String {
+        get { return _folderName ?? "{{ name }}" }
+        set { _folderName = newValue }
+    }
+    
     public var placeholder: String {
         get { return _placeholder ?? "Bone" }
         set { _placeholder = newValue }
@@ -72,6 +77,7 @@ public class BoneItem: Codable {
     private var _isPrivate: Bool?
     private var _files: [String]?
     private var _folderPath: String?
+    private var _folderName: String?
     private var _description: String?
     private var _placeholder: String?
 //    private var _targetNames: [String]?
@@ -87,6 +93,7 @@ public class BoneItem: Codable {
         case _pluginData = "pluginData"
         case _otherFilesRules = "otherFilesRules"
         case _folderPath = "folderPath"
+        case _folderName = "folderName"
         case _placeholderReplaceRule = "placeholderReplaceRule"
         case _placeholder = "placeholder"
         case _description = "description"
@@ -123,7 +130,7 @@ public class BoneReplace: Codable {
 
 
 public extension Optional {
-    public func resolve(with error: @autoclosure () -> Error) throws -> Wrapped {
+    func resolve(with error: @autoclosure () -> Error) throws -> Wrapped {
         switch self {
         case .none: throw error()
         case .some(let wrapped): return wrapped

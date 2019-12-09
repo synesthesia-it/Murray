@@ -46,3 +46,10 @@ public final class FileTemplate {
     }
 
 }
+
+extension String {
+    
+    func resolved(with context: [String: Any]) throws -> String {
+        return try FileTemplate(fileContents: self, context: context).render()
+    }
+}
