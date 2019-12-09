@@ -51,6 +51,11 @@ class XcodePlugin: Plugin {
             let projectName = fs.currentFolder.subfolders
                 .filter ({ $0.name.contains(".xcodeproj") })
                 .map ({ $0.nameExcludingExtension }).first
+            
+            let targetNames = bone.targetNames.map {
+                (try? bone.resolve(fileContents: $0, context: context.context)) ?? $0
+            }
+            
             Logger.log("Editing project \"\(projectName ?? "")\"", level: .verbose)
             if let projectName = projectName,
                 bone.targetNames.count > 0 {
@@ -60,7 +65,7 @@ class XcodePlugin: Plugin {
                     projectName,
                     file.path,
                     "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap { $0 })).filter {$0.count > 0}.joined(separator: "|"))\"",
-                    "\"\((bone.targetNames).joined(separator: "|"))\""
+                    "\"\((targetNames).joined(separator: "|"))\""
                 ]
                 Logger.log("Updating xcodeproj with arguments: \(args)", level: .verbose)
                 try shellOut(to: "ruby", arguments: args)
