@@ -55,7 +55,10 @@ class XcodePlugin: Plugin {
             let targetNames = bone.targetNames.map {
                 (try? bone.resolve(fileContents: $0, context: context.context)) ?? $0
             }
-            
+            let folders = boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)])
+            let resolvedFolders: [String] = folders
+                    .compactMap { try? $0?.resolved(with: context.context) }
+                    .compactMap { $0 }
             Logger.log("Editing project \"\(projectName ?? "")\"", level: .verbose)
             if let projectName = projectName,
                 bone.targetNames.count > 0 {
@@ -64,7 +67,7 @@ class XcodePlugin: Plugin {
                     scriptPath,
                     projectName,
                     file.path,
-                    "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap { try? $0?.resolved(with: context.context) })).filter {$0.count > 0}.joined(separator: "|"))\"",
+                    "\"\(resolvedFolders.filter ({$0.count > 0}).joined(separator: "|"))\"",
                     "\"\((targetNames).joined(separator: "|"))\""
                 ]
                 Logger.log("Updating xcodeproj with arguments: \(args)", level: .verbose)
