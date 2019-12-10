@@ -64,7 +64,7 @@ class XcodePlugin: Plugin {
                     scriptPath,
                     projectName,
                     file.path,
-                    "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap { $0 })).filter {$0.count > 0}.joined(separator: "|"))\"",
+                    "\"\((boneList.folders + bone.folders + ([(bone.createSubfolder ? name : nil)].compactMap { try? $0?.resolved(with: context.context) })).filter {$0.count > 0}.joined(separator: "|"))\"",
                     "\"\((targetNames).joined(separator: "|"))\""
                 ]
                 Logger.log("Updating xcodeproj with arguments: \(args)", level: .verbose)

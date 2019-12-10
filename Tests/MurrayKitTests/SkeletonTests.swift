@@ -26,21 +26,21 @@ class SkeletonSpec: QuickSpec {
             Logger.logLevel = .verbose
         }
 
-        context("in real environment") {
-            let url = URL(string: "https://github.com/synesthesia-it/Skeleton.git")!
-            beforeEach {
-                DependencyManager.reset()
-            }
-            describe("creating a new Project") {
-                it("should clone a repository") {
-                    try? fs.currentFolder.subfolder(atPath: projectName).delete()
-                    let project = Skeleton(projectName: projectName, git: url)
-                    let defaultFolder = FileManager.default.currentDirectoryPath
-                    expect { try project.run() }.notTo(throwError())
-                    expect(FileManager.default.currentDirectoryPath) == defaultFolder
-                }
-            }
-        }
+//        context("in real environment") {
+//            let url = URL(string: "https://github.com/synesthesia-it/Skeleton.git")!
+//            beforeEach {
+//                DependencyManager.reset()
+//            }
+//            describe("creating a new Project") {
+//                it("should clone a repository") {
+//                    try? fs.currentFolder.subfolder(atPath: projectName).delete()
+//                    let project = Skeleton(projectName: projectName, git: url)
+//                    let defaultFolder = FileManager.default.currentDirectoryPath
+//                    expect { try project.run() }.notTo(throwError())
+//                    expect(FileManager.default.currentDirectoryPath) == defaultFolder
+//                }
+//            }
+//        }
         context("in mocked environment") {
             let url = URL(string: "https://mocked.local")!
             beforeEach {
