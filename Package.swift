@@ -18,6 +18,7 @@ let package = Package(
             from: "2.0.0"
         ),
         .package(url: "https://github.com/Quick/Nimble.git", from: "7.3.1"),
+        .package(url: "https://github.com/hkellaway/Gloss.git", from: "3.1.0"),
         .package(url: "https://github.com/Quick/Quick.git", from: "1.3.2"),
         .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.0.0"),
         .package(url: "https://github.com/kylef/Commander.git", from: "0.8.0"),
@@ -29,7 +30,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(name: "Murray", dependencies: ["MurrayKit", "Commander"]),
         .target(name: "MurrayKit", dependencies:
-            ["Files", "ShellOut", "Rainbow", "Stencil"]
+            ["Files", "ShellOut", "Rainbow", "Stencil", "Gloss"]
         ),
         .testTarget(
             name: "MurrayKitTests",

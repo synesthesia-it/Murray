@@ -11,8 +11,9 @@ import MurrayKit
 public class Menu {
     public static var menu: Group {
         return Group {
-            Skeleton.commands(for: $0)
-            Bone.commands(for: $0)
+            $0.command("start") { Logger.log("test")}
+//            Skeleton.commands(for: $0)
+//            Bone.commands(for: $0)
         }
     }
 

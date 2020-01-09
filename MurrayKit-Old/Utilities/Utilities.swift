@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import Gloss
-public typealias JSON = Gloss.JSON
 
 public extension String {
     func firstLowercased() -> String {

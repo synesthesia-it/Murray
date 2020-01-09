@@ -11,7 +11,6 @@ import Stencil
 public final class FileTemplate {
     private var contents: String
     private var context: [String: Any]
-    
     public init(fileContents: String, context: [String: Any]) {
         self.contents = fileContents
         self.context = context
@@ -49,6 +48,7 @@ public final class FileTemplate {
 }
 
 extension String {
+    
     func resolved(with context: [String: Any]) throws -> String {
         return try FileTemplate(fileContents: self, context: context).render()
     }
