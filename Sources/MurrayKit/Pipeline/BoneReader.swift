@@ -16,7 +16,7 @@ public class BoneReader {
     }
     
     public func read(from path: BonePath, context: BoneContext) throws -> String {
-        let relativePath = try path.to.resolved(with: context)
+        let relativePath = try path.from.resolved(with: context)
         let file = try source.file(atPath: relativePath)
         return try file.readAsString(encoding: .utf8)
     }
