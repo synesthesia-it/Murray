@@ -8,29 +8,6 @@
 import Foundation
 import Files
 
-public extension Folder {
-    func createFileWithIntermediateFolders(at path: String, contents: Data) throws -> File {
-        let components = path.components(separatedBy: "/").filter { !$0.isEmpty }
-        let subfolders = components.dropLast()
-        
-        guard let filename = components.last else {
-            //filename not found. exit.
-            throw MurrayKit.Error.generic
-        }
-            
-        var folder = self
-        
-        try subfolders.forEach {
-            folder = try folder.createSubfolderIfNeeded(withName: $0)
-        }
-        
-        if folder.containsFile(named: filename) {
-            //File already exist. exit
-            throw MurrayKit.Error.generic
-        }
-        return try folder.createFile(named: filename, contents: contents)
-    }
-}
 
 public class BoneWriter {
     

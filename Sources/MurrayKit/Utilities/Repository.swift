@@ -9,8 +9,9 @@
 import Foundation
 
 public class Repository: Hashable {
-    public var hashValue: Int {
-        return repo.hashValue
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(repo.hashValue)
     }
     public var repo: String
     public var version: String

@@ -15,11 +15,10 @@ import Files
 class BoneWriterSpec: QuickSpec {
     override func spec() {
         let root = tempFolder(for: "BoneWriter")
-        
+        var writer: BoneWriter!
         context("a BoneWriter object") {
             describe("created with default parameters") {
             
-            var writer: BoneWriter!
             var item: ConcreteBoneItem!
                 beforeEach {
                     
@@ -29,15 +28,14 @@ class BoneWriterSpec: QuickSpec {
                     
                 }
                 it("should write resolved items to proper destination") {
-                  
-                    expect {
-                        let context = ["name": "Custom"]
-                        let file = try writer.write(item.contents, to: item.path, context: context)
-                        expect { try file.readAsString() } == item.resolved(with: context)
-                        return file
-                    }
-                    .notTo(throwError())
                     
+                    let context = ["name": "Custom"]
+                    expect {
+                        
+                        let file = try writer.write(item.contents, to: item.path, context: context)
+                        return try file.readAsString()
+                        
+                    } == item.resolved(with: context)
                 }
             }
         }

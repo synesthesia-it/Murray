@@ -3,20 +3,20 @@ import Gloss
 
 public protocol CustomCodable: Codable {}
 
-struct BoneItem: Glossy {
+public struct BoneItem: Glossy {
 
-    let name: String
-    let paths: [BonePath]
-    let parameters: [BoneParameter]
+    public let name: String
+    public let paths: [BonePath]
+    public let parameters: [BoneParameter]
     
-    init?(json: JSON) {
+    public init?(json: JSON) {
         guard let name:String = "name" <~~ json else { return nil }
         self.name = name
         self.paths = "paths" <~~ json ?? []
         self.parameters = "parameters" <~~ json ?? []
     }
     
-    func toJSON() -> JSON? {
+    public func toJSON() -> JSON? {
         return jsonify([
             "name" ~~> name,
             "paths" ~~> paths,

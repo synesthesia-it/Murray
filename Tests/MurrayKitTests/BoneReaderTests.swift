@@ -31,7 +31,9 @@ class BoneReaderSpec: QuickSpec {
                 }
                 it("should read template from source") {
                     let context = ["name": "Custom"]
-                    expect { try reader.read(from: item.path, context: context) } == item.contents
+                    expect { try reader.file(from: item.path, context: context) }.notTo(beNil())
+                    expect { try reader.string(from: item.path, context: context) } == item.contents
+                    
                 }
             }
         }

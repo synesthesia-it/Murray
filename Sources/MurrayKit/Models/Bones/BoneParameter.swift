@@ -8,18 +8,18 @@
 import Foundation
 import Gloss
 
-struct BoneParameter: Glossy {
-    let name: String
-    let isRequired: Bool
-    let description: String?
-    init?(json: JSON) {
+public struct BoneParameter: Glossy {
+    public let name: String
+    public let isRequired: Bool
+    public let description: String?
+    public init?(json: JSON) {
         guard let name: String = "name" <~~ json else { return nil }
         self.name = name
         self.isRequired = "isRequired" <~~ json ?? false
         self.description = "description" <~~ json
     }
     
-    func toJSON() -> JSON? {
+    public func toJSON() -> JSON? {
         return jsonify([
             "name" ~~> name,
             "isRequired" ~~> isRequired,

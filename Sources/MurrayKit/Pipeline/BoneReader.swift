@@ -7,7 +7,7 @@
 
 import Foundation
 import Files
-
+import Gloss
 public class BoneReader {
     public let source: Folder
     
@@ -15,9 +15,17 @@ public class BoneReader {
         self.source = source
     }
     
-    public func read(from path: BonePath, context: BoneContext) throws -> String {
+    public func file(from path: BonePath, context: BoneContext) throws -> File {
         let relativePath = try path.from.resolved(with: context)
-        let file = try source.file(atPath: relativePath)
-        return try file.readAsString(encoding: .utf8)
+        return try source.file(atPath: relativePath)
     }
+    
+    public func string(from path: BonePath, context: BoneContext) throws -> String {
+        return try file(from: path, context: context).readAsString(encoding: .utf8)
+    }
+    
+//    public func decodable<T: JSONDecodable>(from path: BonePath, context: BoneContext, type: T.Type) throws -> T? {
+//        return try file(from: path, context: context).decodable(type)
+//    }
+    
 }
