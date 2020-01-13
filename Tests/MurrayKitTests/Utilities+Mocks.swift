@@ -30,7 +30,7 @@ struct Mocks {
                 {
                     "name": "simple",
                     "description": "Simple bone spec for testing purposes",
-                    "groups": ["simpleGroup"]
+                    "groups": [\(Mocks.BoneGroup.simple)]
                 }
             """
         }
@@ -42,7 +42,7 @@ struct Mocks {
             return  """
                 {
                     "name": "simpleGroup",
-                    "items": ["simpleBone", "customBone2"]
+                    "items": ["SimpleItem/SimpleItem.json"]
                 }
             """
         }
@@ -53,8 +53,8 @@ struct Mocks {
                {
                    "name": "simpleItem",
                    "paths": [
-                       { "from": "SimpleItem/Bone.swift",
-                         "to": "Sources/Files/{{ name }}/{{ name }}.swift"
+                       { "from": "Bone.swift",
+                         "to": "Sources/Files/{{ name }}/{{ name }}.swift"
                        }
                    ],
                    "parameters": [

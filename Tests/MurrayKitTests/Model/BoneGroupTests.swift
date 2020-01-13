@@ -20,9 +20,9 @@ class BoneGroupSpec: QuickSpec {
                     let bone = BoneGroup(json: .from(Mocks.BoneGroup.simple))
                     expect(bone).notTo(beNil())
                     expect(bone?.name) == "simpleGroup"
-                    expect(bone?.itemPaths).to(haveCount(2))
-                    expect(bone?.itemPaths.first) == "simpleBone"
-                    expect(bone?.itemPaths.last) == "customBone2"
+                    expect(bone?.itemPaths).to(haveCount(1))
+                    expect(bone?.itemPaths.first) == "SimpleItem/SimpleItem.json"
+//                    expect(bone?.itemPaths.last) == "customBone2"
                 }
             }
         }

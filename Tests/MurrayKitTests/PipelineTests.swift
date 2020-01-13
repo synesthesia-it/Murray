@@ -30,10 +30,11 @@ class PipelineSpec: QuickSpec {
                     expect {
                         
                         let pipeline = try BonePipeline(folder: root)
-                        expect { try pipeline.execute("simple", with: ["name": "simple"]) }.notTo(throwError())
+                        expect { try pipeline.execute("simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
                         expect {
                             let fileContents = try root.file(atPath: "Sources/Files/simple/simple.swift").readAsString()
-                            return fileContents == "simpleTest"
+                            expect(fileContents) == "simpleTest"
+                            return fileContents
                         }
                             .notTo(throwError())
                         return pipeline
