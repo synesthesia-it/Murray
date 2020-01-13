@@ -8,6 +8,12 @@
 import Foundation
 import Gloss
 
+/**
+    A structure representing a BoneGroup nested inside `Bonespec.json`
+    
+    
+ */
+
 public struct BoneGroup: Glossy {
 
     public let name: String

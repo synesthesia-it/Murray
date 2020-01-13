@@ -9,10 +9,23 @@
 import Foundation
 import Gloss
 
+/**
+    A structure representing a `BoneSpec.json` file.
+ 
+    A BoneSpec should contain groups of Bones that can easily be reused across projects or simply containing some kind of shared features.
+ */
 public struct BoneSpec: Glossy {
-
+    /**
+        Bonespec name used to identify different bonespecs
+     */
     public let name: String
+    /**
+        A quick description for this bonespec
+     */
     public let description: String?
+    /**
+        The groups handled by this bonespec
+     */
     public let groups: [BoneGroup]
     private var groupsByName: [String: BoneGroup] = [:]
     public init?(json: JSON) {
