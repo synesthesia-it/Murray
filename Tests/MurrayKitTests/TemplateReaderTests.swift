@@ -12,21 +12,21 @@ import Files
 
 @testable import MurrayKit
 
-class BoneReaderSpec: QuickSpec {
+class TemplateReaderSpec: QuickSpec {
     override func spec() {
         let root = tempFolder(for: "BoneReader")
         
         context("a BoneReader object") {
             describe("created with default parameters") {
             
-            var reader: BoneReader!
-            var item: ConcreteBoneItem!
+            var reader: TemplateReader!
+            var item: ConcreteFile!
                 beforeEach {
                     
                     try! root.empty()
-                    item = ConcreteBoneItem(contents: "{{ name }}TemplateTest;", folder: root, path: BonePath(from: "input/Bone.swift", to: "output/{{name}}.swift"))
+                    item = ConcreteFile(contents: "{{ name }}TemplateTest;", folder: root, path: BonePath(from: "input/Bone.swift", to: "output/{{name}}.swift"))
                     item.createSource()
-                    reader = BoneReader(source: root)
+                    reader = TemplateReader(source: root)
                     
                 }
                 it("should read template from source") {

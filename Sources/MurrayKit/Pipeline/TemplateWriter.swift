@@ -9,7 +9,7 @@ import Foundation
 import Files
 
 
-public class BoneWriter {
+public class TemplateWriter {
     
     let destination: Folder
     

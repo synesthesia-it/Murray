@@ -1,8 +1,6 @@
 import Foundation
 import Gloss
 
-public protocol CustomCodable: Codable {}
-
 public struct BoneItem: Glossy {
 
     public let name: String

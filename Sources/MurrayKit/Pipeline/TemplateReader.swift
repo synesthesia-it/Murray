@@ -8,7 +8,7 @@
 import Foundation
 import Files
 import Gloss
-public class BoneReader {
+public class TemplateReader {
     public let source: Folder
     
     public init(source: Folder) {

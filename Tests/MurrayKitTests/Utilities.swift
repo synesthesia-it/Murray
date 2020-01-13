@@ -8,9 +8,10 @@
 import Foundation
 import Files
 import Quick
+import Gloss
 @testable import MurrayKit
 
-struct ConcreteBoneItem {
+struct ConcreteFile {
     let contents: String
     let folder: Folder
     let path: BonePath
@@ -46,5 +47,10 @@ extension QuickSpec {
         try! folder.empty()
         print("Running in: \(folder)")
         return folder
+    }
+}
+extension JSON {
+    static func from(_ string: String) -> JSON {
+        return try! JSONSerialization.jsonObject(with: string.data(using: .utf8)!, options: []) as! JSON
     }
 }

@@ -27,7 +27,6 @@ public struct BonePath: Glossy {
         return jsonify([
             "from" ~~> from,
             "to" ~~> to
-            
         ])
     }
 }

@@ -12,19 +12,19 @@ import Files
 
 @testable import MurrayKit
 
-class BoneWriterSpec: QuickSpec {
+class TemplateWriterSpec: QuickSpec {
     override func spec() {
         let root = tempFolder(for: "BoneWriter")
-        var writer: BoneWriter!
+        var writer: TemplateWriter!
         context("a BoneWriter object") {
             describe("created with default parameters") {
             
-            var item: ConcreteBoneItem!
+            var item: ConcreteFile!
                 beforeEach {
                     
                     try! root.empty()
-                    item = ConcreteBoneItem(contents: "{{ name }}TemplateTest;", folder: root, path: BonePath(from: "./", to: "output/{{name}}.swift"))
-                    writer = BoneWriter(destination: root)
+                    item = ConcreteFile(contents: "{{ name }}TemplateTest;", folder: root, path: BonePath(from: "./", to: "output/{{name}}.swift"))
+                    writer = TemplateWriter(destination: root)
                     
                 }
                 it("should write resolved items to proper destination") {
