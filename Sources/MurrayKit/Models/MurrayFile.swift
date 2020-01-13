@@ -24,6 +24,4 @@ struct MurrayFile: Glossy {
         "environment" ~~> environment
         ])
     }
-    
-    
 }

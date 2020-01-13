@@ -34,8 +34,9 @@ public struct BoneSpec: Glossy {
             "groups" ~~> groups,
         ])
     }
+
     
-    subscript(group: String) -> BoneGroup? {
+    public subscript(group: String) -> BoneGroup? {
         get { groupsByName[group] }
     }
     

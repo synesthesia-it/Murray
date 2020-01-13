@@ -54,7 +54,7 @@ struct Mocks {
                    "name": "simpleItem",
                    "paths": [
                        { "from": "SimpleItem/Bone.swift",
-                         "to": "path/to/{{ name }}/{{ name }}.swift"
+                         "to": "Sources/Files/{{ name }}/{{ name }}.swift"
                        }
                    ],
                    "parameters": [
