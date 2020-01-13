@@ -8,81 +8,108 @@
 import Foundation
 import Files
 
-class BonePipeline {
-    struct ObjectWithPath<T> {
+public struct BonePipeline {
+    
+    public struct ObjectWithPath<T> {
         let file: File
         let object: T
+        
+        init (file: File, object: T?) throws {
+            guard let object = object else {
+                throw CustomError.generic
+            }
+            self.file = file
+            self.object = object
+        }
     }
     
-    let murrayFile: MurrayFile
+    public struct TreeObject {
+        let murrayFile: MurrayFile
+        let spec: ObjectWithPath<BoneSpec>
+        let group: BoneGroup
+        let item: ObjectWithPath<BoneItem>
+    }
+    
+    public let murrayFile: MurrayFile
     
     let specs: [String: ObjectWithPath<BoneSpec>]
     let folder: Folder
-    init(folder: Folder, murrayFileName: String = "Murrayfile.json") throws {
+    var tree: [TreeObject] = []
+    public init(folder: Folder, murrayFileName: String = "Murrayfile.json") throws {
         
         guard let file = try folder.file(named: murrayFileName).decodable(MurrayFile.self) else {
-            throw Error.generic
+            throw CustomError.generic
         }
         self.folder = folder
         self.murrayFile = file
         
         specs = try file.specPaths
-//            .compactMap { try folder.decodable(BoneSpec.self, at: $0) }
+            
             .reduce([:]) {
                 var specs = $0
                 let file = try folder.file(atPath: $1)
                 guard let spec = try file.decodable(BoneSpec.self)
-                    else { throw Error.generic }
-                specs[spec.name] = ObjectWithPath(file: file, object: spec)
+                    else { throw CustomError.undecodable(file: file, type: BoneSpec.self) }
+                specs[spec.name] = try ObjectWithPath(file: file, object: spec)
                 return specs
         }
         
+        self.tree = try specs
+            .values
+            .flatMap { spec in
+                try spec.object.groups.flatMap { group in
+                    try self.items(from: spec, group: group).map {
+                        TreeObject(murrayFile: self.murrayFile, spec: spec, group: group, item: $0)
+                    }
+                }
+        }
     }
     
+    public func list() throws -> [TreeObject]{
+        self.tree
+    }
     
-    
-    func execute(_ boneName: String, with context: BoneContext) throws {
+    func items(from spec: ObjectWithPath<BoneSpec>, group: BoneGroup) throws -> [ObjectWithPath<BoneItem>] {
+        return try group.itemPaths
+            .compactMap { try spec.file.parent?.file(atPath: $0) }
+            .map { try ObjectWithPath(file: $0, object: $0.decodable(BoneItem.self)) }
+    }
+    public func transform(path: BonePath, sourceFolder: Folder, with context:BoneContext) throws {
+        let reader = TemplateReader(source: sourceFolder)
+        let contents = try reader
+            .file(from: path, context: context)
+            .readAsString()
+            .resolved(with: context)
         
-        guard let spec = specs.values.first(where: {
-            $0.object[boneName] != nil
-        }) else {
-            throw Error.generic
+        let writer = TemplateWriter(destination: self.folder)
+        try writer.write(contents, to: path, context: context)
+    }
+    
+    public func execute (specName: String? = nil, boneName: String, with context: BoneContext) throws {
+        
+        guard let spec = specs
+            .first(where: {
+                if let specName = specName {
+                    return $0.key == specName && $0.value.object[boneName] != nil
+                } else {
+                    return $0.value.object[boneName] != nil
+                }
+            })?.value else {
+                throw CustomError.boneGroupNotFound(name: boneName, spec: specName)
         }
         
         guard let group = spec.object[boneName] else {
-            throw Error.generic
+            throw CustomError.boneGroupNotFound(name: boneName, spec: specName)
         }
         
-        let items = try group.itemPaths.compactMap {
-            try spec.file.parent?.file(atPath: $0)
-        }.map {
-            try ObjectWithPath(file: $0, object: $0.decodable(BoneItem.self))
-        }
-        try items.forEach {
-            let reader = TemplateReader(source: $0.file.parent!)
-            try $0.object?.paths.forEach({ (path) in
-                let contents = try reader
-                    .file(from: path, context: context)
-                    .readAsString()
-                    .resolved(with: context)
-                
-                let writer = TemplateWriter(destination: self.folder)
-                try writer.write(contents, to: path, context: context)
+        let items = try self.items(from: spec, group: group)
+        
+        try items.forEach { item in
+            guard let folder = item.file.parent else { throw CustomError.generic }
+            try item.object.paths.forEach({ (path) in
+                try self.transform(path: path, sourceFolder: folder, with: context)
             })
         }
-//        guard let group = specs.values
-//            .flatMap ({ $0.groups })
-//            .filter ({ $0.name == boneName })
-//                .first else {
-//                    throw Error.generic
-//        }
-        
-        
-        
-//        let reader = TemplateReader(source: folder)
-//        group.itemPaths.map {
-//
-//        }
     }
 }
 

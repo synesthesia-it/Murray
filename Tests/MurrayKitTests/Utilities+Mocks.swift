@@ -14,11 +14,11 @@ struct Mocks {
     
     struct Murrayfile {
         
-        static var simple: String {
+        static func simple(specPath: String = "Murray/Simple/Simple.json") -> String {
             return  """
                 {
                     
-                    "specPaths": ["Murray/Simple/Simple.json"]
+                    "specPaths": ["\(specPath)"]
                 }
                 """
         }
@@ -34,9 +34,26 @@ struct Mocks {
                 }
             """
         }
+        static func singleGroup(named name: String, items:[String]) -> String {
+            return """
+                {
+                    "name": "singleGroup",
+                    "description": "Simple bone spec for testing purposes",
+            "groups": [\(Mocks.BoneGroup.group(named: name, items: items))]
+                }
+            """
+        }
     }
     
     struct BoneGroup {
+        static func group(named name: String, items: [String] ) -> String {
+            return """
+                    {
+                        "name": "\(name)",
+                        "items": \(items.map{"\($0.firstUppercased())/\($0.firstUppercased()).json"})
+                    }
+                    """
+        }
         static var simple: String {
 
             return  """
@@ -67,16 +84,17 @@ struct Mocks {
                        }
                    ]
                }
-               """ }
+               """
+        }
         static func customBone(named name: String) -> String { """
             {
                 "name": "\(name)",
                 "paths": [
-                    { "from": "path/from/bone.swift",
-                      "to": "path/to/{{ \(name) }}/{{ \(name) }}.swift"
+                    { "from": "Bone.swift",
+                        "to": "Sources/Files/\(name.firstUppercased())/{{name|firstUppercase}}.swift"
                     },
-                    { "from": "path/from/bone.xib",
-                      "to": "path/to/{{ \(name) }}/{{ \(name) }}.xib"
+                    { "from": "Bone.xib",
+                      "to": "Sources/Files/\(name.firstUppercased())/{{name|firstUppercase}}.xib"
                     }
                 ],
                 "parameters": [
@@ -96,20 +114,39 @@ struct Mocks {
 extension Mocks {
     struct Scenario {
         static func simple(from root: Folder) throws {
-                   let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple, folder: root, path: BonePath(from: "Murrayfile.json", to: "output/{{name}}.swift"))
-                                murrayFile.createSource()
-                                
-            //                    let boneFolder = try! templatesFolder.createSubfolderIfNeeded(withName: "Simple")
-                                let boneSpec = ConcreteFile(contents: Mocks.BoneSpec.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: "output/{{name}}.swift"))
-                                boneSpec.createSource()
-                                
-            //                    let itemFolder = try! boneFolder.createSubfolderIfNeeded(withName: "SimpleItem")
-                                
-                                let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simple, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: "output/{{name}}.swift"))
-                                simpleItem.createSource()
-                                
-                                let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: "output/{{name}}.swift"))
-                                simpleFile.createSource()
+            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
+            murrayFile.createSource()
+            
+            let boneSpec = ConcreteFile(contents: Mocks.BoneSpec.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
+            boneSpec.createSource()
+            
+            let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simple, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
+            simpleItem.createSource()
+            
+            let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))
+            simpleFile.createSource()
+        }
+        
+        
+        static func multipleItemsSingleGroup(names: [String], from root: Folder) throws {
+            let specPath = "Murray/SingleGroup/SingleGroup.json"
+            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(specPath: specPath), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
+            murrayFile.createSource()
+            
+            let boneSpec = ConcreteFile(contents: Mocks.BoneSpec.singleGroup(named: "singleGroup", items: names), folder: root, path: BonePath(from: specPath, to: ""))
+            boneSpec.createSource()
+            
+            
+            
+            names.forEach { name in
+                let simpleItem = ConcreteFile(contents: Mocks.BoneItem.customBone(named: name), folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/\(name.firstUppercased()).json", to: ""))
+                           simpleItem.createSource()
+                           
+                ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.swift", to: "output/{{name}}.swift")).createSource()
+                ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.xib", to: "output/{{name}}.swift")).createSource()
+            }
+            
+           
         }
     }
 }

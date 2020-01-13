@@ -16,7 +16,11 @@ public extension Folder {
         let filename: String
         
         func file() throws -> File {
-            return try folder.file(named: filename)
+            do {
+                return try folder.file(named: filename)
+            } catch {
+                throw MurrayKit.CustomError.fileNotFound(path: filename, folder: folder)
+            }
         }
         
         init(path: String, in folder: Folder) throws {
@@ -26,12 +30,16 @@ public extension Folder {
             
             guard let filename = components.last else {
                 //filename not found. exit.
-                throw MurrayKit.Error.generic
+                throw MurrayKit.CustomError.invalidPath(path: path)
             }
             
             self.filename = filename
             try self.folder = subfolders.reduce(folder) {
-                 try $0.createSubfolderIfNeeded(withName: $1)
+                do {
+                    return try $0.createSubfolderIfNeeded(withName: $1)
+                } catch {
+                    throw CustomError.unableToCreateFolder(path: $1, folder: $0)
+                }
             }
         }
     }
@@ -43,15 +51,23 @@ public extension Folder {
         
         if subElement.folder.containsFile(named: subElement.filename) {
             //File already exist. exit
-            throw MurrayKit.Error.generic
+            throw MurrayKit.CustomError.fileNotFound(path: subElement.filename, folder: subElement.folder)
         }
-        return try subElement.folder.createFile(named: subElement.filename, contents: contents)
+        do {
+            return try subElement.folder.createFile(named: subElement.filename, contents: contents)
+        } catch {
+            throw MurrayKit.CustomError.unableToCreateFile(path: subElement.filename, folder: subElement.folder, contents: contents)
+        }
     }
     
     func decodable<T: JSONDecodable>(_ type: T.Type, at path: String) throws -> T? {
         let element = try SubElement(path: path, in: self)
         let file = try element.file()
-        return try file.decodable(T.self)
+        
+        guard let decoded: T = try file.decodable(T.self) else {
+            throw MurrayKit.CustomError.undecodable(file: file, type: T.self)
+        }
+        return decoded
     }
 }
 

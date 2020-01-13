@@ -16,12 +16,16 @@ public class TemplateWriter {
     public init(destination: Folder) {
         self.destination = destination
     }
+    
+    @discardableResult
     public func write(_ contents: String, to path: BonePath, context: BoneContext) throws -> File {
         guard let data = try contents.resolved(with: context).data(using: .utf8) else {
-            throw Error.generic
+            throw CustomError.generic
         }
         return try write(data, to: path, context: context)
     }
+    
+    @discardableResult
     public func write(_ contents: Data, to path: BonePath, context: BoneContext) throws -> File {
         let relativePath = try path.to.resolved(with: context)
         

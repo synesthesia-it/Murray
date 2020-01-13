@@ -8,17 +8,17 @@
 import Foundation
 import Gloss
 
-struct MurrayFile: Glossy {
+public struct MurrayFile: Glossy {
 
-    let specPaths: [String]
-    let environment: JSON
+    public let specPaths: [String]
+    public let environment: JSON
     
-    init?(json: JSON) {
+    public init?(json: JSON) {
         self.specPaths = "specPaths" <~~ json ?? []
         self.environment = "environment" <~~ json ?? [:]
     }
     
-    func toJSON() -> JSON? {
+    public func toJSON() -> JSON? {
          return jsonify([
         "specPaths" ~~> specPaths,
         "environment" ~~> environment

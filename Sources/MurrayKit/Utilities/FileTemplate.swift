@@ -41,9 +41,12 @@ public final class FileTemplate {
         }
         let environment = Environment(extensions: [ext])
 
-        let rendered = try environment.renderTemplate(string: contents, context: context)
+        do {
+           return try environment.renderTemplate(string: contents, context: context)
+        } catch  {
+            throw CustomError.unresolvableString(string: contents, context: context)
+        }
 
-        return rendered
     }
 
 }
