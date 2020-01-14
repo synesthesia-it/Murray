@@ -17,11 +17,11 @@ public class TemplateReader {
     
     public func file(from path: BonePath, context: BoneContext) throws -> File {
         let relativePath = try path.from.resolved(with: context)
-        return try source.file(atPath: relativePath)
+        return try source.file(at: relativePath)
     }
     
     public func string(from path: BonePath, context: BoneContext) throws -> String {
-        return try file(from: path, context: context).readAsString(encoding: .utf8)
+        return try file(from: path, context: context).readAsString(encodedAs: .utf8)
     }
     
 //    public func decodable<T: JSONDecodable>(from path: BonePath, context: BoneContext, type: T.Type) throws -> T? {

@@ -1,6 +1,9 @@
 import Foundation
 import Gloss
-
+/**
+    A structure representing a list of file templates to be resolved against BoneContexts and copied to target folders.
+ 
+ */
 public struct BoneItem: Glossy {
 
     public let name: String

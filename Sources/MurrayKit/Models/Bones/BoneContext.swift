@@ -7,4 +7,9 @@
 
 import Foundation
 
-public typealias BoneContext = JSON
+public struct BoneContext {
+    public let context: JSON
+    public init(_ values: JSON, environment: JSON = [:]) {
+        context = environment.merging(values, uniquingKeysWith: { e, v in return v })
+    }
+}

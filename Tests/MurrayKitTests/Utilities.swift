@@ -34,7 +34,8 @@ struct ConcreteFile {
 
 extension QuickSpec {
     func tempFolder(for subfolder: String) -> Folder {
-        let root = try! FileSystem().temporaryFolder
+        
+        let root = try! Folder.temporary
         .createSubfolderIfNeeded(withName: "Murray")
         //.createSubfolderIfNeeded(withName: "BoneWriter")
         let folder = subfolder

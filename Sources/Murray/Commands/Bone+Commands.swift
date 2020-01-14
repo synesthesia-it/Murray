@@ -1,14 +1,33 @@
-////
-////  Bone+Commands.swift
-////  MurrayKit
-////
-////  Created by Stefano Mondino on 04/01/2019.
-////
 //
-//import Foundation
-//import Commander
-//import MurrayKit
-//extension Bone {
+//  Bone+Commands.swift
+//  MurrayKit
+//
+//  Created by Stefano Mondino on 04/01/2019.
+//
+
+import Foundation
+import Files
+import Commander
+import MurrayKit
+struct Bone {
+        static func commands(for group: Group) {
+    
+            group.group("bone") {
+                $0.command("list",
+                           Flag("verbose"),
+                           description: "Setup project to use bones cloned from repositories specified in Skeletonspec.json") { verbose in
+                            
+                            let folder = Folder.current
+                            let pipeline = try BonePipeline(folder: folder)
+                            let list = try pipeline.list()
+                            let strings = list.map { "\($0.spec).\($0.group)"}
+                            strings.forEach { Logger.log($0)}
+                }
+                           
+                
+            }
+    }
+}
 //    static func commands(for group: Group) {
 //        
 //        group.group("bone") {

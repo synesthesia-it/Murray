@@ -30,7 +30,7 @@ class TemplateReaderSpec: QuickSpec {
                     
                 }
                 it("should read template from source") {
-                    let context = ["name": "Custom"]
+                    let context = BoneContext(["name": "Custom"])
                     expect { try reader.file(from: item.path, context: context) }.notTo(beNil())
                     expect { try reader.string(from: item.path, context: context) } == item.contents
                     

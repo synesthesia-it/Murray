@@ -17,7 +17,9 @@ struct Mocks {
         static func simple(specPath: String = "Murray/Simple/Simple.json") -> String {
             return  """
                 {
-                    
+                    "environment": {
+                        "author": "Stefano Mondino"
+                    },
                     "specPaths": ["\(specPath)"]
                 }
                 """
@@ -142,7 +144,7 @@ extension Mocks {
                 let simpleItem = ConcreteFile(contents: Mocks.BoneItem.customBone(named: name), folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/\(name.firstUppercased()).json", to: ""))
                            simpleItem.createSource()
                            
-                ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.swift", to: "output/{{name}}.swift")).createSource()
+                ConcreteFile(contents: "{{name}}Test - {{ author }}", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.swift", to: "output/{{name}}.swift")).createSource()
                 ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.xib", to: "output/{{name}}.swift")).createSource()
             }
             

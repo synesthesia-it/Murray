@@ -11,10 +11,10 @@ import Files
 public struct BonePipeline {
     
     public struct ObjectWithPath<T> {
-        let file: File
-        let object: T
+        public let file: File
+        public let object: T
         
-        init (file: File, object: T?) throws {
+        public init (file: File, object: T?) throws {
             guard let object = object else {
                 throw CustomError.generic
             }
@@ -24,10 +24,10 @@ public struct BonePipeline {
     }
     
     public struct TreeObject {
-        let murrayFile: MurrayFile
-        let spec: ObjectWithPath<BoneSpec>
-        let group: BoneGroup
-        let item: ObjectWithPath<BoneItem>
+        public let murrayFile: MurrayFile
+        public let spec: ObjectWithPath<BoneSpec>
+        public let group: BoneGroup
+        public let item: ObjectWithPath<BoneItem>
     }
     
     public let murrayFile: MurrayFile
@@ -47,7 +47,7 @@ public struct BonePipeline {
             
             .reduce([:]) {
                 var specs = $0
-                let file = try folder.file(atPath: $1)
+                let file = try folder.file(at: $1)
                 guard let spec = try file.decodable(BoneSpec.self)
                     else { throw CustomError.undecodable(file: file, type: BoneSpec.self) }
                 specs[spec.name] = try ObjectWithPath(file: file, object: spec)
@@ -71,7 +71,7 @@ public struct BonePipeline {
     
     func items(from spec: ObjectWithPath<BoneSpec>, group: BoneGroup) throws -> [ObjectWithPath<BoneItem>] {
         return try group.itemPaths
-            .compactMap { try spec.file.parent?.file(atPath: $0) }
+            .compactMap { try spec.file.parent?.file(at: $0) }
             .map { try ObjectWithPath(file: $0, object: $0.decodable(BoneItem.self)) }
     }
     public func transform(path: BonePath, sourceFolder: Folder, with context:BoneContext) throws {
@@ -85,8 +85,8 @@ public struct BonePipeline {
         try writer.write(contents, to: path, context: context)
     }
     
-    public func execute (specName: String? = nil, boneName: String, with context: BoneContext) throws {
-        
+    public func execute (specName: String? = nil, boneName: String, with json: JSON) throws {
+        let context = BoneContext(json, environment: murrayFile.environment)
         guard let spec = specs
             .first(where: {
                 if let specName = specName {

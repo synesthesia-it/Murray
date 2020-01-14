@@ -10,9 +10,9 @@ import Stencil
 
 public final class FileTemplate {
     private var contents: String
-    private var context: [String: Any]
+    private var context: BoneContext
     
-    public init(fileContents: String, context: [String: Any]) {
+    public init(fileContents: String, context: BoneContext) {
         self.contents = fileContents
         self.context = context
     }
@@ -42,7 +42,7 @@ public final class FileTemplate {
         let environment = Environment(extensions: [ext])
 
         do {
-           return try environment.renderTemplate(string: contents, context: context)
+            return try environment.renderTemplate(string: contents, context: context.context)
         } catch  {
             throw CustomError.unresolvableString(string: contents, context: context)
         }
@@ -52,7 +52,7 @@ public final class FileTemplate {
 }
 
 extension String {
-    func resolved(with context: [String: Any]) throws -> String {
+    func resolved(with context: BoneContext) throws -> String {
         return try FileTemplate(fileContents: self, context: context).render()
     }
 }

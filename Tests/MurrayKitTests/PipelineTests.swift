@@ -32,7 +32,7 @@ class PipelineSpec: QuickSpec {
                         expect { try pipeline.execute(boneName:"simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
                         
                         expect {
-                            let fileContents = try root.file(atPath: "Sources/Files/simple/simple.swift").readAsString()
+                            let fileContents = try root.file(at: "Sources/Files/simple/simple.swift").readAsString()
                             expect(fileContents) == "simpleTest"
                             return fileContents
                         }
@@ -45,13 +45,12 @@ class PipelineSpec: QuickSpec {
                     expect { try BonePipeline(folder: root).execute(specName: "simple", boneName:"simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
                 }
             }
+            
         describe("for single group, multiple bone items") {
                 let names = ["test1","test2","test3"]
                 beforeEach {
-                    
                     try! root.empty()
                     try! Mocks.Scenario.multipleItemsSingleGroup(names:names, from: root)
-                    
                 }
                 it("should properly create data in target folder") {
                     
@@ -61,8 +60,8 @@ class PipelineSpec: QuickSpec {
                         expect { try pipeline.execute(boneName:"singleGroup", with: ["name": "someTest"]) }.notTo(throwError())
                         
                         expect {
-                            let fileContents = try root.file(atPath: "Sources/Files/Test1/SomeTest.swift").readAsString()
-                            expect(fileContents) == "someTestTest"
+                            let fileContents = try root.file(at: "Sources/Files/Test1/SomeTest.swift").readAsString()
+                            expect(fileContents) == "someTestTest - Stefano Mondino"
                             return fileContents
                         }
                         .notTo(throwError())

@@ -29,7 +29,7 @@ class TemplateWriterSpec: QuickSpec {
                 }
                 it("should write resolved items to proper destination") {
                     
-                    let context = ["name": "Custom"]
+                    let context = BoneContext(["name": "Custom"])
                     expect {
                         
                         let file = try writer.write(item.contents, to: item.path, context: context)
@@ -41,6 +41,5 @@ class TemplateWriterSpec: QuickSpec {
         }
     }
 }
-
 
 
