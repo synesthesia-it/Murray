@@ -37,20 +37,65 @@ public enum LogLevel: Int {
     }
 }
 
-public final class Logger {
 
-    public static var logLevel: LogLevel = .network
-    public static func log(_ message: String, level: LogLevel = .error, tag: String? = nil) {
-        if (self.logLevel.rawValue > level.rawValue) { return }
+public protocol LoggerType: AnyObject {
+    var logLevel: LogLevel { get set }
+    func log(_ message: String, level: LogLevel, tag: String?)
+}
+
+open class ConsoleLogger: LoggerType {
+
+    public var logLevel: LogLevel
+    
+    public init(logLevel: LogLevel) {
+        self.logLevel = logLevel
+    }
+    
+    open func string(_ message: String, level: LogLevel, tag: String?) -> String? {
+        if (self.logLevel.rawValue > level.rawValue) { return nil }
 
         let string =
         """
         \([
-        [level.symbol, tag].compactMap {$0}.filter { $0.count > 0 }.joined(separator: " "),
-        level.colorize(string: message)].compactMap { $0 }.filter { $0.count > 0 }.joined(separator: ": ")
+            [level.symbol, tag]
+                .compactMap { $0 }
+                .filter { $0.count > 0 }
+                .joined(separator: " "),
+            level
+                .colorize(string: message)
+        ]
+        .compactMap { $0 }
+        .filter { $0.count > 0 }
+        .joined(separator: ": ")
         )
         """
+        return string
+    }
+    
+    open func log(_ message: String, level: LogLevel, tag: String?) {
+        guard let string = self.string(message, level: level, tag: tag) else { return }
         print (string)
+    }
+}
 
+public final class TestLogger: ConsoleLogger {
+    
+    public var lastMessage: String?
+    
+    override public func log(_ message: String, level: LogLevel, tag: String?) {
+        guard let string = self.string(message, level: level, tag: tag) else { return }
+        print (string)
+        self.lastMessage = message
+    }
+}
+
+public final class Logger {
+    public static var logger: LoggerType = ConsoleLogger(logLevel: .network)
+    public static var logLevel: LogLevel {
+        get { logger.logLevel }
+        set { logger.logLevel = newValue }
+    }
+    public static func log(_ message: String, level: LogLevel = .error, tag: String? = nil) {
+        logger.log(message, level: level, tag: tag)
     }
 }

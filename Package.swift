@@ -7,6 +7,7 @@ let package = Package(
     name: "Murray",
     products: [
         .executable(name: "murray", targets: ["Murray"]),
+        .library(name: "MurrayCLI", targets: ["MurrayCLI"]),
         .library(name: "MurrayKit", targets: ["MurrayKit"])
         ],
     dependencies: [
@@ -28,13 +29,14 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-        .target(name: "Murray", dependencies: ["MurrayKit", "Commander"]),
+        .target(name: "Murray", dependencies: ["MurrayCLI"]),
+        .target(name: "MurrayCLI", dependencies: ["MurrayKit", "Commander"]),
         .target(name: "MurrayKit", dependencies:
             ["Files", "ShellOut", "Rainbow", "Stencil", "Gloss"]
         ),
         .testTarget(
-            name: "MurrayTests",
-            dependencies: ["Murray", "MurrayKit", "Files", "Quick", "Nimble", "Rainbow"]
+            name: "MurrayCLITests",
+            dependencies: ["MurrayCLI", "MurrayKit", "Files", "Quick", "Nimble", "Rainbow"]
         ),
         .testTarget(
             name: "MurrayKitTests",

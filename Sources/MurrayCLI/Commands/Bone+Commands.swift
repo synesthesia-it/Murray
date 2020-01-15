@@ -20,7 +20,7 @@ struct Bone {
                             let folder = Folder.current
                             let pipeline = try BonePipeline(folder: folder)
                             let list = try pipeline.list()
-                            let strings = list.map { "\($0.spec).\($0.group)"}
+                            let strings = list.map { "\($0.spec.object.name).\($0.group.name)"}
                             strings.forEach { Logger.log($0)}
                 }
                            
