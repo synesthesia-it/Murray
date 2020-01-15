@@ -9,7 +9,7 @@ import Foundation
 import Quick
 import Nimble
 import Files
-
+import Utilities
 @testable import MurrayKit
 
 class PipelineSpec: QuickSpec {

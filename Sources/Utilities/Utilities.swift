@@ -9,30 +9,34 @@ import Foundation
 import Files
 import Quick
 import Gloss
-@testable import MurrayKit
+import MurrayKit
 
-struct ConcreteFile {
-    let contents: String
-    let folder: Folder
-    let path: BonePath
-
-    func resolved(with context:BoneContext) -> String {
+public struct ConcreteFile {
+    public let contents: String
+    public let folder: Folder
+    public let path: BonePath
+    public init(contents: String, folder: Folder, path: BonePath) {
+        self.contents = contents
+        self.folder = folder
+        self.path = path
+    }
+    public func resolved(with context:BoneContext) -> String {
         return try! contents.resolved(with: context)
     }
     @discardableResult
-    func createSource() -> File {
+    public func createSource() -> File {
         let relativePath =  path.from
         return try! folder.createFileWithIntermediateFolders(at: relativePath, contents: contents.data(using: .utf8) ?? Data())
     }
     
     @discardableResult
-    func createDestination(with context:BoneContext) -> File {
+    public func createDestination(with context:BoneContext) -> File {
         let relativePath = try! path.to.resolved(with: context)
         return try! folder.createFileWithIntermediateFolders(at: relativePath, contents: resolved(with: context).data(using: .utf8) ?? Data())
       }
 }
 
-extension QuickSpec {
+public extension QuickSpec {
     func tempFolder(for subfolder: String) -> Folder {
         
         let root = try! Folder.temporary
@@ -50,7 +54,7 @@ extension QuickSpec {
         return folder
     }
 }
-extension JSON {
+public extension JSON {
     static func from(_ string: String) -> JSON {
         return try! JSONSerialization.jsonObject(with: string.data(using: .utf8)!, options: []) as! JSON
     }

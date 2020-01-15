@@ -51,7 +51,7 @@ public final class FileTemplate {
 
 }
 
-extension String {
+public extension String {
     func resolved(with context: BoneContext) throws -> String {
         return try FileTemplate(fileContents: self, context: context).render()
     }

@@ -8,13 +8,13 @@
 import Foundation
 import Files
 
-@testable import MurrayKit
+import MurrayKit
 
-struct Mocks {
+public struct Mocks {
     
-    struct Murrayfile {
+    public struct Murrayfile {
         
-        static func simple(specPath: String = "Murray/Simple/Simple.json") -> String {
+        public static func simple(specPath: String = "Murray/Simple/Simple.json") -> String {
             return  """
                 {
                     "environment": {
@@ -26,8 +26,8 @@ struct Mocks {
         }
     }
     
-    struct BoneSpec {
-        static var simple: String {
+    public struct BoneSpec {
+        public static var simple: String {
             return """
                 {
                     "name": "simple",
@@ -36,7 +36,7 @@ struct Mocks {
                 }
             """
         }
-        static func singleGroup(named name: String, items:[String]) -> String {
+        public static func singleGroup(named name: String, items:[String]) -> String {
             return """
                 {
                     "name": "singleGroup",
@@ -47,8 +47,8 @@ struct Mocks {
         }
     }
     
-    struct BoneGroup {
-        static func group(named name: String, items: [String] ) -> String {
+    public struct BoneGroup {
+        public static func group(named name: String, items: [String] ) -> String {
             return """
                     {
                         "name": "\(name)",
@@ -56,7 +56,7 @@ struct Mocks {
                     }
                     """
         }
-        static var simple: String {
+        public static var simple: String {
 
             return  """
                 {
@@ -67,8 +67,8 @@ struct Mocks {
         }
     }
     
-    struct BoneItem {
-        static var simple: String { """
+    public struct BoneItem {
+        public static var simple: String { """
                {
                    "name": "simpleItem",
                    "paths": [
@@ -88,7 +88,7 @@ struct Mocks {
                }
                """
         }
-        static func customBone(named name: String) -> String { """
+        public static func customBone(named name: String) -> String { """
             {
                 "name": "\(name)",
                 "paths": [
@@ -113,9 +113,9 @@ struct Mocks {
     }
 }
 
-extension Mocks {
+public extension Mocks {
     struct Scenario {
-        static func simple(from root: Folder) throws {
+        public static func simple(from root: Folder) throws {
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
             murrayFile.createSource()
             
@@ -130,7 +130,7 @@ extension Mocks {
         }
         
         
-        static func multipleItemsSingleGroup(names: [String], from root: Folder) throws {
+        public static func multipleItemsSingleGroup(names: [String], from root: Folder) throws {
             let specPath = "Murray/SingleGroup/SingleGroup.json"
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(specPath: specPath), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
             murrayFile.createSource()

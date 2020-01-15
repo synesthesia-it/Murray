@@ -8,7 +8,8 @@ let package = Package(
     products: [
         .executable(name: "murray", targets: ["Murray"]),
         .library(name: "MurrayCLI", targets: ["MurrayCLI"]),
-        .library(name: "MurrayKit", targets: ["MurrayKit"])
+        .library(name: "MurrayKit", targets: ["MurrayKit"]),
+        .library(name: "Utilities", targets: ["Utilities"]),
         ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -34,13 +35,17 @@ let package = Package(
         .target(name: "MurrayKit", dependencies:
             ["Files", "ShellOut", "Rainbow", "Stencil", "Gloss"]
         ),
+        .target(
+            name: "Utilities",
+            dependencies: ["MurrayKit", "Files", "Quick", "Nimble", "Rainbow"]
+        ),
         .testTarget(
             name: "MurrayCLITests",
-            dependencies: ["MurrayCLI", "MurrayKit", "Files", "Quick", "Nimble", "Rainbow"]
+            dependencies: ["MurrayCLI", "Utilities"]
         ),
         .testTarget(
             name: "MurrayKitTests",
-            dependencies: ["MurrayKit", "Files", "Quick", "Nimble", "Rainbow"]
+            dependencies: ["MurrayKit", "Utilities"]
         )
     ]
 )

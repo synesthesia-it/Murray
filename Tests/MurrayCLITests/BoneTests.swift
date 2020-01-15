@@ -5,6 +5,7 @@ import Quick
 import Nimble
 import Files
 import MurrayKit
+import Utilities
 @testable import MurrayCLI
 
 class BoneTestSpec: QuickSpec {
