@@ -31,7 +31,7 @@ class BoneTestSpec: QuickSpec {
                     expect {
                         
                         try menu.run(["bone","list"])
-                        expect(logger.lastMessage) == "simple.simpleGroup"
+                        expect(logger.lastMessage) == "simple.simpleGroup: custom description"
                         return ()
                     }.toNot(throwError())
                     

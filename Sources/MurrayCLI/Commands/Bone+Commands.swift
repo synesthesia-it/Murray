@@ -9,22 +9,21 @@ import Foundation
 import Files
 import Commander
 import MurrayKit
+import ShellOut
 struct Bone {
         static func commands(for group: Group) {
     
             group.group("bone") {
                 $0.command("list",
                            Flag("verbose"),
-                           description: "Setup project to use bones cloned from repositories specified in Skeletonspec.json") { verbose in
+                           description: "List all available bones.") { verbose in
                             
                             let folder = Folder.current
                             let pipeline = try BonePipeline(folder: folder)
                             let list = try pipeline.list()
-                            let strings = list.map { "\($0.spec.object.name).\($0.group.name)"}
+                            let strings = list.map { "\($0.spec.object.name).\($0.group.name): \($0.group.description ?? "")"}
                             strings.forEach { Logger.log($0)}
                 }
-                           
-                
             }
     }
 }

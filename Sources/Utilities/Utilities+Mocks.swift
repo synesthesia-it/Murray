@@ -52,6 +52,7 @@ public struct Mocks {
             return """
                     {
                         "name": "\(name)",
+                        "description": "custom description",
                         "items": \(items.map{"\($0.firstUppercased())/\($0.firstUppercased()).json"})
                     }
                     """
@@ -61,6 +62,7 @@ public struct Mocks {
             return  """
                 {
                     "name": "simpleGroup",
+                    "description": "custom description",
                     "items": ["SimpleItem/SimpleItem.json"]
                 }
             """
@@ -75,6 +77,7 @@ public struct Mocks {
         public static var simple: String { """
                {
                    "name": "simpleItem",
+                    "description": "custom description",
                    "paths": [
                        { "from": "Bone.swift",
                          "to": "Sources/Files/{{ name }}/{{ name }}.swift"
@@ -108,6 +111,8 @@ public struct Mocks {
         public static func customBone(named name: String) -> String { """
             {
                 "name": "\(name)",
+            
+                "description": "custom description",
                 "paths": [
                     { "from": "Bone.swift",
                         "to": "Sources/Files/\(name.firstUppercased())/{{name|firstUppercase}}.swift"
