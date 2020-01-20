@@ -44,12 +44,12 @@ public extension Folder {
         }
     }
     
-    func createFileWithIntermediateFolders(at path: String, contents: Data) throws -> File {
+    func createFileWithIntermediateFolders(at path: String, contents: Data, overwriteContents: Bool = false) throws -> File {
         
             
         let subElement = try SubElement(path: path, in: self)
         
-        if subElement.folder.containsFile(named: subElement.filename) {
+        if subElement.folder.containsFile(named: subElement.filename) && overwriteContents == false {
             //File already exist. exit
             throw MurrayKit.CustomError.fileNotFound(path: subElement.filename, folder: subElement.folder)
         }

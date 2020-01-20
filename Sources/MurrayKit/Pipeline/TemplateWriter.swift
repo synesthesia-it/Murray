@@ -18,18 +18,26 @@ public class TemplateWriter {
     }
     
     @discardableResult
-    public func write(_ contents: String, to path: BonePath, context: BoneContext) throws -> File {
+    public func write(_ contents: String, to path: String, context: BoneContext, overwriteContents: Bool = false) throws -> File {
         guard let data = try contents.resolved(with: context).data(using: .utf8) else {
             throw CustomError.generic
         }
-        return try write(data, to: path, context: context)
+        return try write(data, to: path, context: context, overwriteContents: overwriteContents)
+    }
+    @discardableResult
+    public func write(_ contents: String, to path: BonePath, context: BoneContext, overwriteContents: Bool = false) throws -> File {
+        try write(contents, to: path.to, context: context, overwriteContents: overwriteContents)
     }
     
     @discardableResult
-    public func write(_ contents: Data, to path: BonePath, context: BoneContext) throws -> File {
-        let relativePath = try path.to.resolved(with: context)
+    public func write(_ contents: Data, to path: BonePath, context: BoneContext, overwriteContents: Bool = false) throws -> File {
+        return try self.write(contents, to: path.to, context: context, overwriteContents: overwriteContents)
+    }
+    @discardableResult
+    public func write(_ contents: Data, to path: String, context: BoneContext, overwriteContents: Bool = false) throws -> File {
+        let relativePath = try path.resolved(with: context)
         
-        return try destination.createFileWithIntermediateFolders(at: relativePath, contents: contents)
+        return try destination.createFileWithIntermediateFolders(at: relativePath, contents: contents, overwriteContents: overwriteContents)
     
     }
 }

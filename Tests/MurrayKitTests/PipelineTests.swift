@@ -37,6 +37,19 @@ class PipelineSpec: QuickSpec {
                             return fileContents
                         }
                         .notTo(throwError())
+                        
+                        expect {
+                            let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath).readAsString()
+                            expect(fileContents) == "This is a test\nsimple\(Mocks.BoneItem.placeholder)\n\nEnjoy"
+                            return fileContents
+                        }.notTo(throwError())
+                        
+                        expect {
+                            let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath2).readAsString()
+                            expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
+                            return fileContents
+                        }.notTo(throwError())
+                        
                         return pipeline
                     }.notTo(throwError())
                     
@@ -46,7 +59,7 @@ class PipelineSpec: QuickSpec {
                 }
             }
             
-        describe("for single group, multiple bone items") {
+            describe("for single group, multiple bone items") {
                 let names = ["test1","test2","test3"]
                 beforeEach {
                     try! root.empty()
@@ -64,12 +77,13 @@ class PipelineSpec: QuickSpec {
                             expect(fileContents) == "someTestTest - Stefano Mondino"
                             return fileContents
                         }
+             
                         .notTo(throwError())
                         return pipeline
                     }.notTo(throwError())
                     
                 }
-        
+                
             }
         }
     }

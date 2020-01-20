@@ -35,6 +35,7 @@ public struct BonePipeline {
     let specs: [String: ObjectWithPath<BoneSpec>]
     let folder: Folder
     var tree: [TreeObject] = []
+    
     public init(folder: Folder, murrayFileName: String = "Murrayfile.json") throws {
         
         guard let file = try folder.file(named: murrayFileName).decodable(MurrayFile.self) else {
@@ -85,6 +86,35 @@ public struct BonePipeline {
         try writer.write(contents, to: path, context: context)
     }
     
+    public func replace(from replacement: BoneReplacement, sourceFolder: Folder, with context: BoneContext) throws {
+        
+        let reader = TemplateReader(source: self.folder)
+        let contents = try reader
+            .file(from: replacement.destinationPath, context: context)
+            .readAsString()
+        
+        let text: String
+        
+        if let source = replacement.sourcePath {
+            
+            let sourceReader = TemplateReader(source: sourceFolder)
+            text = try sourceReader
+            .file(from: source, context: context)
+            .readAsString()
+            .resolved(with: context)
+            
+        } else if let inline = replacement.text {
+           text = try inline.resolved(with: context)
+        } else {
+            throw CustomError.fileNotFound(path: replacement.sourcePath ?? "", folder: sourceFolder)
+        }
+
+        let replaced = contents.replacingOccurrences(of: replacement.placeholder, with: text + replacement.placeholder)
+        
+        let writer = TemplateWriter(destination: self.folder)
+        try writer.write(replaced, to: replacement.destinationPath, context: context, overwriteContents: true)
+    }
+    
     public func execute (specName: String? = nil, boneName: String, with json: JSON) throws {
         let context = BoneContext(json, environment: murrayFile.environment)
         guard let spec = specs
@@ -108,6 +138,9 @@ public struct BonePipeline {
             guard let folder = item.file.parent else { throw CustomError.generic }
             try item.object.paths.forEach({ (path) in
                 try self.transform(path: path, sourceFolder: folder, with: context)
+            })
+            try item.object.replacements.forEach({ replacement in
+                try self.replace(from: replacement, sourceFolder: folder, with: context)
             })
         }
     }

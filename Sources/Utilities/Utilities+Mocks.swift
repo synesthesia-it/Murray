@@ -68,6 +68,10 @@ public struct Mocks {
     }
     
     public struct BoneItem {
+        public static let placeholderFileContents = "This is a test\n\(placeholder)\n\nEnjoy"
+        public static let placeholder = "//Murray Placeholder"
+        public static let placeholderFilePath = "Sources/Files/Default/Test.swift"
+        public static let placeholderFilePath2 = "Sources/Files/Default/Test2.swift"
         public static var simple: String { """
                {
                    "name": "simpleItem",
@@ -76,6 +80,19 @@ public struct Mocks {
                          "to": "Sources/Files/{{ name }}/{{ name }}.swift"
                        }
                    ],
+                   "replacements": [
+                        {
+                            "text": "{{ name }}",
+                            "placeholder": "\(placeholder)",
+                            "destination": "\(placeholderFilePath)"
+                        },
+                        {
+                            "text": "{{ name }}",
+                            "source": "Replacement.swift",
+                            "placeholder": "\(placeholder)",
+                            "destination": "\(placeholderFilePath2)"
+                        }
+                    ],
                    "parameters": [
                        {
                        "name": "name",
@@ -127,6 +144,14 @@ public extension Mocks {
             
             let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))
             simpleFile.createSource()
+            
+            let replacementFile = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath, to: ""))
+            replacementFile.createSource()
+            let replacementFile2 = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath2, to: ""))
+            replacementFile2.createSource()
+            
+            let templateFile = ConcreteFile(contents: "testing {{ name }} in place\n", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Replacement.swift", to: ""))
+            templateFile.createSource()
         }
         
         
@@ -147,7 +172,8 @@ public extension Mocks {
                 ConcreteFile(contents: "{{name}}Test - {{ author }}", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.swift", to: "output/{{name}}.swift")).createSource()
                 ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.xib", to: "output/{{name}}.swift")).createSource()
             }
-            
+            let replacementFile = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath, to: ""))
+            replacementFile.createSource()
            
         }
     }
