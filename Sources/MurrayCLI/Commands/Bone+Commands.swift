@@ -22,7 +22,7 @@ struct Bone {
                             let pipeline = try BonePipeline(folder: folder)
                             let list = try pipeline.list()
                             let strings = list.map { "\($0.spec.object.name).\($0.group.name): \($0.group.description ?? "")"}
-                            strings.forEach { Logger.log($0)}
+                            strings.forEach { Logger.log($0) }
                 }
                 $0.command("new",
                                        Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
@@ -38,6 +38,9 @@ struct Bone {
                                 
                                 let pipeline = try BonePipeline(folder: Folder.current, murrayFileName: "Murrayfile.json", pluginManager: .shared)
                                 try pipeline.execute(boneName: boneName, with: ["name": mainPlaceholder])
+                                
+                                var context:JSON = ["name": mainPlaceholder]
+                                
                                 
 //                                guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
 //                                    var context = jsonConversion as? Bone.Context else {
