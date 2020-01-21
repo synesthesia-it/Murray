@@ -24,6 +24,39 @@ struct Bone {
                             let strings = list.map { "\($0.spec.object.name).\($0.group.name): \($0.group.description ?? "")"}
                             strings.forEach { Logger.log($0)}
                 }
+                $0.command("new",
+                                       Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
+                                       Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),
+                                       Option<String>("context", default: "{}", description: "A JSON string with further context information used by Stencil template"),
+                                       VariadicOption<String>("param", default: [""], flag: Character("p"), description: "Custom parameters that will be resolved in Stencil templates"),
+                                       Flag("verbose"),
+                                       description: "Resolves a bone template with provided parameters and installs it in target path (according to Bonespec.json)"
+                
+                            ) { boneName, mainPlaceholder, contextString, params, verbose in
+                
+                                if verbose { Logger.logLevel = .verbose }
+                                
+                                let pipeline = try BonePipeline(folder: Folder.current, murrayFileName: "Murrayfile.json", pluginManager: .shared)
+                                try pipeline.execute(boneName: boneName, with: ["name": mainPlaceholder])
+                                
+//                                guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []),
+//                                    var context = jsonConversion as? Bone.Context else {
+//                                    throw Error.invalidContext
+//                                }
+//                                params.map {
+//                                    $0.components(separatedBy: ":")
+//                                }
+//                                    .filter { $0.count == 2}
+//                                    .map { $0.map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)}}
+//                                    .compactMap {array -> (key: String, value:String)? in
+//                                        guard let key = array.first,
+//                                            let value = array.last else { return nil }
+//                                        return (key: key, value: value)}
+//                                    .forEach {
+//                                        context[$0.key] = $0.value
+//                                }
+//                                try Bone(boneName: boneName, mainPlaceholder: mainPlaceholder, context: context).run()
+            }
             }
     }
 }
