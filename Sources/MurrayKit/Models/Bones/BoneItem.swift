@@ -10,13 +10,14 @@ public struct BoneItem: Glossy {
     public let paths: [BonePath]
     public let parameters: [BoneParameter]
     public let replacements: [BoneReplacement]
-    
+    let pluginData: [String: JSON]
     public init?(json: JSON) {
         guard let name:String = "name" <~~ json else { return nil }
         self.name = name
         self.paths = "paths" <~~ json ?? []
         self.parameters = "parameters" <~~ json ?? []
         self.replacements = "replacements" <~~ json ?? []
+        self.pluginData = "plugins" <~~ json ?? [:]
     }
     
     public func toJSON() -> JSON? {
@@ -24,10 +25,10 @@ public struct BoneItem: Glossy {
             "name" ~~> name,
             "paths" ~~> paths,
             "parameters" ~~> parameters,
-            "replacements" ~~> replacements
+            "replacements" ~~> replacements,
+            "plugins" ~~> pluginData
         ])
     }
-    
 }
 
 public struct BoneReplacement: Glossy {

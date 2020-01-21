@@ -8,21 +8,20 @@
 import Foundation
 import Files
 
+public struct ObjectWithPath<T> {
+     public let file: File
+     public let object: T
+     
+     public init (file: File, object: T?) throws {
+         guard let object = object else {
+             throw CustomError.generic
+         }
+         self.file = file
+         self.object = object
+     }
+ }
 public struct BonePipeline {
-    
-    public struct ObjectWithPath<T> {
-        public let file: File
-        public let object: T
-        
-        public init (file: File, object: T?) throws {
-            guard let object = object else {
-                throw CustomError.generic
-            }
-            self.file = file
-            self.object = object
-        }
-    }
-    
+
     public struct TreeObject {
         public let murrayFile: MurrayFile
         public let spec: ObjectWithPath<BoneSpec>
@@ -35,12 +34,13 @@ public struct BonePipeline {
     let specs: [String: ObjectWithPath<BoneSpec>]
     let folder: Folder
     var tree: [TreeObject] = []
-    
-    public init(folder: Folder, murrayFileName: String = "Murrayfile.json") throws {
+    let pluginManager: PluginManager
+    public init(folder: Folder, murrayFileName: String = "Murrayfile.json", pluginManager: PluginManager = .shared) throws {
         
         guard let file = try folder.file(named: murrayFileName).decodable(MurrayFile.self) else {
             throw CustomError.generic
         }
+        self.pluginManager = pluginManager
         self.folder = folder
         self.murrayFile = file
         
@@ -84,6 +84,7 @@ public struct BonePipeline {
         
         let writer = TemplateWriter(destination: self.folder)
         try writer.write(contents, to: path, context: context)
+        
     }
     
     public func replace(from replacement: BoneReplacement, sourceFolder: Folder, with context: BoneContext) throws {
@@ -136,12 +137,17 @@ public struct BonePipeline {
         
         try items.forEach { item in
             guard let folder = item.file.parent else { throw CustomError.generic }
+            
+            try pluginManager.execute(phase: .beforeItemReplace(item: item, context: context), from: self.folder)
+            
             try item.object.paths.forEach({ (path) in
                 try self.transform(path: path, sourceFolder: folder, with: context)
             })
             try item.object.replacements.forEach({ replacement in
                 try self.replace(from: replacement, sourceFolder: folder, with: context)
             })
+            
+            try pluginManager.execute(phase: .afterItemReplace(item: item, context: context), from: self.folder)
         }
     }
 }

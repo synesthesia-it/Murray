@@ -96,6 +96,11 @@ public struct Mocks {
                             "destination": "\(placeholderFilePath2)"
                         }
                     ],
+                    "plugins": {
+                        "xcode": {
+                                "targets": ["App"]
+                            }
+                    },
                    "parameters": [
                        {
                        "name": "name",
@@ -138,6 +143,9 @@ public struct Mocks {
 public extension Mocks {
     struct Scenario {
         public static func simple(from root: Folder) throws {
+            
+            let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
+            
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
             murrayFile.createSource()
             
@@ -161,6 +169,7 @@ public extension Mocks {
         
         
         public static func multipleItemsSingleGroup(names: [String], from root: Folder) throws {
+            let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
             let specPath = "Murray/SingleGroup/SingleGroup.json"
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(specPath: specPath), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
             murrayFile.createSource()
