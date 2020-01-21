@@ -126,6 +126,11 @@ public struct Mocks {
                       "to": "Sources/Files/\(name.firstUppercased())/{{name|firstUppercase}}.xib"
                     }
                 ],
+                "plugins": {
+                    "xcode": {
+                            "targets": ["App"]
+                        }
+                },
                 "parameters": [
                     {
                     "name": "name",
