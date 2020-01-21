@@ -31,7 +31,7 @@ open class XCodePlugin: Plugin {
     func process(item: BoneItem, file: File, projectFolder: Folder, context: BoneContext) throws {
         guard let data: PluginData = self.pluginData(for: item) else { return }
         
-        let rubyScript = try projectFolder.createFileIfNeeded(at: "_murray_ruby_script.tmp.rb")
+        let rubyScript = try projectFolder.createFileIfNeeded(at: ".murray_ruby_script.tmp.rb")
         try rubyScript.write(self.rubyScript())
         
         guard let projectName = projectFolder.subfolders
@@ -59,7 +59,7 @@ open class XCodePlugin: Plugin {
                 try shellOut(to: "gem", arguments: ["install", "xcodeproj", "--user-install"])
             }
              Logger.log("Updating xcodeproj with arguments: \(arguments)", level: .verbose)
-             try shellOut(to: "ruby", arguments: arguments)
+            try shellOut(to: "ruby", arguments: arguments, at: projectFolder.path)
             }
         try rubyScript.delete()
         }
