@@ -23,6 +23,7 @@ enum CustomError: Swift.Error {
     
     case boneGroupNotFound(name: String, spec: String?)
     
+    case invalidMurrayfile
     
     case generic
     

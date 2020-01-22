@@ -37,15 +37,18 @@ public struct BonePipeline {
     
     public let murrayFile: MurrayFile
     
-    let specs: [String: ObjectWithPath<BoneSpec>]
+    public let specs: [String: ObjectWithPath<BoneSpec>]
     let folder: Folder
     var tree: [TreeObject] = []
     let pluginManager: PluginManager
     public init(folder: Folder, murrayFileName: String = "Murrayfile.json", pluginManager: PluginManager = .shared) throws {
         
-        guard let file = try folder.file(named: murrayFileName).decodable(MurrayFile.self) else {
-            throw CustomError.generic
+        guard let file = try folder.file(named: murrayFileName).decodable(MurrayFile.self),
+                file.environment["name"] == nil
+        else {
+            throw CustomError.invalidMurrayfile
         }
+        
         self.pluginManager = pluginManager
         self.folder = folder
         self.murrayFile = file
