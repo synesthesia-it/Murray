@@ -29,6 +29,12 @@ public struct BonePipeline {
         public let item: ObjectWithPath<BoneItem>
     }
     
+    public struct ListObject {
+        public let murrayFile: MurrayFile
+        public let spec: BoneSpec
+        public let group: BoneGroup
+    }
+    
     public let murrayFile: MurrayFile
     
     let specs: [String: ObjectWithPath<BoneSpec>]
@@ -66,8 +72,11 @@ public struct BonePipeline {
         }
     }
     
-    public func list() throws -> [TreeObject]{
-        self.tree
+    public func list() -> [ListObject]{
+        specs.values
+            .flatMap { spec in
+                spec.object.groups.map { group in ListObject(murrayFile: murrayFile, spec: spec.object, group: group)}
+        }
     }
     
     func items(from spec: ObjectWithPath<BoneSpec>, group: BoneGroup) throws -> [ObjectWithPath<BoneItem>] {
@@ -75,6 +84,7 @@ public struct BonePipeline {
             .compactMap { try spec.file.parent?.file(at: $0) }
             .map { try ObjectWithPath(file: $0, object: $0.decodable(BoneItem.self)) }
     }
+    
     public func transform(path: BonePath, sourceFolder: Folder, with context:BoneContext) throws {
         let reader = TemplateReader(source: sourceFolder)
         let contents = try reader

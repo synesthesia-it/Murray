@@ -55,11 +55,11 @@ open class XCodePlugin: Plugin {
                   ]
             do {
                 try shellOut(to: "which", arguments: ["xcodeproj"])
-            } catch {
+            } catch let error {
                 try shellOut(to: "gem", arguments: ["install", "xcodeproj", "--user-install"])
             }
              Logger.log("Updating xcodeproj with arguments: \(arguments)", level: .verbose)
-            try shellOut(to: "ruby", arguments: arguments, at: projectFolder.path)
+                try shellOut(to: "ruby", arguments: arguments, at: projectFolder.path)
             }
         try rubyScript.delete()
         }
