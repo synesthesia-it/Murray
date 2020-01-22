@@ -14,7 +14,7 @@ public class BoneListCommand: Command {
     func execute() throws {
         let folder = Folder.current
         let pipeline = try BonePipeline(folder: folder)
-        let list = try pipeline.list()
+        let list = pipeline.list()
         let strings = list.map { "\($0.spec.name).\($0.group.name): \($0.group.description ?? "")"}
         strings.forEach { Logger.log($0) }
     }

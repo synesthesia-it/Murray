@@ -1,7 +1,33 @@
 import MurrayCLI
+import MurrayKit
 
-let tool = Menu.menu
-tool.run()
+class CLILogger: ConsoleLogger {
+    open override func string(_ message: String, level: LogLevel, tag: String?) -> String? {
+        if (self.logLevel.rawValue > level.rawValue) { return nil }
+
+        let string =
+        """
+        \([
+            [tag]
+                .compactMap { $0 }
+                .filter { $0.count > 0 }
+                .joined(separator: " "),
+            level
+                .colorize(string: message)
+        ]
+        .compactMap { $0 }
+        .filter { $0.count > 0 }
+        .joined(separator: ": ")
+        )
+        """
+        return string
+    }
+    
+}
+
+Logger.logger = CLILogger(logLevel: .normal)
+Menu.menu.run()
+
 
 //do {
 //    tool.run()

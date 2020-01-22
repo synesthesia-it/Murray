@@ -17,7 +17,7 @@ public enum LogLevel: Int {
     case normal = 200
     case none = 1000
 
-    func colorize(string: String) -> String {
+    public func colorize(string: String) -> String {
         switch self {
         case .verbose : return string
         case .warning : return string.yellow
@@ -26,7 +26,7 @@ public enum LogLevel: Int {
         default : return string
         }
     }
-    fileprivate var symbol: String {
+    public var symbol: String {
         switch self {
         case .verbose: return "💬"
         case .network: return "🌐"
