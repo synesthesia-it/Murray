@@ -16,6 +16,6 @@ public class BoneListCommand: Command {
         let pipeline = try BonePipeline(folder: folder)
         let list = pipeline.list()
         let strings = list.map { "\($0.spec.name).\($0.group.name): \($0.group.description ?? "")"}
-        strings.forEach { Logger.log($0) }
+        strings.forEach { Logger.log($0, level: .normal) }
     }
 }
