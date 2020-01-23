@@ -29,8 +29,8 @@ open class Plugin {
 
 
 public enum PluginPhase {
-    case beforeItemReplace(item: ObjectWithPath<BoneItem>, context: BoneContext)
-    case afterItemReplace(item: ObjectWithPath<BoneItem>, context: BoneContext)
+    case beforeItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
+    case afterItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
 }
 
 

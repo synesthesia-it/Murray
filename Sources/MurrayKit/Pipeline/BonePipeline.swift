@@ -8,7 +8,7 @@
 import Foundation
 import Files
 
-public struct ObjectWithPath<T> {
+public struct ObjectReference<T> {
      public let file: File
      public let object: T
      
@@ -19,27 +19,21 @@ public struct ObjectWithPath<T> {
          self.file = file
          self.object = object
      }
- }
+}
+
+public struct ListObject {
+    public let murrayFile: MurrayFile
+    public let spec: ObjectReference<BoneSpec>
+    public let group: BoneGroup
+}
+
 public struct BonePipeline {
 
-    public struct TreeObject {
-        public let murrayFile: MurrayFile
-        public let spec: ObjectWithPath<BoneSpec>
-        public let group: BoneGroup
-        public let item: ObjectWithPath<BoneItem>
-    }
-    
-    public struct ListObject {
-        public let murrayFile: MurrayFile
-        public let spec: BoneSpec
-        public let group: BoneGroup
-    }
-    
     public let murrayFile: MurrayFile
     
-    public let specs: [String: ObjectWithPath<BoneSpec>]
+    public let specs: [String: ObjectReference<BoneSpec>]
     let folder: Folder
-    var tree: [TreeObject] = []
+//    var tree: [TreeObject] = []
     let pluginManager: PluginManager
     public init(folder: Folder, murrayFileName: String = "Murrayfile.json", pluginManager: PluginManager = .shared) throws {
         
@@ -60,32 +54,22 @@ public struct BonePipeline {
                 let file = try folder.file(at: $1)
                 guard let spec = try file.decodable(BoneSpec.self)
                     else { throw CustomError.undecodable(file: file, type: BoneSpec.self) }
-                specs[spec.name] = try ObjectWithPath(file: file, object: spec)
+                specs[spec.name] = try ObjectReference(file: file, object: spec)
                 return specs
-        }
-        
-        self.tree = try specs
-            .values
-            .flatMap { spec in
-                try spec.object.groups.flatMap { group in
-                    try self.items(from: spec, group: group).map {
-                        TreeObject(murrayFile: self.murrayFile, spec: spec, group: group, item: $0)
-                    }
-                }
         }
     }
     
     public func list() -> [ListObject]{
         specs.values
             .flatMap { spec in
-                spec.object.groups.map { group in ListObject(murrayFile: murrayFile, spec: spec.object, group: group)}
+                spec.object.groups.map { group in ListObject(murrayFile: murrayFile, spec: spec, group: group)}
         }
     }
     
-    func items(from spec: ObjectWithPath<BoneSpec>, group: BoneGroup) throws -> [ObjectWithPath<BoneItem>] {
+    func items(from spec: ObjectReference<BoneSpec>, group: BoneGroup) throws -> [ObjectReference<BoneItem>] {
         return try group.itemPaths
             .compactMap { try spec.file.parent?.file(at: $0) }
-            .map { try ObjectWithPath(file: $0, object: $0.decodable(BoneItem.self)) }
+            .map { try ObjectReference(file: $0, object: $0.decodable(BoneItem.self)) }
     }
     
     public func transform(path: BonePath, sourceFolder: Folder, with context:BoneContext) throws {
