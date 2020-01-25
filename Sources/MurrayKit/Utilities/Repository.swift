@@ -57,6 +57,8 @@ public class Repository: Hashable {
     public var name: String {
         return repo.components(separatedBy: "/").last!.components(separatedBy: ".").first!
     }
+    
+    
 }
 
 extension Repository: Equatable {
