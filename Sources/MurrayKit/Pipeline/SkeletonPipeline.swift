@@ -51,7 +51,7 @@ public struct SkeletonPipeline {
         }
         
         try skeletonSpec?.scripts.forEach {
-            try shellOut(to: $0.resolved(with: context))
+            try shellOut(to: $0.resolved(with: context), at: projectFolder.path)
         }
         
     }
