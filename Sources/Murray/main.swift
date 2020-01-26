@@ -26,11 +26,11 @@ class CLILogger: ConsoleLogger {
 }
 
 Logger.logger = CLILogger(logLevel: .normal)
-//Menu.menu.run()
+Menu.menu.run()
 
-try SkeletonPipeline(folder: Folder.current, projectName: "Mondini")
-    .execute(projectPath: "~/Desktop/Pipeline", with: [:])
-
+//try SkeletonPipeline(folder: Folder.current, projectName: "Mondini")
+//    .execute(projectPath: "~/Desktop/Pipeline", with: [:])
+//
 //do {
 //    tool.run()
 //} catch {
