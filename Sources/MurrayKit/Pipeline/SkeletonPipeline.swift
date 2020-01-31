@@ -25,7 +25,7 @@ public struct SkeletonPipeline {
     }
     
     public func execute (projectPath: String, with json: JSON) throws {
-        let context = BoneContext(json, environment: ["name": projectName])
+        let context = BoneContext(json, environment: [MurrayFile.defaultPlaceholder: projectName])
         if let skeletonFolder = try? Folder(path: projectPath) {
             let newFolder = try skeletonFolder.copy(to: folder)
             try newFolder.rename(to: projectName)

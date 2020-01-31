@@ -11,12 +11,14 @@ import Files
 public class BonePipelineCommand: Command {
     let boneName: String
     let context: JSON
-    
+    let pipeline: BonePipeline
     public init(boneName: String, mainPlaceholder: String, contextString: String = "{}", params: [String] = []) throws {
         guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []) as? JSON else {
             throw Errors.invalidJSONString
         }
-        var context:JSON = jsonConversion.reduce(["name": mainPlaceholder]) { a, t in
+        self.pipeline = try BonePipeline(folder: Folder.current, murrayFileName: "Murrayfile.json", pluginManager: .shared)
+        let placeholder = pipeline.murrayFile.mainPlaceholder ?? MurrayFile.defaultPlaceholder
+        var context:JSON = jsonConversion.reduce([placeholder: mainPlaceholder]) { a, t in
             var accumulator = a
             accumulator[t.key] = t.value
             return accumulator
@@ -40,7 +42,7 @@ public class BonePipelineCommand: Command {
     
     public func execute() throws {
         
-        let pipeline = try BonePipeline(folder: Folder.current, murrayFileName: "Murrayfile.json", pluginManager: .shared)
+       
         try pipeline.execute(boneName: boneName, with: context)
     }
 }

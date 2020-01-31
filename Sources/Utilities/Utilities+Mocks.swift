@@ -36,6 +36,7 @@ public struct Mocks {
                     "environment": {
                         "author": "Stefano Mondino"
                     },
+                    "mainPlaceholder": "name",
                     "specPaths": ["\(specPath)"]
                 }
                 """
