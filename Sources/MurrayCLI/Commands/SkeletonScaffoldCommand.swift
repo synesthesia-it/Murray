@@ -16,7 +16,7 @@ public class SkeletonScaffoldCommand: Command {
         let spec = SkeletonSpec()
         let json = spec.toJSON() ?? [:]
         let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
-        let file = try folder.createFile(named: "Skeletonfile.json", contents: data)
+        let file = try folder.createFileIfNeeded(at: "Skeletonfile.json", contents: data)
         Logger.log("Skeletonfile successfully created at \(file.path)")
 //        let pipeline = try BonePipeline(folder: folder)
 //        let list = pipeline.list()

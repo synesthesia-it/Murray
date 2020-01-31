@@ -16,7 +16,7 @@ public class MurrayfileScaffoldCommand: Command {
         let spec = MurrayFile()
         let json = spec.toJSON() ?? [:]
         let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
-        let file = try folder.createFile(named: "Murrayfile.json", contents: data)
+        let file = try folder.createFileIfNeeded(at: "Murrayfile.json", contents: data)
         Logger.log("Murrayfile successfully created at \(file.path)")
 //        let pipeline = try BonePipeline(folder: folder)
 //        let list = pipeline.list()
