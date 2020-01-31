@@ -9,15 +9,15 @@ import Foundation
 import MurrayKit
 import Files
 
-public class BoneItemScaffoldCommand: Command {
+public class BoneGroupScaffoldCommand: Command {
     let specName: String
     let name: String
-    let files: [String]
+    let items: [String]
     
-    public init(specName: String, name: String, files: [String]) {
+    public init(specName: String, name: String, items: [String]) {
         self.specName = specName
         self.name = name
-        self.files = files
+        self.items = items
     }
     func execute() throws {
         
@@ -33,22 +33,32 @@ public class BoneItemScaffoldCommand: Command {
             return
         }
         
-        guard let folder = try spec.file.parent?.createSubfolderIfNeeded(at: name) else {
+        guard let folder = try spec.file.parent else {
             Logger.log("No spec found")
             return
         }
         
-        let paths = try files.map {
-            try folder.createFile(at: $0)
+        let items = try folder.subfolders
+            .compactMap { try? $0.file(named: "BoneItem.json") }
+            .compactMap { file -> ObjectReference<BoneItem>? in
+            guard let item = try file.decodable(BoneItem.self) else { return nil }
+            return try ObjectReference(file: file, object: item)
+        }.filter {
+            self.items.contains($0.object.name)
         }
         
-        let item = BoneItem(name: name, files: files)
+        var group = spec.object.groups.first(where: { $0.name == name }) ?? BoneGroup(name: name, description: "Created from scaffold")
+        items.map { $0.file.path(relativeTo: folder) }.forEach {
+            group.add(itemPath: $0)
+        }
         
-        let json = item.toJSON() ?? [:]
+        var object = spec.object
+        object.add(group:group)
+        
+        let json = object.toJSON() ?? [:]
         let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
         
-        let file = try folder.createFileIfNeeded(at: "BoneItem.json", contents: data)
-        Logger.log("BoneItem successfully created at \(file.path)")
+        try spec.file.write(data)
         
 //        var murrayfile = try root.decodable(MurrayFile.self, at: "Murrayfile.json")
 //        murrayfile?.addSpecPath(file.path(relativeTo: root))

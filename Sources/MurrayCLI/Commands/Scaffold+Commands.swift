@@ -42,6 +42,17 @@ struct Scaffold {
                         .execute()
             }
             $0.command(
+                "bonegroup",
+                Argument<String>("spec", description: "Name of the spec"),
+                Argument<String>("name", description: "Name of the bone group. It will be used to identify its folder."),
+                Argument<[String]>("items", description: "Items for this bonegroup."),
+                Flag("verbose")) {
+                    spec, name, items,  verbose in
+                    try BoneGroupScaffoldCommand(specName: spec, name: name, items: items)
+                        .withVerbose(to: verbose)
+                        .execute()
+            }
+            $0.command(
                 "boneitem",
                 Argument<String>("spec", description: "Name of the spec"),
                 Argument<String>("name", description: "Name of the bone item. It will be used to identify its folder."),

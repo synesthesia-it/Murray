@@ -27,7 +27,17 @@ public struct BoneGroup: Glossy {
     /**
         Path of items included in current group relative to `Bonespec.json`'s folder
      */
-    public let itemPaths: [String]
+    public private(set) var itemPaths: [String]
+    
+    public init(name: String, description: String = "") {
+        self.name = name
+        self.description = description
+        self.itemPaths = []
+    }
+    
+    public mutating func add(itemPath: String) {
+        self.itemPaths = self.itemPaths.filter { $0 != itemPath } + [itemPath]
+    }
     
     public init?(json: JSON) {
         guard let name:String = "name" <~~ json else { return nil }
@@ -43,5 +53,7 @@ public struct BoneGroup: Glossy {
             "items" ~~> itemPaths,
         ])
     }
+    
+    
     
 }
