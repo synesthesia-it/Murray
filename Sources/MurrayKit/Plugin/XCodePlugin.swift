@@ -56,6 +56,7 @@ open class XCodePlugin: Plugin {
             do {
                 try shellOut(to: "which", arguments: ["xcodeproj"])
             } catch let error {
+                Logger.log(error.localizedDescription, level: .verbose)
                 try shellOut(to: "gem", arguments: ["install", "xcodeproj", "--user-install"])
             }
              Logger.log("Updating xcodeproj with arguments: \(arguments)", level: .verbose)

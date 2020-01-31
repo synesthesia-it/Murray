@@ -11,7 +11,23 @@ import Files
 import MurrayKit
 
 public struct Mocks {
-    
+    public struct Skeletonfile {
+        public static func simple() -> String {
+                   return  """
+                       {
+                           "scripts": ["touch Touch{{name}}.txt"],
+                           "folders": [{
+                                "from": "Test.xcodeproj",
+                                "to": "{{ name|firstUppercase }}.xcodeproj"
+                            }],
+                            "files": [{
+                                "from": "Test.swift",
+                                "to": "{{ name|firstUppercase }}/{{ name|firstUppercase }}.swift"
+                            }]
+                       }
+                       """
+               }
+    }
     public struct Murrayfile {
         
         public static func simple(specPath: String = "Murray/Simple/Simple.json") -> String {
@@ -172,6 +188,14 @@ public extension Mocks {
             templateFile.createSource()
         }
         
+        public static func skeleton(from root: Folder) throws {
+            
+            let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
+            try xcode.createFileIfNeeded(at: "project.pbxproj").write(testPBX)
+            let skeletonFile = ConcreteFile(contents: Mocks.Skeletonfile.simple(), folder: root, path: BonePath(from: "Skeletonspec.json", to: ""))
+            skeletonFile.createSource()
+            ConcreteFile(contents: Mocks.Skeletonfile.simple(), folder: root, path: BonePath(from: "Test.swift", to: "")).createSource()
+        }
         
         public static func multipleItemsSingleGroup(names: [String], from root: Folder) throws {
             let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")

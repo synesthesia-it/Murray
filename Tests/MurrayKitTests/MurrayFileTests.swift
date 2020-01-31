@@ -18,7 +18,7 @@ class MurrayFileReaderSpec: QuickSpec {
       
         context("a BoneFile object") {
             describe("created with default parameters") {
-                var item: ConcreteFile!
+                
                 beforeEach {
         
                     try! root.empty()

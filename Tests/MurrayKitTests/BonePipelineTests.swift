@@ -12,9 +12,9 @@ import Files
 import Utilities
 @testable import MurrayKit
 
-class PipelineSpec: QuickSpec {
+class BonePipelineSpec: QuickSpec {
     override func spec() {
-        let root = tempFolder(for: "Pipeline")
+        let root = tempFolder(for: "BonePipeline")
         
         context("a pipeline") {
             describe("for simple context") {
