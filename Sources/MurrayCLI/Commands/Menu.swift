@@ -14,6 +14,7 @@ public class Menu {
         return Group {
             Skeleton.commands(for: $0)
             Bone.commands(for: $0)
+            Scaffold.commands(for: $0)
         }
     }
 

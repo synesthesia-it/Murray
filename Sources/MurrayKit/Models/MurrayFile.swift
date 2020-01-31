@@ -28,7 +28,11 @@ public struct MurrayFile: Glossy {
     public let mainPlaceholder: String?
     
     public static var defaultPlaceholder = "name"
-    
+    public init() {
+        self.specPaths = []
+        self.environment = [:]
+        self.mainPlaceholder = nil
+    }
     public init?(json: JSON) {
         self.specPaths = "specPaths" <~~ json ?? []
         self.environment = "environment" <~~ json ?? [:]
@@ -38,7 +42,8 @@ public struct MurrayFile: Glossy {
     public func toJSON() -> JSON? {
          return jsonify([
         "specPaths" ~~> specPaths,
-        "environment" ~~> environment
+        "environment" ~~> environment,
+        "mainPlaceholder" ~~> mainPlaceholder
         ])
     }
 }

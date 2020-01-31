@@ -13,7 +13,11 @@ public struct SkeletonSpec: Glossy {
     let scripts: [String]
     let folders:[BonePath]
     let files: [BonePath]
-    
+    public init() {
+        self.scripts = []
+        self.folders = []
+        self.files = []
+    }
     public init?(json: JSON) {
         
          folders = "folders" <~~ json ?? []
