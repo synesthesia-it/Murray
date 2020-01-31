@@ -41,6 +41,17 @@ struct Scaffold {
                         .withVerbose(to: verbose)
                         .execute()
             }
+            $0.command(
+                "boneitem",
+                Argument<String>("spec", description: "Name of the spec"),
+                Argument<String>("name", description: "Name of the bone item. It will be used to identify its folder."),
+                Argument<[String]>("files", description: "Template files to create."),
+                Flag("verbose")) {
+                    spec, name, files,  verbose in
+                    try BoneItemScaffoldCommand(specName: spec, name: name, files: files)
+                        .withVerbose(to: verbose)
+                        .execute()
+            }
         }
     }
 }
