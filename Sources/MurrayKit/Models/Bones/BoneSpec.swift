@@ -28,6 +28,13 @@ public struct BoneSpec: Glossy {
      */
     public let groups: [BoneGroup]
     private var groupsByName: [String: BoneGroup] = [:]
+    
+    public init(name: String) {
+        self.name = name
+        self.description = "Default description"
+        self.groups = []
+    }
+    
     public init?(json: JSON) {
         guard let name:String = "name" <~~ json else { return nil }
         self.name = name

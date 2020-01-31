@@ -31,6 +31,16 @@ struct Scaffold {
                         .withVerbose(to: verbose)
                         .execute()
             }
+            $0.command(
+                "bonespec",
+                Argument<String>("name", description: "Name of the spec. It will be used to identify it across invocations."),
+                Argument<String>("path", description: "Path for the spec. Must be empty."),
+                Flag("verbose")) {
+                    name, path,  verbose in
+                    try BoneSpecScaffoldCommand(path: path, name: name)
+                        .withVerbose(to: verbose)
+                        .execute()
+            }
         }
     }
 }
