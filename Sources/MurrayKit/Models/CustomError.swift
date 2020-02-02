@@ -25,6 +25,8 @@ enum CustomError: Swift.Error {
     
     case invalidMurrayfile
     
+    case missingRequiredParameter(bone: BoneItem, parameter: BoneParameter)
+    
     case generic
     
     

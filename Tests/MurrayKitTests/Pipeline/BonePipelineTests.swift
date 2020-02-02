@@ -77,13 +77,28 @@ class BonePipelineSpec: QuickSpec {
                             expect(fileContents) == "someTestTest - Stefano Mondino"
                             return fileContents
                         }
-             
+                            
                         .notTo(throwError())
                         return pipeline
                     }.notTo(throwError())
-                    
                 }
-                
+            }
+            describe("when parameters are required") {
+                beforeEach {
+                    try! root.empty()
+                    try! Mocks.Scenario.parameterRequired(from: root)
+                }
+                it("should not allow creation of bones if required parameters are not provided") {
+                    
+                    expect {
+                        
+                        let pipeline = try BonePipeline(folder: root)
+                        expect { try pipeline.execute(boneName:"simpleGroup", with: ["name": "someTest2"]) }.to(throwError())
+                        expect { try pipeline.execute(boneName:"simpleGroup", with: ["name": "someTest3", "type": "the type"]) }.notTo(throwError())
+                        
+                        return pipeline
+                    }.notTo(throwError())
+                }
             }
         }
     }

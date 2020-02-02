@@ -113,6 +113,15 @@ public struct BonePipeline {
         try writer.write(replaced, to: replacement.destinationPath, context: context, overwriteContents: true)
     }
     
+    public func check(item: BoneItem, against context: BoneContext) throws {
+        try item.parameters
+            .filter { $0.isRequired }
+            .forEach {
+                if context.context[$0.name] == nil {
+                    throw CustomError.missingRequiredParameter(bone: item, parameter: $0)
+                }
+        }
+    }
     public func execute (specName: String? = nil, boneName: String, with json: JSON) throws {
         let context = BoneContext(json, environment: murrayFile.environment)
         guard let spec = specs
@@ -135,8 +144,10 @@ public struct BonePipeline {
         try items.forEach { item in
             guard let folder = item.file.parent else { throw CustomError.generic }
             
-            try pluginManager.execute(phase: .beforeItemReplace(item: item, context: context), from: self.folder)
+            try self.check(item: item.object, against: context)
             
+            try pluginManager.execute(phase: .beforeItemReplace(item: item, context: context), from: self.folder)
+                        
             try item.object.paths.forEach({ (path) in
                 try self.transform(path: path, sourceFolder: folder, with: context)
             })

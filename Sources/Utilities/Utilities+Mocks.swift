@@ -130,7 +130,7 @@ public struct Mocks {
                }
                """
         }
-        public static func customBone(named name: String) -> String { """
+        public static func customBone(named name: String, typeRequired: Bool = false) -> String { """
             {
                 "name": "\(name)",
             
@@ -154,7 +154,8 @@ public struct Mocks {
                     "isRequired": true
                     },
                     {
-                    "name": "type"
+                    "name": "type",
+                    "isRequired": \(typeRequired ? true : false)
                     }
                 ]
             }
@@ -177,6 +178,31 @@ public extension Mocks {
             let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simple, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
             simpleItem.createSource()
             
+            let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))
+            simpleFile.createSource()
+            
+            let replacementFile = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath, to: ""))
+            replacementFile.createSource()
+            let replacementFile2 = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath2, to: ""))
+            replacementFile2.createSource()
+            
+            let templateFile = ConcreteFile(contents: "testing {{ name }} in place\n", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Replacement.swift", to: ""))
+            templateFile.createSource()
+        }
+        public static func parameterRequired(from root: Folder) throws {
+            
+            let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
+            try xcode.createFileIfNeeded(at: "project.pbxproj").write(testPBX)
+            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
+            murrayFile.createSource()
+            
+            let boneSpec = ConcreteFile(contents: Mocks.BoneSpec.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
+            boneSpec.createSource()
+            
+            let simpleItem = ConcreteFile(contents: Mocks.BoneItem.customBone(named: "simpleItem", typeRequired: true), folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
+            simpleItem.createSource()
+            let simpleXib = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.xib", to: ""))
+                simpleXib.createSource()
             let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))
             simpleFile.createSource()
             
