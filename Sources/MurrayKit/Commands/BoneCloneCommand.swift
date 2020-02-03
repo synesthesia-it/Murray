@@ -22,31 +22,39 @@ public class BoneCloneCommand: Command {
     }
     
     public func execute() throws {
-
-        let repository = Repository(repo: url)
-        let tmpFolderName = "murray.bonecheckout"
-        try clone(from: repository, into: Folder.temporary, projectName: tmpFolderName)
-        
-        guard let tmpFolder = try Folder.temporary.subfolder(at: tmpFolderName).subfolders.first else {
-            throw CustomError.generic
+        do {
+            let repository = Repository(repo: url)
+            let tmpFolderName = "murray.bonecheckout"
+            try? Folder.temporary.subfolder(named: tmpFolderName).delete()
+            try clone(from: repository, into: Folder.temporary, projectName: tmpFolderName)
+            
+            let tmpFolder = try Folder.temporary.subfolder(at: tmpFolderName)
+            guard let specFolder = try tmpFolder.subfolders.first(where: {
+                (try? $0.decodable(BoneSpec.self, at: "Bonespec.json")) != nil
+            }) else {
+                throw CustomError.generic
+            }
+            
+            try? tmpFolder.subfolder(at: ".git").delete()
+            
+            let destinationFolder = try self.folder
+                .createSubfolderIfNeeded(at: targetFolder)
+                .createSubfolderIfNeeded(at: specFolder.name)
+            
+            try specFolder.moveContents(to: destinationFolder)
+            
+            let path = try destinationFolder.file(at: "Bonespec.json").path(relativeTo: folder)
+            let name = try destinationFolder.decodable(BoneSpec.self, at: "Bonespec.json")?.name ?? ""
+            
+            var murrayfile = try folder.decodable(MurrayFile.self, at: "Murrayfile.json")
+            murrayfile?.addSpecPath(path)
+            if let json = murrayfile?.toJSON() {
+                let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
+                _ = try folder.createFileWithIntermediateFolders(at: "Murrayfile.json", contents: data, overwriteContents: true)
+            }
+        } catch let error {
+            throw error
         }
-        guard let specFolder = try tmpFolder.subfolders.first(where: {
-            try $0.decodable(BoneSpec.self, at: "BoneSpec.json") != nil
-        }) else {
-            throw CustomError.generic
-        }
-        
-        try tmpFolder.subfolder(at: ".git").delete()
-        
-        let destinationFolder = try self.folder.createSubfolderIfNeeded(at: targetFolder)
-        
-        try specFolder.move(to: destinationFolder)
-        
-        let path = try destinationFolder.file(at: "BoneSpec.json").path
-        let name = try destinationFolder.decodable(BoneSpec.self, at: "BoneSpec.json")?.name ?? ""
-        
-        try BoneSpecScaffoldCommand(path: path, name: name).execute()
-        
     }
     
     private func clone(from repository: Repository, into folder: Folder, projectName: String) throws {
