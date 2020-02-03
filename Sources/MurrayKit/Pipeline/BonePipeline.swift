@@ -72,19 +72,20 @@ public struct BonePipeline {
             .map { try ObjectReference(file: $0, object: $0.decodable(BoneItem.self)) }
     }
     
-    public func transform(path: BonePath, sourceFolder: Folder, with context:BoneContext) throws {
+    public func transform(path: BonePath, sourceFolder: Folder, with context: BoneContext) throws {
         let relativePath = try path.from.resolved(with: context)
         if let subfolder = try? sourceFolder.subfolder(at: relativePath) {
             
             try subfolder.subfolders.forEach { f in
                 let relative = f.path(relativeTo: sourceFolder)
+                
                 let destinationFolder = try path.to.resolved(with: context) + "/" + relative
                 let newPath = BonePath(from: relative, to: destinationFolder)
                 try self.transform(path: newPath, sourceFolder: sourceFolder, with: context)
             }
             try subfolder.files.forEach { f in
                 let relative = f.path(relativeTo: sourceFolder)
-                let destinationFile = try path.to.resolved(with: context) + "/" + relative
+                let destinationFile = try path.to.resolved(with: context) + "/" + f.name
                 let newPath = BonePath(from: relative, to: destinationFile)
                 try self.transform(path: newPath, sourceFolder: sourceFolder, with: context)
             }
