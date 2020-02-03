@@ -11,11 +11,14 @@ public class BonePipelineCommand: Command {
     let boneName: String
     let context: JSON
     let pipeline: BonePipeline
+    
+    public var folder: Folder = .current
+    
     public init(boneName: String, mainPlaceholder: String, contextString: String = "{}", params: [String] = []) throws {
         guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []) as? JSON else {
             throw CustomError.invalidJSONString
         }
-        self.pipeline = try BonePipeline(folder: Folder.current, murrayFileName: "Murrayfile.json", pluginManager: .shared)
+        self.pipeline = try BonePipeline(folder: folder, murrayFileName: "Murrayfile.json", pluginManager: .shared)
         let placeholder = pipeline.murrayFile.mainPlaceholder ?? MurrayFile.defaultPlaceholder
         var context:JSON = jsonConversion.reduce([placeholder: mainPlaceholder]) { a, t in
             var accumulator = a

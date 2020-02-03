@@ -73,6 +73,23 @@ public struct BonePipeline {
     }
     
     public func transform(path: BonePath, sourceFolder: Folder, with context:BoneContext) throws {
+        let relativePath = try path.from.resolved(with: context)
+        if let subfolder = try? sourceFolder.subfolder(at: relativePath) {
+            
+            try subfolder.subfolders.forEach { f in
+                let relative = f.path(relativeTo: sourceFolder)
+                let destinationFolder = try path.to.resolved(with: context) + "/" + relative
+                let newPath = BonePath(from: relative, to: destinationFolder)
+                try self.transform(path: newPath, sourceFolder: sourceFolder, with: context)
+            }
+            try subfolder.files.forEach { f in
+                let relative = f.path(relativeTo: sourceFolder)
+                let destinationFile = try path.to.resolved(with: context) + "/" + relative
+                let newPath = BonePath(from: relative, to: destinationFile)
+                try self.transform(path: newPath, sourceFolder: sourceFolder, with: context)
+            }
+            return
+        }
         let reader = TemplateReader(source: sourceFolder)
         let contents = try reader
             .file(from: path, context: context)

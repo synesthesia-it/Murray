@@ -12,13 +12,15 @@ public class BoneSpecScaffoldCommand: Command {
     let path: String
     let name: String
     
+    public var folder: Folder = .current
+    
     public init(path: String, name: String) {
         self.path = path
         self.name = name
     }
     public func execute() throws {
         
-        let root = Folder.current
+        let root = folder
         
         let folder = try root
             .createSubfolderIfNeeded(at: path)

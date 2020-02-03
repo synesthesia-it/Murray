@@ -22,6 +22,18 @@ struct Bone {
                             .execute()
                         
             }
+            
+            $0.command("clone",
+                       Argument<String>("git", description: "Url of git"),
+                       Argument<String?>("relativePath", description: "Relative path for bone to be cloned. Defaults to .murray"),
+                       Flag("verbose"),
+                       description: "Clones a remote bonespec from a git repository."
+            ) { git, relativePath, verbose in
+                try BoneCloneCommand(url: git, targetFolder: relativePath)
+                    .withVerbose(to: verbose)
+                .execute()
+            }
+            
             $0.command("new",
                        Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
                        Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),

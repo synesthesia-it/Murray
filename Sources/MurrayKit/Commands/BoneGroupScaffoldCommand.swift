@@ -12,7 +12,7 @@ public class BoneGroupScaffoldCommand: Command {
     let specName: String
     let name: String
     let items: [String]
-    
+    public var folder: Folder = Folder.current
     public init(specName: String, name: String, items: [String]) {
         self.specName = specName
         self.name = name
@@ -20,7 +20,7 @@ public class BoneGroupScaffoldCommand: Command {
     }
     public func execute() throws {
         
-        let root = Folder.current
+        let root = folder
         let murrayfile = try root.decodable(MurrayFile.self, at: "Murrayfile.json")
         
         guard let spec = try murrayfile?.specPaths.compactMap ({ path -> ObjectReference<BoneSpec>? in
