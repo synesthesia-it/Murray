@@ -27,6 +27,7 @@ enum CustomError: Swift.Error {
     
     case missingRequiredParameter(bone: BoneItem, parameter: BoneParameter)
     
+    case invalidJSONString
     case generic
     
     

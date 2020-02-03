@@ -1,4 +1,3 @@
-import MurrayCLI
 import MurrayKit
 import Files
 class CLILogger: ConsoleLogger {
@@ -26,7 +25,7 @@ class CLILogger: ConsoleLogger {
 }
 
 Logger.logger = CLILogger(logLevel: .normal)
-Menu.menu.run()
+Murray.commands.run()
 
 //try SkeletonPipeline(folder: Folder.current, projectName: "Mondini")
 //    .execute(projectPath: "~/Desktop/Pipeline", with: [:])

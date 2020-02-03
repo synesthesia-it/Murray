@@ -1,12 +1,20 @@
 # Murray
 
-Murray is a CLI written in Swift for skeleton-based software development.
+Murray is a set of tools for Skeleton base software development.
 
-**Skeleton-based** software usually consists of code generated through lots of boilerplate that can't be abstracted and re-used through clever architecture.
+**Skeleton-based** software usually consists of code generated through lots of boilerplate that can't be abstracted and re-used through software architecture principles.
 
 For instance, a classic HTML website always consists of pages with same `head` and `body`, filled with custom data in repeating structures.
 
-**Murray**s purpose is to standardize any development pipeline in order to speed-up development, reduce unsafe copy-pasting from/to different projects and help complex projects to keep a well-defined internal structure.
+Murray defines a common (and very simple) design language made of specifications (JSON specs) and template files, wraps them in structured packages ("Bones") and provides tools for developers to quickly use them in their projects, speeding up development process, avoiding annoying and shared coding mistakes and enforcing proper folder structures.
+
+## Project structure
+
+Murray project is a collection of Swift Packages:
+
+- **MurrayKit**: features all the core features so that they can be included in any Swift Software
+- **MurrayCLI**: it's a wrapper for commands (from command line interface). It wraps strings into actual MurrayKit objects and function calls, and defines the actual text commands used by `murray` (and relative documentation)
+- **`murray`**: is the actual executable installed on your system. It's a basically empty application that only creates a `Menu` object from MurrayCLI
 
 ## Key Features
 
