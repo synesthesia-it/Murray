@@ -31,7 +31,7 @@ public class BoneSpecScaffoldCommand: Command {
         let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
         
         let file = try folder.createFileIfNeeded(at: "Bonespec.json", contents: data)
-        Logger.log("Bonespec successfully created at \(file.path)")
+        Logger.log("Bonespec successfully created at \(file.path)", level: .normal)
         
         var murrayfile = try root.decodable(MurrayFile.self, at: "Murrayfile.json")
         murrayfile?.addSpecPath(file.path(relativeTo: root))

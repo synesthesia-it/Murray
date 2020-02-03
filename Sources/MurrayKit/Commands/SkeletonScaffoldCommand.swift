@@ -20,6 +20,6 @@ public class SkeletonScaffoldCommand: Command {
         let json = spec.toJSON() ?? [:]
         let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
         let file = try folder.createFileIfNeeded(at: "Skeletonfile.json", contents: data)
-        Logger.log("Skeletonfile successfully created at \(file.path)")
+        Logger.log("Skeletonfile successfully created at \(file.path)", level: .normal)
     }
 }

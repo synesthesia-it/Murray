@@ -47,7 +47,7 @@ public class BoneItemScaffoldCommand: Command {
         let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
         
         let file = try folder.createFileIfNeeded(at: "BoneItem.json", contents: data)
-        Logger.log("BoneItem successfully created at \(file.path)")
+        Logger.log("BoneItem successfully created at \(file.path)", level: .normal)
         
 //        var murrayfile = try root.decodable(MurrayFile.self, at: "Murrayfile.json")
 //        murrayfile?.addSpecPath(file.path(relativeTo: root))

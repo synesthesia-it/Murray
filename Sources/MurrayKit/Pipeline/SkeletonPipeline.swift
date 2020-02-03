@@ -38,6 +38,8 @@ public struct SkeletonPipeline {
         let projectFolder = try folder.subfolder(named: projectName)
         let skeletonSpec = try projectFolder.decodable(SkeletonSpec.self, at: "Skeletonspec.json")
         
+        try? projectFolder.subfolder(at: ".git").delete()
+        
         try skeletonSpec?.files.forEach { path in
             let source = try projectFolder.file(at: path.from.resolved(with: context))
             _ = try projectFolder.createFile(at: path.to.resolved(with: context),contents: source.read())
@@ -54,6 +56,10 @@ public struct SkeletonPipeline {
             try shellOut(to: $0.resolved(with: context), at: projectFolder.path)
         }
         try? projectFolder.file(at: "Skeletonspec.json").delete()
+        if skeletonSpec?.initGit == true {
+            _ = try shellOut(to: "git init \(projectFolder.path)")
+        }
+        
     }
     
     private func clone(from repository: Repository, into folder: Folder, projectName: String) throws {
