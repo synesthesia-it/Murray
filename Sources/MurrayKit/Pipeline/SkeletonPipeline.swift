@@ -31,7 +31,7 @@ public struct SkeletonPipeline {
             try newFolder.rename(to: projectName)
             
         } else {
-        let repository = Repository(repo: projectPath)
+        let repository = Repository(package: projectPath)
         try self.clone(from: repository, into: folder, projectName: projectName)
         }
         
@@ -53,7 +53,7 @@ public struct SkeletonPipeline {
         try skeletonSpec?.scripts.forEach {
             try shellOut(to: $0.resolved(with: context), at: projectFolder.path)
         }
-        
+        try? projectFolder.file(at: "Skeletonspec.json").delete()
     }
     
     private func clone(from repository: Repository, into folder: Folder, projectName: String) throws {
@@ -63,7 +63,7 @@ public struct SkeletonPipeline {
             command += "--branch \(repository.version) "
         }
         command += repository.repo + " " + folder.path + projectName
-        
+        Logger.log("Cloning - command: \(command)")
         try shellOut(to: command)
     }
 }

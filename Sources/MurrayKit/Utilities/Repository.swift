@@ -16,7 +16,7 @@ public class Repository: Hashable {
     public var repo: String
     public var version: String
     public var package:String
-    public init(repo: String, version: String = "", package: String? = nil) {
+    private init(repo: String, version: String = "", package: String? = nil) {
         self.repo = repo
         self.version = version
         self.package = package ?? [repo,version]

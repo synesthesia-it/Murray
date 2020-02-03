@@ -23,7 +23,7 @@ public class BoneCloneCommand: Command {
     
     public func execute() throws {
         do {
-            let repository = Repository(repo: url)
+            let repository = Repository(package: url)
             let tmpFolderName = "murray.bonecheckout"
             try? Folder.temporary.subfolder(named: tmpFolderName).delete()
             try clone(from: repository, into: Folder.temporary, projectName: tmpFolderName)
