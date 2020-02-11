@@ -52,7 +52,23 @@ class ProductsViewController: UIViewController {
 }
 ```
 
-Different templates can be rendered sequentially by a single execution, leading to a standardized way of software development
+Different templates can be rendered sequentially by a single execution, leading to a standardized way of software developmen
+
+## Key Features
+
+- Clone a **skeleton** project from a remote repository, customize it with your project name and custom properties and have it ready to run. Murray supports **tags** and **branches** for remote repositories (`@develop` or `@1.0.0`)
+
+- Develop your project with **bones**: template files you design that gets easily integrated in your project structure. If a adding a screen to your app requires 3 new files, you can design them with a template and have Murray resolve them for you and move the result in proper folders.
+
+- Install bones templates from any number of different repositories: share your file templates with your team.
+
+- Automatically add slices of code to already existing files when adding new bones (*example: Add a custom xml tag for your new Activity at the end of the Android manifest.xml when creating an Activity from a custom bone*).
+
+- Easily manage and check your bones environment: see what's available directly from CLI
+
+- Design your **bones** with **[Stencil](https://github.com/stencilproject/Stencil)**
+
+- Integrate Murray functionalities in any Swift application through **MurrayKit** framework
 
 # Installation
 
@@ -149,63 +165,7 @@ Murray project is a collection of Swift Packages:
 - **MurrayCLI**: it's a wrapper for commands (from command line interface). It wraps strings into actual MurrayKit objects and function calls, and defines the actual text commands used by `murray` (and relative documentation)
 - **`murray`**: is the actual executable installed on your system. It's a basically empty application that only creates a `Menu` object from MurrayCLI
 
-## Key Features
 
-- Clone a **skeleton** project from a remote repository, customize it with your project name and custom properties and have it ready to run. Murray supports **tags** and **branches** for remote repositories (`@develop` or `@1.0.0`)
-
-- Develop your project with **bones**: template files *you* design that gets easily integrated in your project structure. If a adding a screen to your app requires 3 new files, you can design them with a template and have Murray resolve them for you and move the result in proper folders.
-
-- Install bones templates from any number of different repositories: share your file templates with your team.
-
-- Automatically add slices of code to already existing files when adding new bones (*example: Add a custom xml tag for your new Activity at the end of the Android manifest.xml when creating an Activity from a custom bone*).
-
-- Easily manage and check your bones environment: see what's available directly from CLI
-
-- Design your **bones** with **[Stencil](https://github.com/stencilproject/Stencil)**
-
-- Integrate Murray functionalities in any Swift application through **MurrayKit** framework
-
-# Quick examples
-
-Single-file template in Swift for iOS named `listViewController` in file BonesViewController (placeholder keyword in filename is `Bone`):
-
-```swift
-import UIKit
-class {{ name|firstUppercase }}sViewController: UIViewController {
-
-  // Not quite sure what this empty {{ name }} array should do in a real project , but it's here anyway to show how you can self-document your code with comments.
-  let {{ name|firstLowercase }}s: [{{ name|firstUppercase }}] = []
-
-  func viewDidLoad() {
-    super.viewDidLoad()
-  }
-}
-
-```
-from terminal, execute
-```
-murray bone new listViewController Product
-```
-
-resulting in file `ProductsViewController` with contents:
-
-```swift
-import UIKit
-class ProductsViewController: UIViewController {
-
-  // Not quite sure what this empty Product array should do in a real project , but it's here anyway to show how you can self-document your code with comments.
-  let products: [Product] = []
-
-  func viewDidLoad() {
-    super.viewDidLoad()
-  }
-}
-
-```
-
-automatically moved to predefined custom folder and also installed in XCode project.
-
-See [Wiki](https://github.com/synesthesia-it/Murray/wiki) for more examples.
 
 ## Working Demo
 
