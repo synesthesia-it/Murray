@@ -142,7 +142,7 @@ Example:
     "name": "viewController",
     "paths": [{ 
     "from": "ViewController.template.swift",
-    "to": "Sources/ViewControllers/ {{ name|firstUppercase}}/{{ name|firstUppercase }}ViewController.swift"
+    "to": "Sources/ViewControllers/{{ name|firstUppercase}}/{{ name|firstUppercase }}ViewController.swift"
    }],
     "replacements": [],
     "parameters": [
@@ -170,11 +170,50 @@ Consists in a folder containing a `BoneSpec.json` file and any number of BoneIte
 #### Murrayfile
 
 The Murrayfile is located in the root folder in `Murrayfile.json` file and contains basic setup for bones (relative paths to BoneSpecs) and environment context.
+`Murrayfile.json` fields are: 
+
+- `specPaths`: an array of Bonespec.json paths relative to Murrayfile folder
+- `environment`: an object representing a shared context for each resolution. Can contain simple data such `author` name, `packageName` and similar, or more complex array/objects that will be handled by templates.
+
+Example: 
+
+```json
+{
+  "specPaths" : [
+    "Murray/Boomerang/Bonespec.json"
+  ],
+  "environment" : {
+    "author": "Stefano Mondino",
+    "company": "Synesthesia",
+    "target": "App"
+  }
+}
+```
 
 #### SkeletonSpec
 
 The `Skeletonspec.json` file contains informations needed by the skeleton phase of a project to be converted in an actual project.
 It's deleted after proper project creation as it won't be needed anymore.
+
+Example (for non-xcode users: `Skeleton.xcodeproj` is actually a folder.): 
+
+```json
+{
+        "scripts": [
+        "sh install.sh"
+        ],
+        "initGit": true,
+        "folders" : [{
+            "from": "Skeleton.xcodeproj",
+            "to": "{{ name|firstUppercase }}.xcodeproj"
+        }],
+        "files": [
+        {
+            "from": "Test.swift",
+            "to": "{{ name|firstUppercase }}.swift"
+        }]
+}
+```
 
 #### Template resolution
 
