@@ -91,11 +91,51 @@ alias murray='/opt/Murray/murray'
 
 ## Key Concepts
 
-Murray defines a hierarchical structure of concepts so that developers can create proper templates suitable for their needs.
+#### `Skeleton`
 
-### `BoneItem`
+A skeleton is an empty project, containing any type of file and folder.
+The Skeleton is a shared starting point for a new project, and should not contain any bone template; in other words, the project should work out of the box as a real project.
+To be compatible with Murray, a Skeleton project must contain a `Skeletonspec.json` file in its root folder.
 
-A BoneItem represents a group of files 
+#### `Bone`
+
+A Bone is a piece of boilerplate code splitted into one or more template files. 
+A template file is usually NOT working out of the box, but needs to be *resolved* against some kind of context, and then copied into proper folder.
+
+#### `BoneItem`
+
+A BoneItem represents a group of template files that can be resolved and copied into current project.
+BoneItems consist in a folder containing a `BoneItem.json` file and any number of template files.
+
+
+#### `BoneGroup`
+
+A BoneGroup represents a group of BoneItems identified by a key. Such key is used by the CLI to identify the items during an execution.
+BoneGroups are simple json objects contained in BoneSpecs, defined by a `name` key and an array of relative paths to BoneItems.
+
+#### `BoneSpec`
+
+A BoneSpec represents a group of templates that can be distributed as a package.
+Consists in a folder containing a `BoneSpec.json` file and any number of BoneItem folders.
+
+#### `Murrayfile`
+
+The Murrayfile is located in the root folder in `Murrayfile.json` file and contains basic setup for bones (relative paths to BoneSpecs) and environment context.
+
+#### `SkeletonSpec`
+
+The `Skeletonspec.json` file contains informations needed by the skeleton phase of a project to be converted in an actual project.
+It's deleted after proper project creation as it won't be needed anymore.
+
+
+
+
+
+
+
+
+
+
 
 
 
