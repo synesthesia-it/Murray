@@ -54,7 +54,7 @@ class ProductsViewController: UIViewController {
 
 Different templates can be rendered sequentially by a single execution, leading to a standardized way of software developmen
 
-## Key Features
+# Key Features
 
 - Clone a **skeleton** project from a remote repository, customize it with your project name and custom properties and have it ready to run. Murray supports **tags** and **branches** for remote repositories (`@develop` or `@1.0.0`)
 
@@ -107,42 +107,88 @@ alias murray='/opt/Murray/murray'
 
 ## Key Concepts
 
-#### `Skeleton`
+#### Skeleton
 
 A skeleton is an empty project, containing any type of file and folder.
 The Skeleton is a shared starting point for a new project, and should not contain any bone template; in other words, the project should work out of the box as a real project.
 To be compatible with Murray, a Skeleton project must contain a `Skeletonspec.json` file in its root folder.
 
-#### `Bone`
+#### Bone
 
 A Bone is a piece of boilerplate code splitted into one or more template files. 
 A template file is usually NOT working out of the box, but needs to be *resolved* against some kind of context, and then copied into proper folder.
 
-#### `BoneItem`
+#### BoneItem
 
 A BoneItem represents a group of template files that can be resolved and copied into current project.
 BoneItems consist in a folder containing a `BoneItem.json` file and any number of template files.
 
+`BoneItem.json` fields are: 
 
-#### `BoneGroup`
+- `name`: a name identifying current item.
+- `paths`: an array of patsh objects, made by a `from` and a `to` string value. 
+  `from` represents a folder or a file relative to BoneItem.json itself and containing some template that needs to be copied into target project.
+  `to` represents target folder path, relative to project's root (the one containing the `Murrayfile.json` file.)
+  Both `from` and `to` paths are *resolved* against provided context, meaning that every Stencil placeholder will be converted in context value, if available.
+- `parameters`: an array of objects representing all the keys expected by templates. Each object must contain a `name` string parameter (the actual name used in the template) and an optional `isRequired` boolean flag.
+    If a `required` parameter is not found in provided context, the execution will stop with an error.
+- `replacements`: an array of `replacements` associated to current item. See `Replacement` for more informations.
+- `plugins`: an object where the key represents the name of a pre-installed plugin, and its object counterpart is strictly plugin-dependent. See `Plugin` section for more informations.
+
+Example:
+
+  ```json
+  { 
+    "name": "viewController",
+    "paths": [{ 
+    "from": "ViewController.template.swift",
+    "to": "Sources/ViewControllers/ {{ name|firstUppercase}}/{{ name|firstUppercase }}ViewController.swift"
+   }],
+    "replacements": [],
+    "parameters": [
+      {
+        "name": "name",
+        "isRequired": true
+      }
+    ],
+    "plugins": {
+      "xcode": { "targets": ["App"] }
+    }
+   }
+  ```
+
+#### BoneGroup
 
 A BoneGroup represents a group of BoneItems identified by a key. Such key is used by the CLI to identify the items during an execution.
 BoneGroups are simple json objects contained in BoneSpecs, defined by a `name` key and an array of relative paths to BoneItems.
 
-#### `BoneSpec`
+#### BoneSpec
 
 A BoneSpec represents a group of templates that can be distributed as a package.
 Consists in a folder containing a `BoneSpec.json` file and any number of BoneItem folders.
 
-#### `Murrayfile`
+#### Murrayfile
 
 The Murrayfile is located in the root folder in `Murrayfile.json` file and contains basic setup for bones (relative paths to BoneSpecs) and environment context.
 
-#### `SkeletonSpec`
+#### SkeletonSpec
 
 The `Skeletonspec.json` file contains informations needed by the skeleton phase of a project to be converted in an actual project.
 It's deleted after proper project creation as it won't be needed anymore.
 
+#### Template resolution
+
+The conversion of a template into a proper project file, by replacing every placeholder with context values.
+Templates follows [Stencil](https://github.com/stencilproject/Stencil) syntax and rules
+
+#### Context
+
+A key-value map/dictionary containing value that will be replaced in templates during resolution.
+Context is made of **environment** values (static values) and execution values explicitly derived from CLI commands.
+Example: in an Android application, an environmnent value can be the main `packageName` used by the app, while an execution value can be the `name` of the activity being created.
+Environment values are set inside the `Murrayfile.json` file, in the `environment` json field. In templates, just use the same key used in the Murrayfile.
+
+#### Replacements
 
 
 
@@ -157,27 +203,9 @@ It's deleted after proper project creation as it won't be needed anymore.
 
 
 
-## Project structure
-
-Murray project is a collection of Swift Packages:
-
-- **MurrayKit**: features all the core features so that they can be included in any Swift Software
-- **MurrayCLI**: it's a wrapper for commands (from command line interface). It wraps strings into actual MurrayKit objects and function calls, and defines the actual text commands used by `murray` (and relative documentation)
-- **`murray`**: is the actual executable installed on your system. It's a basically empty application that only creates a `Menu` object from MurrayCLI
 
 
 
-## Working Demo
-
-A very simple Murray project for iOS can be found [here](https://github.com/stefanomondino/MurrayDemo)
-
-You can automatically generate a project (named *MurrayProject* in this example) from this template by running 
-
-```
-murray skeleton new MurrayProject https://github.com/stefanomondino/MurrayDemo@master
-```
-
-**Important**: please be sure to have Cocoapods v1.6.1 or higher installed on your system (thanks @bellots).
 
 
 
