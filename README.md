@@ -6,7 +6,100 @@ Murray is a set of tools for Skeleton base software development.
 
 For instance, a classic HTML website always consists of pages with same `head` and `body`, filled with custom data in repeating structures.
 
-Murray defines a common (and very simple) design language made of specifications (JSON specs) and template files, wraps them in structured packages ("Bones") and provides tools for developers to quickly use them in their projects, speeding up development process, avoiding annoying and shared coding mistakes and enforcing proper folder structures.
+Murray defines a common and simple design language made of specifications (JSON specs) and template files, wraps them in structured packages ("Bones") and provides tools for developers to quickly use them in their projects.
+Speeding up development process, avoiding annoying and shared coding mistakes and enforcing proper folder structures are some of Murray's main goals.
+
+# In a nutshell
+
+Projects are usually made of groups of boilerplate files that has a fixed structure and part of their contents changing according to some input.
+
+Some examples can be iOS' `UIViewController`, Android's `Activity`, controllers for Web MVC, actions/reducers for React, etc.
+
+These files are always created from scratch in specific subfolders, replaced with some placeholder (in both filename and contents) and then completed with proper context-related implementations.
+
+Murray addresses the first problem (folder structure) with JSON specs and the second one (placeholders) with Stencil templates. 
+
+Stencil templates are text files where everything wrapped around double curly braces (like `{{ this }}`) can be replaced by a key-value pair, where the key is the wrapped word and the value is the actual substitution.
+An example template for a `UIViewController` can be
+
+```swift
+import UIKit
+class {{ name|firstUppercase }}sViewController: UIViewController {
+
+  let {{ name|firstLowercase }}s: [{{ name|firstUppercase }}] = []
+
+  func viewDidLoad() {
+    super.viewDidLoad()
+  }
+}
+```
+
+Example execution command (from CLI): `murray bone new viewController product`
+
+When executed by Murray with some parameters, this template will actually render it's context by replacing `name` occurrences with whatever provided, and applying *filters* like uppercase, lowercase, etc.
+
+Rendered result will then be copied to a destination folder according to template's specifications in `BoneItem.json` file with these contents: 
+
+```swift
+import UIKit
+class ProductsViewController: UIViewController {
+
+  let products: [Product] = []
+
+  func viewDidLoad() {
+    super.viewDidLoad()
+  }
+}
+```
+
+Different templates can be rendered sequentially by a single execution, leading to a standardized way of software development
+
+# Installation
+
+## MacOS
+
+#### Using *[Mint](https://github.com/yonaskolb/mint)*
+
+
+```
+mint install synesthesia-it/Murray
+```
+Note: please ensure you're using at least Mint v0.12 (Swift 5)
+
+#### Compiling from source (latest version from *master* branch)
+
+```
+curl -fsSL https://raw.githubusercontent.com/synesthesia-it/Murray/master/install.sh | sh
+```
+
+## Linux (*experimental*, tested on Ubuntu 18)
+
+Install Swift compiler ([guide](https://gist.github.com/Azoy/8c47629fa160878cf359bf7380aaaaf9) here)
+then
+
+```
+sudo apt-get install libdispatch-dev
+clone murray https://github.com/synesthesia-it/Murray/tree/develop
+cd Murray
+touch LinuxMain.swift
+swift build -c release
+copy .build/x86_64-unknow-linux/releas /opt/
+alias murray='/opt/Murray/murray'
+```
+
+(credits to @beppenmk)
+
+## Key Concepts
+
+Murray defines a hierarchical structure of concepts so that developers can create proper templates suitable for their needs.
+
+### `BoneItem`
+
+A BoneItem represents a group of files 
+
+
+
+
 
 ## Project structure
 
@@ -86,40 +179,7 @@ murray skeleton new MurrayProject https://github.com/stefanomondino/MurrayDemo@m
 
 **Important**: please be sure to have Cocoapods v1.6.1 or higher installed on your system (thanks @bellots).
 
-# Installation
 
-## MacOS
-
-#### Using *[Mint](https://github.com/yonaskolb/mint)*
-
-
-```
-mint install synesthesia-it/Murray
-```
-Note: please ensure you're using at least Mint v0.12 (Swift 5)
-
-#### Compiling from source (latest version from *master* branch)
-
-```
-curl -fsSL https://raw.githubusercontent.com/synesthesia-it/Murray/master/install.sh | sh
-```
-
-## Linux (*experimental*, tested on Ubuntu 18)
-
-Install Swift compiler ([guide](https://gist.github.com/Azoy/8c47629fa160878cf359bf7380aaaaf9) here)
-then
-
-```
-sudo apt-get install libdispatch-dev
-clone murray https://github.com/synesthesia-it/Murray/tree/develop
-cd Murray
-touch LinuxMain.swift
-swift build -c release
-copy .build/x86_64-unknow-linux/releas /opt/
-alias murray='/opt/Murray/murray'
-```
-
-(credits to @beppenmk)
 
 # Usage
 
