@@ -9,16 +9,16 @@ import Foundation
 import Files
 
 public struct ObjectReference<T> {
-     public let file: File
-     public let object: T
-     
-     public init (file: File, object: T?) throws {
-         guard let object = object else {
-             throw CustomError.generic
-         }
-         self.file = file
-         self.object = object
-     }
+    public let file: File
+    public let object: T
+    
+    public init (file: File, object: T?) throws {
+        guard let object = object else {
+            throw CustomError.generic
+        }
+        self.file = file
+        self.object = object
+    }
 }
 
 public struct ListObject {
@@ -28,19 +28,19 @@ public struct ListObject {
 }
 
 public struct BonePipeline {
-
+    
     public let murrayFile: MurrayFile
     
     public let specs: [String: ObjectReference<BoneSpec>]
     let folder: Folder
-//    var tree: [TreeObject] = []
-    let pluginManager: PluginManager
+    //    var tree: [TreeObject] = []
+    public let pluginManager: PluginManager
     public init(folder: Folder, murrayFileName: String = "Murrayfile.json", pluginManager: PluginManager = .shared) throws {
         
         guard let file = try folder.file(named: murrayFileName).decodable(MurrayFile.self),
             file.environment[file.mainPlaceholder ?? MurrayFile.defaultPlaceholder] == nil
-        else {
-            throw CustomError.invalidMurrayfile
+            else {
+                throw CustomError.invalidMurrayfile
         }
         
         self.pluginManager = pluginManager
@@ -72,7 +72,7 @@ public struct BonePipeline {
             .map { try ObjectReference(file: $0, object: $0.decodable(BoneItem.self)) }
     }
     
-    public func transform(path: BonePath, sourceFolder: Folder, with context: BoneContext) throws {
+    public func transform(path: BonePath, customFileContents: String? = nil , sourceFolder: Folder, with context: BoneContext) throws {
         let relativePath = try path.from.resolved(with: context)
         if let subfolder = try? sourceFolder.subfolder(at: relativePath) {
             
@@ -92,17 +92,20 @@ public struct BonePipeline {
             return
         }
         let reader = TemplateReader(source: sourceFolder)
-        let contents = try reader
+        let contents = try (customFileContents ?? reader
             .file(from: path, context: context)
             .readAsString()
-            .resolved(with: context)
+            .resolved(with: context))
         
         let writer = TemplateWriter(destination: self.folder)
         try writer.write(contents, to: path, context: context)
         
     }
     
-    public func replace(from replacement: BoneReplacement, sourceFolder: Folder, with context: BoneContext) throws {
+    public func replace(from replacement: BoneReplacement,
+                        customContents: String? = nil,
+                        sourceFolder: Folder,
+                        with context: BoneContext) throws {
         
         let reader = TemplateReader(source: self.folder)
         let contents = try reader
@@ -111,20 +114,23 @@ public struct BonePipeline {
         
         let text: String
         
-        if let source = replacement.sourcePath {
+        if let customContents = customContents {
+            text = customContents
+        }
+        else if let source = replacement.sourcePath {
             
             let sourceReader = TemplateReader(source: sourceFolder)
             text = try sourceReader
-            .file(from: source, context: context)
-            .readAsString()
-            .resolved(with: context)
+                .file(from: source, context: context)
+                .readAsString()
+                .resolved(with: context)
             
         } else if let inline = replacement.text {
-           text = try inline.resolved(with: context)
+            text = try inline.resolved(with: context)
         } else {
             throw CustomError.fileNotFound(path: replacement.sourcePath ?? "", folder: sourceFolder)
         }
-
+        
         let replaced = contents.replacingOccurrences(of: replacement.placeholder, with: text + replacement.placeholder)
         
         let writer = TemplateWriter(destination: self.folder)
@@ -165,7 +171,7 @@ public struct BonePipeline {
             try self.check(item: item.object, against: context)
             
             try pluginManager.execute(phase: .beforeItemReplace(item: item, context: context), from: self.folder)
-                        
+            
             try item.object.paths.forEach({ (path) in
                 try self.transform(path: path, sourceFolder: folder, with: context)
             })

@@ -39,15 +39,15 @@ public class PluginManager {
     
     public static let shared = PluginManager()
     
-    static var defaultPlugins: [Plugin] = [XCodePlugin()]
+    public static var defaultPlugins: [Plugin] = [XCodePlugin()]
     
-    let plugins: [Plugin]
+    public let plugins: [Plugin]
     
-    init(defaultPlugins: [Plugin] = defaultPlugins) {
+    public init(defaultPlugins: [Plugin] = defaultPlugins) {
         self.plugins = defaultPlugins
     }
     
-    func execute(phase: PluginPhase, from folder: Folder) throws {
+    public func execute(phase: PluginPhase, from folder: Folder) throws {
         try plugins.forEach { try $0.execute(phase: phase, from: folder) }
     }
     

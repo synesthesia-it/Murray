@@ -8,7 +8,7 @@
 import Foundation
 import Files
 
-enum CustomError: Swift.Error {
+public enum CustomError: Swift.Error {
     
     case undecodable(file: File, type: Any.Type)
     
