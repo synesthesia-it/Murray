@@ -7,7 +7,7 @@ import Gloss
 public struct BoneItem: Glossy {
 
     public let name: String
-    public let paths: [BonePath]
+    public private(set) var paths: [BonePath]
     public let parameters: [BoneParameter]
     public let replacements: [BoneReplacement]
     let pluginData: [String: JSON]
@@ -19,7 +19,7 @@ public struct BoneItem: Glossy {
         self.pluginData = [:]
         self.parameters = []
     }
-    
+
     public init?(json: JSON) {
         guard let name:String = "name" <~~ json else { return nil }
         self.name = name
@@ -28,7 +28,11 @@ public struct BoneItem: Glossy {
         self.replacements = "replacements" <~~ json ?? []
         self.pluginData = "plugins" <~~ json ?? [:]
     }
-    
+
+    mutating public func add(path: BonePath) {
+        self.paths += [path]
+    }
+
     public func toJSON() -> JSON? {
         return jsonify([
             "name" ~~> name,

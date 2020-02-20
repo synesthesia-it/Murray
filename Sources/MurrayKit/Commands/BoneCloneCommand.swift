@@ -29,7 +29,7 @@ public class BoneCloneCommand: Command {
             try clone(from: repository, into: Folder.temporary, projectName: tmpFolderName)
             
             let tmpFolder = try Folder.temporary.subfolder(at: tmpFolderName)
-            guard let specFolder = try tmpFolder.subfolders.first(where: {
+            guard let specFolder = tmpFolder.subfolders.first(where: {
                 (try? $0.decodable(BoneSpec.self, at: "Bonespec.json")) != nil
             }) else {
                 throw CustomError.generic
@@ -44,7 +44,7 @@ public class BoneCloneCommand: Command {
             try specFolder.moveContents(to: destinationFolder)
             
             let path = try destinationFolder.file(at: "Bonespec.json").path(relativeTo: folder)
-            let name = try destinationFolder.decodable(BoneSpec.self, at: "Bonespec.json")?.name ?? ""
+//            let name = try destinationFolder.decodable(BoneSpec.self, at: "Bonespec.json")?.name ?? ""
             
             var murrayfile = try folder.decodable(MurrayFile.self, at: "Murrayfile.json")
             murrayfile?.addSpecPath(path)

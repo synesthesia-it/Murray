@@ -7,17 +7,24 @@
 
 import Foundation
 import Files
+import Gloss
 
-public struct ObjectReference<T> {
+public struct ObjectReference<T: Glossy> {
     public let file: File
-    public let object: T
-    
+    public var object: T
+
     public init (file: File, object: T?) throws {
         guard let object = object else {
             throw CustomError.generic
         }
         self.file = file
         self.object = object
+    }
+
+    public func save() throws {
+        guard let json = object.toJSON() else { return }
+         let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+        try self.file.write(data)
     }
 }
 
@@ -28,7 +35,7 @@ public struct ListObject {
 }
 
 public struct BonePipeline {
-    
+
     public let murrayFile: MurrayFile
     
     public let specs: [String: ObjectReference<BoneSpec>]
@@ -72,7 +79,10 @@ public struct BonePipeline {
             .map { try ObjectReference(file: $0, object: $0.decodable(BoneItem.self)) }
     }
     
-    public func transform(path: BonePath, customFileContents: String? = nil , sourceFolder: Folder, with context: BoneContext) throws {
+    public func transform(path: BonePath,
+                          customFileContents: String? = nil,
+                          sourceFolder: Folder,
+                          with context: BoneContext) throws {
         let relativePath = try path.from.resolved(with: context)
         if let subfolder = try? sourceFolder.subfolder(at: relativePath) {
             
@@ -130,7 +140,7 @@ public struct BonePipeline {
         } else {
             throw CustomError.fileNotFound(path: replacement.sourcePath ?? "", folder: sourceFolder)
         }
-        
+
         let replaced = contents.replacingOccurrences(of: replacement.placeholder, with: text + replacement.placeholder)
         
         let writer = TemplateWriter(destination: self.folder)
@@ -171,7 +181,7 @@ public struct BonePipeline {
             try self.check(item: item.object, against: context)
             
             try pluginManager.execute(phase: .beforeItemReplace(item: item, context: context), from: self.folder)
-            
+
             try item.object.paths.forEach({ (path) in
                 try self.transform(path: path, sourceFolder: folder, with: context)
             })
