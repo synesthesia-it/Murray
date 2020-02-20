@@ -26,13 +26,18 @@ public struct BoneSpec: Glossy {
     /**
         The groups handled by this bonespec
      */
-    public private(set) var groups: [BoneGroup]
+    public var groups: [BoneGroup] = [] {
+        didSet {
+            update()
+        }
+    }
     private var groupsByName: [String: BoneGroup] = [:]
     
     public init(name: String) {
         self.name = name
         self.description = "Default description"
         self.groups = []
+        update()
     }
     
     public init?(json: JSON) {
@@ -40,20 +45,17 @@ public struct BoneSpec: Glossy {
         self.name = name
         self.description = "description" <~~ json
         self.groups = "groups" <~~ json ?? []
+        update()
+    }
+    mutating func update() {
         groupsByName = groups.reduce([:]) { dictionary, group in
             var d = dictionary
             d[group.name] = group
             return d
         }
     }
-    
     public mutating func add(group: BoneGroup) {
         self.groups = self.groups.filter { $0.name != group.name } + [group]
-        groupsByName = groups.reduce([:]) { dictionary, group in
-            var d = dictionary
-            d[group.name] = group
-            return d
-        }
     }
     
     public func toJSON() -> JSON? {
