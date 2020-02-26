@@ -44,7 +44,7 @@ public struct BonePipeline {
     public let pluginManager: PluginManager
     public init(folder: Folder, murrayFileName: String = "Murrayfile.json", pluginManager: PluginManager = .shared) throws {
         
-        guard let file = try folder.file(named: murrayFileName).decodable(MurrayFile.self),
+        guard let file = try? folder.file(named: murrayFileName).decodable(MurrayFile.self),
             file.environment[file.mainPlaceholder ?? MurrayFile.defaultPlaceholder] == nil
             else {
                 throw CustomError.invalidMurrayfile

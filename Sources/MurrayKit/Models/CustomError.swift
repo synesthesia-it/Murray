@@ -43,7 +43,7 @@ extension CustomError: CustomStringConvertible {
         case .invalidPath(let path): return "Invalid path at \(path)"
         case .unresolvableString: return "Provided string is not resolvable."
         case .boneProcedureNotFound(let name, _): return "Group named \(name) not found."
-        case .invalidMurrayfile: return "Provided Murrayfile.json is invalid."
+        case .invalidMurrayfile: return "Provided Murrayfile.json is missing or invalid."
         case .missingRequiredParameter(let bone, let parameter): return "Missing\(parameter.name) parameter for item named \(bone.name)."
         case .invalidJSONString: return "Invalid JSON string"
         case .generic: return "Some error occurred. Please try again later."
