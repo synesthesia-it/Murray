@@ -18,7 +18,7 @@ public class BonePipelineCommand: Command {
         guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []) as? JSON else {
             throw CustomError.invalidJSONString
         }
-        self.pipeline = try BonePipeline(folder: folder, murrayFileName: "Murrayfile.json", pluginManager: .shared)
+        self.pipeline = try BonePipeline(folder: folder, murrayFileName: MurrayFile.fileName, pluginManager: .shared)
         let placeholder = pipeline.murrayFile.mainPlaceholder ?? MurrayFile.defaultPlaceholder
         var context:JSON = jsonConversion.reduce([placeholder: mainPlaceholder]) { a, t in
             var accumulator = a

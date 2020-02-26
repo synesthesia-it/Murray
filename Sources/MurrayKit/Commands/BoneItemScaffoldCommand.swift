@@ -13,7 +13,7 @@ public class BoneItemScaffoldCommand: Command {
     let name: String
     let files: [String]
     public var folder: Folder = .current
-    public init(specName: String, name: String, files: [String]) {
+    public init(specName: String, name: String, description: String? = nil, files: [String]) {
         self.specName = specName
         self.name = name
         self.files = files
@@ -21,12 +21,12 @@ public class BoneItemScaffoldCommand: Command {
     public func execute() throws {
         
         let root = folder
-        let murrayfile = try root.decodable(MurrayFile.self, at: "Murrayfile.json")
+        let murrayfile = try root.decodable(MurrayFile.self, at: MurrayFile.fileName)
         
-        guard let spec = try murrayfile?.specPaths.compactMap ({ path -> ObjectReference<BoneSpec>? in
-            guard let spec = try root.decodable(BoneSpec.self, at: path) else { return nil }
+        guard let spec = try murrayfile?.packages.compactMap ({ path -> ObjectReference<BonePackage>? in
+            guard let spec = try root.decodable(BonePackage.self, at: path) else { return nil }
             let file = try root.file(at: path)
-            return try ObjectReference<BoneSpec>(file: file, object: spec)
+            return try ObjectReference<BonePackage>(file: file, object: spec)
         }).first(where: { $0.object.name == specName}) else {
             Logger.log("No spec found")
             return
@@ -48,16 +48,6 @@ public class BoneItemScaffoldCommand: Command {
         
         let file = try folder.createFileIfNeeded(at: "BoneItem.json", contents: data)
         Logger.log("BoneItem successfully created at \(file.path)", level: .normal)
-        
-//        var murrayfile = try root.decodable(MurrayFile.self, at: "Murrayfile.json")
-//        murrayfile?.addSpecPath(file.path(relativeTo: root))
-//        if let json = murrayfile?.toJSON() {
-//             let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
-//            _ = try root.createFileWithIntermediateFolders(at: "Murrayfile.json", contents: data, overwriteContents: true)
-//        }
-//        let pipeline = try BonePipeline(folder: folder)
-//        let list = pipeline.list()
-//        let strings = list.map { "\($0.spec.object.name).\($0.group.name): \($0.group.description ?? "")"}
-//        strings.forEach { Logger.log($0, level: .normal) }
+
     }
 }

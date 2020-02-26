@@ -30,7 +30,7 @@ public class BoneCloneCommand: Command {
             
             let tmpFolder = try Folder.temporary.subfolder(at: tmpFolderName)
             guard let specFolder = tmpFolder.subfolders.first(where: {
-                (try? $0.decodable(BoneSpec.self, at: "Bonespec.json")) != nil
+                (try? $0.decodable(BonePackage.self, at: BonePackage.fileName)) != nil
             }) else {
                 throw CustomError.generic
             }
@@ -43,14 +43,14 @@ public class BoneCloneCommand: Command {
             
             try specFolder.moveContents(to: destinationFolder)
             
-            let path = try destinationFolder.file(at: "Bonespec.json").path(relativeTo: folder)
+            let path = try destinationFolder.file(at: BonePackage.fileName).path(relativeTo: folder)
 //            let name = try destinationFolder.decodable(BoneSpec.self, at: "Bonespec.json")?.name ?? ""
             
-            var murrayfile = try folder.decodable(MurrayFile.self, at: "Murrayfile.json")
+            var murrayfile = try folder.decodable(MurrayFile.self, at: MurrayFile.fileName)
             murrayfile?.addSpecPath(path)
             if let json = murrayfile?.toJSON() {
                 let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
-                _ = try folder.createFileWithIntermediateFolders(at: "Murrayfile.json", contents: data, overwriteContents: true)
+                _ = try folder.createFileWithIntermediateFolders(at: MurrayFile.fileName, contents: data, overwriteContents: true)
             }
         } catch let error {
             throw error

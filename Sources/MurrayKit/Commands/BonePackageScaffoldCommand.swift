@@ -8,15 +8,17 @@
 import Foundation
 import Files
 
-public class BoneSpecScaffoldCommand: Command {
+public class BonePackageScaffoldCommand: Command {
     let path: String
     let name: String
-    
+    let description: String
+
     public var folder: Folder = .current
     
-    public init(path: String, name: String) {
+    public init(path: String, name: String, description: String? = nil) {
         self.path = path
         self.name = name
+        self.description = description ?? "Created from scaffold"
     }
     public func execute() throws {
         
@@ -26,22 +28,18 @@ public class BoneSpecScaffoldCommand: Command {
             .createSubfolderIfNeeded(at: path)
             .createSubfolderIfNeeded(at: name.firstUppercased())
         
-        let spec = BoneSpec(name: name)
-        let json = spec.toJSON() ?? [:]
+        let package = BonePackage(name: name, description: description)
+        let json = package.toJSON() ?? [:]
         let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
         
-        let file = try folder.createFileIfNeeded(at: "Bonespec.json", contents: data)
+        let file = try folder.createFileIfNeeded(at: BonePackage.fileName, contents: data)
         Logger.log("Bonespec successfully created at \(file.path)", level: .normal)
         
-        var murrayfile = try root.decodable(MurrayFile.self, at: "Murrayfile.json")
+        var murrayfile = try root.decodable(MurrayFile.self, at: MurrayFile.fileName)
         murrayfile?.addSpecPath(file.path(relativeTo: root))
         if let json = murrayfile?.toJSON() {
              let data = try JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted])
-            _ = try root.createFileWithIntermediateFolders(at: "Murrayfile.json", contents: data, overwriteContents: true)
+            _ = try root.createFileWithIntermediateFolders(at: MurrayFile.fileName, contents: data, overwriteContents: true)
         }
-//        let pipeline = try BonePipeline(folder: folder)
-//        let list = pipeline.list()
-//        let strings = list.map { "\($0.spec.object.name).\($0.group.name): \($0.group.description ?? "")"}
-//        strings.forEach { Logger.log($0, level: .normal) }
     }
 }

@@ -55,7 +55,7 @@ class BonePipelineSpec: QuickSpec {
                     
                 }
                 it ("should properly find specs") {
-                    expect { try BonePipeline(folder: root).execute(specName: "simple", boneName:"simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
+                    expect { try BonePipeline(folder: root).execute(packageName: "simple", boneName:"simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
                 }
             }
             

@@ -30,7 +30,7 @@ class MurrayFileReaderSpec: QuickSpec {
                     expect {
                         let murrayfile = try root.file(named: "Murrayfile.json").decodable(MurrayFile.self)
                         expect(murrayfile).notTo(beNil())
-                        expect(murrayfile?.specPaths) == ["Murray/Simple/Simple.json"]
+                        expect(murrayfile?.packages) == ["Murray/Simple/Simple.json"]
                         let author = murrayfile?.environment["author"] as? String
                         expect(author) == "Stefano Mondino"
                         return murrayfile

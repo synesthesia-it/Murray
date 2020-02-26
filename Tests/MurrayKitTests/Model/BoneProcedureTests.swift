@@ -11,12 +11,12 @@ import Nimble
 import Files
 @testable import MurrayKit
 
-class BoneGroupSpec: QuickSpec {
+class BoneProcedureSpec: QuickSpec {
     override func spec() {
-        context("a BoneGroup object") {
+        context("a BoneProcedure object") {
             describe("created with default parameters") {
                 it("should not error") {
-                    let bone = BoneGroup(json: .from(Mocks.BoneGroup.simple))
+                    let bone = BoneProcedure(json: .from(Mocks.BoneProcedure.simple))
                     expect(bone).notTo(beNil())
                     expect(bone?.name) == "simpleGroup"
                     expect(bone?.itemPaths).to(haveCount(1))

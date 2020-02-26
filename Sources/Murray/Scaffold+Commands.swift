@@ -32,28 +32,30 @@ struct Scaffold {
                         .execute()
             }
             $0.command(
-                "bonespec",
+                "package",
                 Argument<String>("name", description: "Name of the spec. It will be used to identify it across invocations."),
                 Argument<String>("path", description: "Path for the spec. Must be empty."),
+                Option<String?>("description", default: nil,  description: "A description for new package. Should explain what's included inside and its main purpose."),
                 Flag("verbose")) {
-                    name, path,  verbose in
-                    try BoneSpecScaffoldCommand(path: path, name: name)
+                    name, path, description, verbose in
+                    try BonePackageScaffoldCommand(path: path, name: name)
                         .withVerbose(to: verbose)
                         .execute()
             }
             $0.command(
-                "bonegroup",
+                "procedure",
                 Argument<String>("spec", description: "Name of the spec"),
-                Argument<String>("name", description: "Name of the bone group. It will be used to identify its folder."),
+                Argument<String>("name", description: "Name of the bone procedure. It will be used to identify its folder."),
                 Argument<[String]>("items", description: "Items for this bonegroup."),
+                Option<String?>("description", default: nil,  description: "A description for new procedure. Should explain what's included inside and its main purpose."),
                 Flag("verbose")) {
-                    spec, name, items,  verbose in
-                    try BoneGroupScaffoldCommand(specName: spec, name: name, items: items)
+                    spec, name, items, description, verbose in
+                    try BoneProcedureScaffoldCommand(specName: spec, name: name, description: description, items: items)
                         .withVerbose(to: verbose)
                         .execute()
             }
             $0.command(
-                "boneitem",
+                "item",
                 Argument<String>("spec", description: "Name of the spec"),
                 Argument<String>("name", description: "Name of the bone item. It will be used to identify its folder."),
                 Argument<[String]>("files", description: "Template files to create."),

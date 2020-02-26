@@ -21,7 +21,7 @@ public enum CustomError: Swift.Error {
     
     case unresolvableString(string: String, context: BoneContext)
     
-    case boneGroupNotFound(name: String, spec: String?)
+    case boneProcedureNotFound(name: String, package: String?)
     
     case invalidMurrayfile
     
@@ -42,7 +42,7 @@ extension CustomError: CustomStringConvertible {
         case .unableToCreateFolder(let path, let folder): return "Unable to create folder \(path) in folder \(folder?.path ?? "")"
         case .invalidPath(let path): return "Invalid path at \(path)"
         case .unresolvableString: return "Provided string is not resolvable."
-        case .boneGroupNotFound(let name, _): return "Group named \(name) not found."
+        case .boneProcedureNotFound(let name, _): return "Group named \(name) not found."
         case .invalidMurrayfile: return "Provided Murrayfile.json is invalid."
         case .missingRequiredParameter(let bone, let parameter): return "Missing\(parameter.name) parameter for item named \(bone.name)."
         case .invalidJSONString: return "Invalid JSON string"

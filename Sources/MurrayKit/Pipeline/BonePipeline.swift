@@ -30,15 +30,15 @@ public struct ObjectReference<T: Glossy> {
 
 public struct ListObject {
     public let murrayFile: MurrayFile
-    public let spec: ObjectReference<BoneSpec>
-    public let group: BoneGroup
+    public let package: ObjectReference<BonePackage>
+    public let procedure: BoneProcedure
 }
 
 public struct BonePipeline {
 
     public let murrayFile: MurrayFile
     
-    public let specs: [String: ObjectReference<BoneSpec>]
+    public let packages: [String: ObjectReference<BonePackage>]
     let folder: Folder
     //    var tree: [TreeObject] = []
     public let pluginManager: PluginManager
@@ -54,28 +54,28 @@ public struct BonePipeline {
         self.folder = folder
         self.murrayFile = file
         
-        specs = try file.specPaths
+        packages = try file.packages
             
             .reduce([:]) {
-                var specs = $0
+                var packages = $0
                 let file = try folder.file(at: $1)
-                guard let spec = try file.decodable(BoneSpec.self)
-                    else { throw CustomError.undecodable(file: file, type: BoneSpec.self) }
-                specs[spec.name] = try ObjectReference(file: file, object: spec)
-                return specs
+                guard let spec = try file.decodable(BonePackage.self)
+                    else { throw CustomError.undecodable(file: file, type: BonePackage.self) }
+                packages[spec.name] = try ObjectReference(file: file, object: spec)
+                return packages
         }
     }
     
     public func list() -> [ListObject]{
-        specs.values
-            .flatMap { spec in
-                spec.object.groups.map { group in ListObject(murrayFile: murrayFile, spec: spec, group: group)}
+        packages.values
+            .flatMap { package in
+                package.object.procedures.map { procedure in ListObject(murrayFile: murrayFile, package: package, procedure: procedure)}
         }
     }
     
-    func items(from spec: ObjectReference<BoneSpec>, group: BoneGroup) throws -> [ObjectReference<BoneItem>] {
-        return try group.itemPaths
-            .compactMap { try spec.file.parent?.file(at: $0) }
+    func items(from package: ObjectReference<BonePackage>, procedure: BoneProcedure) throws -> [ObjectReference<BoneItem>] {
+        return try procedure.itemPaths
+            .compactMap { try package.file.parent?.file(at: $0) }
             .map { try ObjectReference(file: $0, object: $0.decodable(BoneItem.self)) }
     }
     
@@ -156,24 +156,24 @@ public struct BonePipeline {
                 }
         }
     }
-    public func execute (specName: String? = nil, boneName: String, with json: JSON) throws {
+    public func execute (packageName: String? = nil, boneName: String, with json: JSON) throws {
         let context = BoneContext(json, environment: murrayFile.environment)
-        guard let spec = specs
+        guard let package = packages
             .first(where: {
-                if let specName = specName {
-                    return $0.key == specName && $0.value.object[boneName] != nil
+                if let packageName = packageName {
+                    return $0.key == packageName && $0.value.object[boneName] != nil
                 } else {
                     return $0.value.object[boneName] != nil
                 }
             })?.value else {
-                throw CustomError.boneGroupNotFound(name: boneName, spec: specName)
+                throw CustomError.boneProcedureNotFound(name: boneName, package: packageName)
         }
         
-        guard let group = spec.object[boneName] else {
-            throw CustomError.boneGroupNotFound(name: boneName, spec: specName)
+        guard let procedure = package.object[boneName] else {
+            throw CustomError.boneProcedureNotFound(name: boneName, package: packageName)
         }
         
-        let items = try self.items(from: spec, group: group)
+        let items = try self.items(from: package, procedure: procedure)
         
         try items.forEach { item in
             guard let folder = item.file.parent else { throw CustomError.generic }

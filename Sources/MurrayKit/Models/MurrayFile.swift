@@ -17,7 +17,7 @@ public struct MurrayFile: Glossy {
     /**
         An array of paths representing `Bonespec.json` **local** references, relative to Murrayfile directory.
      */
-    public private(set) var specPaths: [String]
+    public private(set) var packages: [String]
     
     /**
         A JSON dictionary representing global variables and object that will be resolved by Murray during execution
@@ -26,28 +26,30 @@ public struct MurrayFile: Glossy {
     public let environment: JSON
     
     public let mainPlaceholder: String?
-    
+
+    public static let fileName: String = "Murrayfile.json"
+
     public static var defaultPlaceholder = "name"
     public init() {
-        self.specPaths = []
+        self.packages = []
         self.environment = [:]
         self.mainPlaceholder = nil
     }
     public init?(json: JSON) {
-        self.specPaths = "specPaths" <~~ json ?? []
+        self.packages = "packages" <~~ json ?? []
         self.environment = "environment" <~~ json ?? [:]
         self.mainPlaceholder = "mainPlaceholder" <~~ json
     }
     
     public func toJSON() -> JSON? {
          return jsonify([
-        "specPaths" ~~> specPaths,
+        "packages" ~~> packages,
         "environment" ~~> environment,
         "mainPlaceholder" ~~> mainPlaceholder
         ])
     }
     
     public mutating func addSpecPath(_ spec: String) {
-        self.specPaths += [spec]
+        self.packages += [spec]
     }
 }

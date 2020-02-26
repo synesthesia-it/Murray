@@ -37,19 +37,19 @@ public struct Mocks {
                         "author": "Stefano Mondino"
                     },
                     "mainPlaceholder": "name",
-                    "specPaths": ["\(specPath)"]
+                    "packages": ["\(specPath)"]
                 }
                 """
         }
     }
     
-    public struct BoneSpec {
+    public struct BonePackage {
         public static var simple: String {
             return """
                 {
                     "name": "simple",
                     "description": "Simple bone spec for testing purposes",
-                    "groups": [\(Mocks.BoneGroup.simple)]
+                    "procedures": [\(Mocks.BoneProcedure.simple)]
                 }
             """
         }
@@ -58,14 +58,14 @@ public struct Mocks {
                 {
                     "name": "singleGroup",
                     "description": "Simple bone spec for testing purposes",
-            "groups": [\(Mocks.BoneGroup.group(named: name, items: items))]
+            "procedures": [\(Mocks.BoneProcedure.procedure(named: name, items: items))]
                 }
             """
         }
     }
     
-    public struct BoneGroup {
-        public static func group(named name: String, items: [String] ) -> String {
+    public struct BoneProcedure {
+        public static func procedure(named name: String, items: [String] ) -> String {
             return """
                     {
                         "name": "\(name)",
@@ -172,7 +172,7 @@ public extension Mocks {
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
             murrayFile.createSource()
             
-            let boneSpec = ConcreteFile(contents: Mocks.BoneSpec.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
+            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
             boneSpec.createSource()
             
             let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simple, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
@@ -196,7 +196,7 @@ public extension Mocks {
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
             murrayFile.createSource()
             
-            let boneSpec = ConcreteFile(contents: Mocks.BoneSpec.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
+            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
             boneSpec.createSource()
             
             let simpleItem = ConcreteFile(contents: Mocks.BoneItem.customBone(named: "simpleItem", typeRequired: true), folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
@@ -231,7 +231,7 @@ public extension Mocks {
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(specPath: specPath), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
             murrayFile.createSource()
             
-            let boneSpec = ConcreteFile(contents: Mocks.BoneSpec.singleGroup(named: "singleGroup", items: names), folder: root, path: BonePath(from: specPath, to: ""))
+            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.singleGroup(named: "singleGroup", items: names), folder: root, path: BonePath(from: specPath, to: ""))
             boneSpec.createSource()
             
             

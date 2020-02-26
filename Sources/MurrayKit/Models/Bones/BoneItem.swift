@@ -11,7 +11,9 @@ public struct BoneItem: Glossy {
     public let parameters: [BoneParameter]
     public let replacements: [BoneReplacement]
     let pluginData: [String: JSON]
-    
+
+    public static let fileName = "BoneItem.json"
+
     public init(name: String, files:[String]) {
         self.name = name
         self.paths = files.map { BonePath(from: $0, to: "") }
