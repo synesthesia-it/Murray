@@ -1,6 +1,6 @@
 # Murray
 
-Murray is a set of tools for Skeleton base software development.
+Murray is a set of tools for Skeleton-based software development.
 
 **Skeleton-based** software usually consists of code generated through lots of boilerplate that can't be abstracted and re-used through software architecture principles.
 
@@ -105,20 +105,23 @@ alias murray='/opt/Murray/murray'
 
 (credits to @beppenmk)
 
-## Key Concepts
+# Key Concepts
+Murray can be represented by following diagram.
 
-#### Skeleton
+![diagram](docs/diagram.svg)
+
+## Skeleton
 
 A skeleton is an empty project, containing any type of file and folder.
 The Skeleton is a shared starting point for a new project, and should not contain any bone template; in other words, the project should work out of the box as a real project.
 To be compatible with Murray, a Skeleton project must contain a `Skeletonspec.json` file in its root folder.
 
-#### Bone
+## Bone
 
 A Bone is a piece of boilerplate code splitted into one or more template files. 
 A template file is usually NOT working out of the box, but needs to be *resolved* against some kind of context, and then copied into proper folder.
 
-#### BoneItem
+## BoneItem
 
 A BoneItem represents a group of template files that can be resolved and copied into current project.
 BoneItems consist in a folder containing a `BoneItem.json` file and any number of template files.
@@ -126,7 +129,7 @@ BoneItems consist in a folder containing a `BoneItem.json` file and any number o
 `BoneItem.json` fields are: 
 
 - `name`: a name identifying current item.
-- `paths`: an array of patsh objects, made by a `from` and a `to` string value. 
+- `paths`: an array of path objects, made by a `from` and a `to` string value. 
   `from` represents a folder or a file relative to BoneItem.json itself and containing some template that needs to be copied into target project.
   `to` represents target folder path, relative to project's root (the one containing the `Murrayfile.json` file.)
   Both `from` and `to` paths are *resolved* against provided context, meaning that every Stencil placeholder will be converted in context value, if available.
@@ -157,30 +160,55 @@ Example:
    }
   ```
 
-#### BoneGroup
+## BoneProcedure
 
-A BoneGroup represents a group of BoneItems identified by a key. Such key is used by the CLI to identify the items during an execution.
-BoneGroups are simple json objects contained in BoneSpecs, defined by a `name` key and an array of relative paths to BoneItems.
+A **Procedure** is a sequence of items resolved and installed in target project across a single execution. The procedure is identified by the `name` parameter.
 
-#### BoneSpec
+## BonePackage
 
-A BoneSpec represents a group of templates that can be distributed as a package.
-Consists in a folder containing a `BoneSpec.json` file and any number of BoneItem folders.
+A **Package** is a group of items and procedures that can be shipped through git or zips and reused across different projects.
+It should contain a json file representing it's structure (default name: `BonePackage.json`) and any number of folders including Items.
+`BonePackage.json` fields are: 
 
-#### Murrayfile
+- `name`: a name identifying the package. 
+- `description`: a description string explaining the package's main purpose. Will be printed by CLI commands
+- `procedures`: an array of **BoneProcedure** objects.
+
+Example:
+
+```json
+{
+  "description" : "A package for quick MVVM scaffolding.",
+  "procedures" : [
+    {
+      "items" : [
+        "viewModel\/BoneItem.json",
+        "viewController\/BoneItem.json",
+        "model\/BoneItem.json"
+      ],
+      "description" : "Creates an group of Model, ViewController and ViewModel",
+      "name" : "section"
+    }
+  ],
+  "name" : "MVVM"
+}
+
+```
+
+## Murrayfile
 
 The Murrayfile is located in the root folder in `Murrayfile.json` file and contains basic setup for bones (relative paths to BoneSpecs) and environment context.
 `Murrayfile.json` fields are: 
 
-- `specPaths`: an array of Bonespec.json paths relative to Murrayfile folder
+- `packages`: an array of paths relative to Murrayfile folder pointing to a `BonePackage.json` file
 - `environment`: an object representing a shared context for each resolution. Can contain simple data such `author` name, `packageName` and similar, or more complex array/objects that will be handled by templates.
 
 Example: 
 
 ```json
 {
-  "specPaths" : [
-    "Murray/Boomerang/Bonespec.json"
+  "packages" : [
+    "Murray/MVC/BonePackage.json"
   ],
   "environment" : {
     "author": "Stefano Mondino",
