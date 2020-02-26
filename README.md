@@ -52,7 +52,7 @@ class ProductsViewController: UIViewController {
 }
 ```
 
-Different templates can be rendered sequentially by a single execution, leading to a standardized way of software developmen
+Different templates can be rendered sequentially by a single execution, leading to a standardized way of software development.
 
 # Key Features
 
@@ -66,9 +66,11 @@ Different templates can be rendered sequentially by a single execution, leading 
 
 - Easily manage and check your bones environment: see what's available directly from CLI
 
-- Design your **bones** with **[Stencil](https://github.com/stencilproject/Stencil)**
+- Design your templates with **[Stencil](https://github.com/stencilproject/Stencil)**
 
 - Integrate Murray functionalities in any Swift application through **MurrayKit** framework
+
+- [WIP] MurrayStudio: a graphical user interface for improved editing and management.
 
 # Installation
 
@@ -106,9 +108,6 @@ alias murray='/opt/Murray/murray'
 (credits to @beppenmk)
 
 # Key Concepts
-Murray can be represented by following diagram.
-
-![diagram](docs/diagram.svg)
 
 ## Skeleton
 
@@ -120,6 +119,10 @@ To be compatible with Murray, a Skeleton project must contain a `Skeletonspec.js
 
 A Bone is a piece of boilerplate code splitted into one or more template files. 
 A template file is usually NOT working out of the box, but needs to be *resolved* against some kind of context, and then copied into proper folder.
+
+Bones structure can be represented with this diagram
+
+![diagram](docs/diagram.svg)
 
 ## BoneItem
 
@@ -218,7 +221,7 @@ Example:
 }
 ```
 
-#### SkeletonSpec
+## SkeletonSpec
 
 The `Skeletonspec.json` file contains informations needed by the skeleton phase of a project to be converted in an actual project.
 It's deleted after proper project creation as it won't be needed anymore.
@@ -243,89 +246,116 @@ Example (for non-xcode users: `Skeleton.xcodeproj` is actually a folder.):
 }
 ```
 
-#### Template resolution
+## Template resolution
 
 The conversion of a template into a proper project file, by replacing every placeholder with context values.
 Templates follows [Stencil](https://github.com/stencilproject/Stencil) syntax and rules
 
-#### Context
+## Context
 
 A key-value map/dictionary containing value that will be replaced in templates during resolution.
 Context is made of **environment** values (static values) and execution values explicitly derived from CLI commands.
 Example: in an Android application, an environmnent value can be the main `packageName` used by the app, while an execution value can be the `name` of the activity being created.
 Environment values are set inside the `Murrayfile.json` file, in the `environment` json field. In templates, just use the same key used in the Murrayfile.
 
-#### Replacements
+## Replacements
+
+Replacements are special strings or file templates that won't create a new file when resolved, but will append their contents in a specific part of some already-existing file.
+Replacements are declared at Item level, and should be used with normal templates to ensure that project will still be "valid" after an execution.
+
+Example: in Android development, developers can declare an `Activity` to create a new screen of the app. Creating a template for an Activity is surely a great fit for Murray, but Android requires every new Activity to be declared in a common xml file (the `AndroidManifest.xml`). By placing a template file inside the Item (with the xml node syntax) and a comment inside the XML, Murray can look for the placeholder, replace it with the template string and add back the placeholder again.
 
 
 
+# CLI - Usage
 
+Murray exposes a simple Command Line Interface.
+Every command can be run with `--help` flag for descriptive help and with `--verbose` to display more output and debug purposes.
 
+By running 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Usage
-
-- Create a new skeleton app by cloning any remote repository with a `Skeletonspec.json` file in its root folder.
-
-```
-$ murray skeleton new CoolApp <your_remote_repo>
+```bash
+$ murray
 ```
 
-Next commands should all be used inside your freshly created project's directory.
-(remind to `cd CoolApp` ;) )
+you get a list of macrocommands: `skeleton`, `bone` and `scaffold`
 
+## Skeleton
 
-Your Skeleton project must declare a `Skeletonspec.json` file in its root folder, containing a list of remote repositories containing **Bones**. 
+A set of commands to interact with skeletons
 
-Example:
-```javascript
-...
- remoteBones: ["https://github.com/synesthesia-it/Bones@develop"],
- ...
+- `new` - Create a new skeleton app by cloning any remote repository with a `Skeletonspec.json` file in its root folder. This command will clone your remote repository/copy your local repository in a subfolder of current folder with provided name.
+Command will fail if subfolder is already existing or if provided repository does not contain a `Skeletonspec.json`.
+
+```bash
+$ murray skeleton new YourCustomProjectName git@github.com:stefanomondino/somerepo@develop
+```
+```bash
+$ murray skeleton new AnotherCustomProjectName ../SkeletonFolder@develop
 ```
 
-If you want to add Bones features to an already existing project, just create a `Skeletonspec.json` file in your root folder by using `murray skeleton scaffold` and edit it by adding one or more Bones repositories.
+## Bone
 
-- Setup your project with
+A set of commands to interact with bones
 
-```
-$ murray bone setup
-```
+All `bone` subcommands must be run from your project root folder. Such folder should also contain a valid `Murrayfile.json`
 
-This will clone all bones repositories in a local folder. You can update them by calling same command again.
+- `clone` - Clones a remote repository containing a bone Package. You should specify the `git` address (remote or local) to clone the package from, and an optional local subfolder to clone it into (defaults to `.murray` hidden folder).
 
-
-- Install a Bone template into your current project
-
-```
-$ murray bone new viewSection Product
+```bash
+$ murray bone clone ../SomeLocalPackageGitFolder@master MurrayBones
 ```
 
-In this particular case, a `viewSection` bone is created in your project by copying all source file related to `viewSection` (one or more, depending on what you wrote in the `Bonespec.json`) by renaming each file replacing the bone placeholder with Product and by parsing internal text contents through Stencil.
-See the [Bones](https://github.com/synesthesia-it/Murray/wiki) wiki page for more details.
+- `list` - Prints out every available `procedure` by flatting available packages. 
 
-
-- List all templates available for current project
-```
+```bash
 $ murray bone list
 ```
 
-# Documentation
+- `new` - Executes an available procedure. Requires a `name` parameter (the procedure `name`, as printed out from `murray bone list`), a `mainPlaceholder` value (the `name` parameter in context). 
+Optional parameters are `--context` (a valid JSON string containing the context) or `--param`(a list of single string key-values separated by a colon, example `--param "author:stefano mondino"`
 
-See [Wiki](https://github.com/synesthesia-it/Murray/wiki) pages
+```bash
+$ murray bone new viewModel Product --param "company:Synesthesia"
+```
+
+## Scaffold
+
+A set of commands to create Murray structures from scratch.
+
+All `scaffold` subcommands must be run from your project root folder. Such folder should also contain a valid `Murrayfile.json` (with the exceptions of `murrayfile` and `skeleton` commands).
+
+- `murrayfile`: creates a new empty `Murrayfile.json` 
+
+```bash
+$ murray scaffold murrayfile
+```
+
+- `skeleton`: creates a new empty `Skeletonspec.json` 
+
+```bash
+$ murray scaffold skeleton
+```
+
+- `package`: creates a new Package named `name` in specified local `path` and adds it to current Murrayfile. An optional `--description` string parameter may be provided to describe the new Package in list commands.
+```bash
+$ murray scaffold package MVC ./MurrayBones --description "A package to manage MVC in iOS applications"
+```
+
+- `item`: creates a new Item inside a Package. Requires a `package` parameter that must match an existing package in project folder, a `name` used to uniquely identify the item inside the package and a list of file names that will be use to generate empty files for your templates.
+Note: created items will **NOT** added to any procedure. See `scaffold procedure` for that.
+```bash
+$ murray scaffold item MVC ViewController "ViewController.template.swift" "ViewController.template.xib"
+```
+```bash
+$ murray scaffold item MVC Model "Model.template.swift"
+```
+
+- `procedure`: creates inside a `package` a new procedure identified by `name` by adding provided list of `items`. If target package already contains a procedure with provided name, the items will be added to the existing one. An optional `--description` option may be provided to better describe the procedure in lists.
+```bash
+$ murray scaffold procedure MVC screen ViewController Model --description "Creates a new screen in the app with a ViewController class and xib and a Model"
+```
+
 
 # FAQ
 
