@@ -23,7 +23,7 @@ public struct MurrayFile: Glossy {
         A JSON dictionary representing global variables and object that will be resolved by Murray during execution
      
      */
-    public let environment: JSON
+    public private(set) var environment: JSON
     
     public let mainPlaceholder: String?
 
@@ -51,5 +51,9 @@ public struct MurrayFile: Glossy {
     
     public mutating func addSpecPath(_ spec: String) {
         self.packages += [spec]
+    }
+    
+    public mutating func update(environment: JSON) {
+        self.environment = environment
     }
 }
