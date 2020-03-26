@@ -88,8 +88,8 @@ public struct BonePipeline {
             
             try subfolder.subfolders.forEach { f in
                 let relative = f.path(relativeTo: sourceFolder)
-                
-                let destinationFolder = try path.to.resolved(with: context) + "/" + relative
+                let r = relative.components(separatedBy: "/").last ?? relative
+                let destinationFolder = try path.to.resolved(with: context) + "/" + r
                 let newPath = BonePath(from: relative, to: destinationFolder)
                 try self.transform(path: newPath, sourceFolder: sourceFolder, with: context)
             }

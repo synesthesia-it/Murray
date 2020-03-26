@@ -62,6 +62,15 @@ public struct Mocks {
                 }
             """
         }
+        public static func nestedFolders(named name: String) -> String {
+            return """
+            {
+            "name": "nestedFolders",
+            "description": "Simple bone spec for testing purposes",
+            "procedures": [\(Mocks.BoneProcedure.procedure(named: name, items: ["nestedFolders"]))]
+            }
+            """
+        }
     }
     
     public struct BoneProcedure {
@@ -129,6 +138,28 @@ public struct Mocks {
                    ]
                }
                """
+        }
+        public static var nested: String { """
+            {
+            "name": "nestedFolders",
+            "description": "custom description",
+            "paths": [
+            { "from": "Bone.swift",
+            "to": "Sources/Files/Bone.swift"
+            },
+            { "from": "Subfolder",
+            "to": "Sources/Subfolder"
+            }
+            ],
+            "replacements": [],
+            "plugins": {
+            "xcode": {
+            "targets": []
+            }
+            },
+            "parameters": []
+            }
+            """
         }
         public static func customBone(named name: String, typeRequired: Bool = false) -> String { """
             {
@@ -246,6 +277,30 @@ public extension Mocks {
             let replacementFile = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath, to: ""))
             replacementFile.createSource()
            
+        }
+        public static func nestedFolders(from root: Folder) throws {
+            let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
+            try xcode.createFileIfNeeded(at: "project.pbxproj").write(testPBX)
+            let specPath = "Murray/NestedFolders/NestedFolders.json"
+            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(specPath: specPath), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
+            murrayFile.createSource()
+
+            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.nestedFolders(named: "nestedFolders"), folder: root, path: BonePath(from: specPath, to: ""))
+            boneSpec.createSource()
+            ConcreteFile(contents: Mocks.BoneItem.nested, folder: root, path: BonePath(from: "Murray/NestedFolders/NestedFolders/NestedFolders.json", to: "")).createSource()
+            ConcreteFile(contents: "{{name}}", folder: root, path: BonePath(from: "Murray/NestedFolders/NestedFolders/Subfolder/Nested/Nested2/file.txt", to: "")).createSource()
+            ConcreteFile(contents: "txt1", folder: root, path: BonePath(from: "Murray/NestedFolders/NestedFolders/Subfolder/externalFile.txt", to: "")).createSource()
+            ConcreteFile(contents: "some contents", folder: root, path: BonePath(from: "Murray/NestedFolders/NestedFolders/Bone.swift", to: "")).createSource()
+//            names.forEach { name in
+//                let simpleItem = ConcreteFile(contents: Mocks.BoneItem.customBone(named: name), folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/\(name.firstUppercased()).json", to: ""))
+//                simpleItem.createSource()
+//
+//                ConcreteFile(contents: "{{name}}Test - {{ author }}", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.swift", to: "output/{{name}}.swift")).createSource()
+//                ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/SingleGroup/\(name.firstUppercased())/Bone.xib", to: "output/{{name}}.swift")).createSource()
+//            }
+//            let replacementFile = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath, to: ""))
+//            replacementFile.createSource()
+
         }
     }
 }

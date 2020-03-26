@@ -100,6 +100,32 @@ class BonePipelineSpec: QuickSpec {
                     }.notTo(throwError())
                 }
             }
+            describe("when subfolders") {
+                beforeEach {
+                    try! root.empty()
+                    try! Mocks.Scenario.nestedFolders(from: root)
+                }
+                it("should replicate folder structure") {
+
+                    expect {
+
+                        let pipeline = try BonePipeline(folder: root)
+                        expect { try pipeline.execute(boneName:"nestedFolders", with: ["name": "someTest2"]) }.notTo(throwError())
+                        expect { try root.subfolder(at: "Sources/Subfolder/Subfolder/Nested")}.to(throwError())
+                        expect { try root.subfolder(at: "Sources/Subfolder/Nested/Nested2") }.notTo(throwError())
+                        expect { try root.file(at: "Sources/Subfolder/externalFile.txt")
+                        }.notTo(throwError())
+                        expect { try root.file(at: "Sources/Files/Bone.swift")
+                        }.notTo(throwError())
+                        expect { try root.file(at: "Sources/Subfolder/Nested/Nested2/file.txt")
+                        }.notTo(throwError())
+                        expect { try root.file(at: "Sources/Subfolder/Nested/Nested2/file.txt").readAsString()
+                        } == "someTest2"
+
+                        return pipeline
+                    }.notTo(throwError())
+                }
+            }
         }
     }
 }
