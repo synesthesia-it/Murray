@@ -154,7 +154,7 @@ public struct Mocks {
             "replacements": [],
             "plugins": {
             "xcode": {
-            "targets": []
+            "targets": ["App"]
             }
             },
             "parameters": []

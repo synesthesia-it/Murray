@@ -83,23 +83,6 @@ class BonePipelineSpec: QuickSpec {
                     }.notTo(throwError())
                 }
             }
-            describe("when parameters are required") {
-                beforeEach {
-                    try! root.empty()
-                    try! Mocks.Scenario.parameterRequired(from: root)
-                }
-                it("should not allow creation of bones if required parameters are not provided") {
-                    
-                    expect {
-                        
-                        let pipeline = try BonePipeline(folder: root)
-                        expect { try pipeline.execute(boneName:"simpleGroup", with: ["name": "someTest2"]) }.to(throwError())
-                        expect { try pipeline.execute(boneName:"simpleGroup", with: ["name": "someTest3", "type": "the type"]) }.notTo(throwError())
-                        
-                        return pipeline
-                    }.notTo(throwError())
-                }
-            }
             describe("when subfolders") {
                 beforeEach {
                     try! root.empty()
@@ -121,6 +104,23 @@ class BonePipelineSpec: QuickSpec {
                         }.notTo(throwError())
                         expect { try root.file(at: "Sources/Subfolder/Nested/Nested2/file.txt").readAsString()
                         } == "someTest2"
+
+                        return pipeline
+                    }.notTo(throwError())
+                }
+            }
+            describe("when parameters are required") {
+                beforeEach {
+                    try! root.empty()
+                    try! Mocks.Scenario.parameterRequired(from: root)
+                }
+                it("should not allow creation of bones if required parameters are not provided") {
+
+                    expect {
+
+                        let pipeline = try BonePipeline(folder: root)
+                        expect { try pipeline.execute(boneName:"simpleGroup", with: ["name": "someTest2"]) }.to(throwError())
+                        expect { try pipeline.execute(boneName:"simpleGroup", with: ["name": "someTest3", "type": "the type"]) }.notTo(throwError())
 
                         return pipeline
                     }.notTo(throwError())

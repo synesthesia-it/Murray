@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "AEXML",
+        "repositoryURL": "https://github.com/tadija/AEXML",
+        "state": {
+          "branch": null,
+          "revision": "e4d517844dd03dac557e35d77a8e9ab438de91a6",
+          "version": "4.4.0"
+        }
+      },
+      {
         "package": "Commander",
         "repositoryURL": "https://github.com/kylef/Commander.git",
         "state": {
@@ -107,6 +116,15 @@
           "branch": "master",
           "revision": "9c3468e300ba75ede0d7eb4c495897e0ac3591c3",
           "version": null
+        }
+      },
+      {
+        "package": "XcodeProj",
+        "repositoryURL": "https://github.com/tuist/xcodeproj.git",
+        "state": {
+          "branch": null,
+          "revision": "942b35d6a7ee94752cc726b1fbd8dd7ec468e49d",
+          "version": "7.9.0"
         }
       }
     ]
