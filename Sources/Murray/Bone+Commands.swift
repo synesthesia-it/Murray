@@ -33,17 +33,17 @@ struct Bone {
                     .withVerbose(to: verbose)
                 .execute()
             }
-            
+
             $0.command("new",
                        Argument<String>("boneName", description: "Name of the bone from bonespec (example: model). If multiple bonespecs are being used, use <bonespecName>.<boneName> syntax. Example: myBones.model"),
                        Argument<String>("mainPlaceholder", description: "Value that needs to be replaced in templates wherever the keyword <name> is used."),
                        Option<String>("context", default: "{}", description: "A JSON string with further context information used by Stencil template"),
-                       VariadicOption<String>("param", default: [""], flag: Character("p"), description: "Custom parameters that will be resolved in Stencil templates"),
                        Flag("verbose"),
+                       Argument<[String]?>("parameters", description: "Custom parameters for templates. Use key:value syntax (ex: \"author:yourname with spaces\")"),
                        description: "Resolves a bone template with provided parameters and installs it in target path (according to Bonespec.json)"
                 
-            ) { boneName, mainPlaceholder, contextString, params, verbose in
-                try BonePipelineCommand(boneName: boneName, mainPlaceholder: mainPlaceholder, contextString: contextString, params: params)
+            ) { boneName, mainPlaceholder, contextString, verbose, params in
+                try BonePipelineCommand(boneName: boneName, mainPlaceholder: mainPlaceholder, contextString: contextString, params: params ?? [])
                     .withVerbose(to: verbose)
                     .execute()
             }

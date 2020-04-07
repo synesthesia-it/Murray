@@ -25,19 +25,17 @@ public class BonePipelineCommand: Command {
             accumulator[t.key] = t.value
             return accumulator
         }
-        
         params.map {
-            $0.components(separatedBy: ":")
+            $0.split(separator: ":", maxSplits: 1)
         }
-        .filter { $0.count == 2}
-        .map { $0.map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)}}
-        .compactMap {array -> (key: String, value:String)? in
+        .filter { $0.count == 2 }
+        .map { $0.map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)} }
+        .compactMap { array -> (key: String, value:String)? in
             guard let key = array.first,
                 let value = array.last else { return nil }
-            return (key: key, value: value)}
-            .forEach {
-                context[$0.key] = $0.value
+            return (key: key, value: value)
         }
+        .forEach { context[$0.key] = $0.value }
         self.boneName = boneName
         self.context = context
     }

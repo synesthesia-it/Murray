@@ -326,11 +326,14 @@ $ murray bone list
 ```
 
 - `new` - Executes an available procedure. Requires a `name` parameter (the procedure `name`, as printed out from `murray bone list`), a `mainPlaceholder` value (the `name` parameter in context). 
-Optional parameters are `--context` (a valid JSON string containing the context) or `--param`(a list of single string key-values separated by a colon, example `--param "author:stefano mondino"`
+Optional parameters are `--context` (a valid JSON string containing the context).
+By providing the  `--` , you can add a variadic list of strings at the end of the command that will be used inside templates in additions to provided name and environment values from Murrayfile.
+Each string must be a key-value pair separated by a colon, example `"author:stefano mondino"`.
 
 ```bash
-$ murray bone new viewModel Product --param "company:Synesthesia"
+$ murray bone new viewModel Product -- "company:Synesthesia" "author:stefano mondino"
 ```
+The example above will resolve templates by replacing `name` with `Product`, `company` with `Synesthesia` and `author` with `stefano mondino`.
 
 ## Scaffold
 
