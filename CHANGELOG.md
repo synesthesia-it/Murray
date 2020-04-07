@@ -1,9 +1,10 @@
-# Next
+# Changelog
 
-## 2.0.1
+## Unreleased
 
-- XCodePlugin is now based upon tuist/XcodeProj (written in Swift) rather than Cocoapods/Xcodeproj(written in ruby) (#33)
+- XCodePlugin is now based upon tuist/XcodeProj (written in Swift) rather than Cocoapods/Xcodeproj (written in ruby) (#33)
 - Fix folder duplication bug (#34)
+- SnakeCase filter (#35)
 
 ## 2.0
 

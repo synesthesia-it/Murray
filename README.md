@@ -265,6 +265,19 @@ Replacements are declared at Item level, and should be used with normal template
 
 Example: in Android development, developers can declare an `Activity` to create a new screen of the app. Creating a template for an Activity is surely a great fit for Murray, but Android requires every new Activity to be declared in a common xml file (the `AndroidManifest.xml`). By placing a template file inside the Item (with the xml node syntax) and a comment inside the XML, Murray can look for the placeholder, replace it with the template string and add back the placeholder again.
 
+## Available filters
+
+Murray provides custom filters for Stencil templates:
+
+- `firstUppercase` and `firstLowercase` are useful for class names and variable names in code templates: you can input some generic name like `product` and convert it into `Product` when it should be used in class names or viceversa.
+- `snakeCase` is useful to convert camelcase words into snake case. Example: `thisIsAWord` becomes  `this_is_a_word`
+
+Filters can be chained: 
+```
+{{ name | snakeCase | uppercase }}
+```
+converts name from `thisIsAWord` into `THIS_IS_A_WORD`
+
 
 
 # CLI - Usage

@@ -26,6 +26,10 @@ public final class FileTemplate {
         ext.registerFilter("firstUppercase") { (value: Any?) in
             return (value as? String)?.firstUppercased() ?? value
         }
+
+        ext.registerFilter("snakeCase") { (value: Any?) in
+            return (value as? String)?.camelCaseToSnakeCase() ?? value
+        }
         
         ext.registerFilter("swiftType") { (value: Any?) in
             guard let v = value else { return value }
