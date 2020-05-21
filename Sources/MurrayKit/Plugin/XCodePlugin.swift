@@ -49,14 +49,16 @@ open class XCodePlugin: Plugin {
         let targets = pbx.targets.filter { targetNames.contains($0.name) }
         Logger.log("Matching targets: \(targets.map{ $0.name }.joined(separator: ", "))", level: .verbose)
         files.forEach { file in
-            let folders = file.parent?.path(relativeTo: projectFolder.parent!).components(separatedBy: "/").filter { $0.isEmpty == false } ?? []
+            let folders = file.parent?.path(relativeTo: projectFolder.parent ?? projectFolder).components(separatedBy: "/").filter { $0.isEmpty == false } ?? []
             guard let mainGroup = pbx.mainGroup else { return }
             let group = folders.reduce(mainGroup) { group, folder -> PBXGroup? in
 
-                return group?.group(named: folder) ?? (try? group?.addGroup(named: folder).first)
+                return group?.group(named: folder)
+                    ?? group?.children.filter { $0.path == folder }.compactMap { $0 as? PBXGroup}.first
+                    ?? (try? group?.addGroup(named: folder).first)
             }
 
-            if let addedFile = try? group?.addFile(at: Path(file.path), sourceRoot: Path(projectFolder.path)) {
+            if let addedFile = try? group?.addFile(at: Path(file.path), sourceRoot: Path(projectFolder.parent?.path ?? projectFolder.path)) {
                 targets.forEach { target in
                     Logger.log("Adding file \(addedFile.name ?? "n/a") to target \(target.name)", level: .verbose)
                     do {
