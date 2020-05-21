@@ -31,11 +31,13 @@ open class XCodePlugin: Plugin {
     }
     
     func process(item: BoneItem, file: File, projectFolder: Folder, context: BoneContext) throws {
+        Logger.log("Attempting to process item '\(item.name)', file '\(file)' with context: \(context)", level: .verbose)
         guard let data: PluginData = self.pluginData(for: item) else { return }
         guard let projectFolder = projectFolder.subfolders
             .filter ({ $0.name.contains(".xcodeproj") })
             .first else { return }
         let targetNames = Set(try data.targets.map { try $0.resolved(with: context) })
+        Logger.log("Required targets: \(targetNames.joined(separator: ", "))", level: .verbose)
         guard targetNames.isEmpty == false else { return }
 
         let files = (try? item.paths
@@ -45,6 +47,7 @@ open class XCodePlugin: Plugin {
         let project = try? XcodeProj(pathString: projectFolder.path)
         guard let pbx = project?.pbxproj.projects.first else { return }
         let targets = pbx.targets.filter { targetNames.contains($0.name) }
+        Logger.log("Matching targets: \(targets.map{ $0.name }.joined(separator: ", "))", level: .verbose)
         files.forEach { file in
             let folders = file.parent?.path(relativeTo: projectFolder.parent!).components(separatedBy: "/").filter { $0.isEmpty == false } ?? []
             guard let mainGroup = pbx.mainGroup else { return }
@@ -55,6 +58,7 @@ open class XCodePlugin: Plugin {
 
             if let addedFile = try? group?.addFile(at: Path(file.path), sourceRoot: Path(projectFolder.path)) {
                 targets.forEach { target in
+                    Logger.log("Adding file \(addedFile.name ?? "n/a") to target \(target.name)", level: .verbose)
                     _ = try? target.sourcesBuildPhase()?.add(file: addedFile)
                 }
             }

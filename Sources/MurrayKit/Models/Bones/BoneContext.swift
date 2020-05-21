@@ -7,7 +7,11 @@
 
 import Foundation
 
-public struct BoneContext {
+public struct BoneContext: CustomStringConvertible {
+    public var description: String {
+        context.description
+    }
+
     public let context: JSON
     public init(_ values: JSON, environment: JSON = [:]) {
         context = environment.merging(values, uniquingKeysWith: { e, v in return v })
