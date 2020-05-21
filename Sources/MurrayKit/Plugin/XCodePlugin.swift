@@ -59,10 +59,20 @@ open class XCodePlugin: Plugin {
             if let addedFile = try? group?.addFile(at: Path(file.path), sourceRoot: Path(projectFolder.path)) {
                 targets.forEach { target in
                     Logger.log("Adding file \(addedFile.name ?? "n/a") to target \(target.name)", level: .verbose)
-                    _ = try? target.sourcesBuildPhase()?.add(file: addedFile)
+                    do {
+                    _ = try target.sourcesBuildPhase()?.add(file: addedFile)
+                    } catch let error {
+                        Logger.log("Error adding file \(addedFile.name ?? "") to target \(target.name):")
+                        Logger.log(error.localizedDescription)
+                    }
                 }
             }
         }
-        try? project?.write(path: Path(projectFolder.path), override: true)
+        do {
+            try project?.write(path: Path(projectFolder.path), override: true)
+        } catch let error {
+            Logger.log("Error saving project")
+            Logger.log(error.localizedDescription)
+        }
         }
 }
