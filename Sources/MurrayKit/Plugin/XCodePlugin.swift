@@ -62,7 +62,11 @@ open class XCodePlugin: Plugin {
                 targets.forEach { target in
                     Logger.log("Adding file \(addedFile.name ?? "n/a") to target \(target.name)", level: .verbose)
                     do {
-                    _ = try target.sourcesBuildPhase()?.add(file: addedFile)
+//                        if Path(file.path).extension == "xib" {
+                            addedFile.explicitFileType = nil
+//                        }
+                        _ = try self.getBuildPhase(for: Path(file.path), target: target)?.add(file: addedFile)
+
                     } catch let error {
                         Logger.log("Error adding file \(addedFile.name ?? "") to target \(target.name):")
                         Logger.log(error.localizedDescription)
@@ -76,5 +80,55 @@ open class XCodePlugin: Plugin {
             Logger.log("Error saving project")
             Logger.log(error.localizedDescription)
         }
+    }
+
+    ///adapted from here https://github.com/yonaskolb/XcodeGen/blob/master/Sources/XcodeGenKit/SourceGenerator.swift
+    private func getBuildPhase(for path: Path, target: PBXTarget) throws -> PBXBuildPhase? {
+        if path.lastComponent == "Info.plist" {
+            return nil
         }
+        if let fileExtension = path.extension {
+            switch fileExtension {
+            case "swift",
+                 "m",
+                 "mm",
+                 "cpp",
+                 "c",
+                 "cc",
+                 "S",
+                 "xcdatamodeld",
+                 "intentdefinition",
+                 "metal",
+                 "mlmodel",
+                 "rcproject":
+                return try target.sourcesBuildPhase()
+            case "h",
+                 "hh",
+                 "hpp",
+                 "ipp",
+                 "tpp",
+                 "hxx",
+                 "def":
+                return nil
+            case "modulemap":
+                return nil
+            case "framework":
+                return try target.frameworksBuildPhase()
+            case "xpc":
+                return nil
+            case "xcconfig",
+                 "entitlements",
+                 "gpx",
+                 "lproj",
+                 "xcfilelist",
+                 "apns",
+                 "pch":
+                return nil
+            default:
+                return try target.resourcesBuildPhase()
+            }
+        }
+        return nil
+    }
+
 }
