@@ -5,32 +5,32 @@
 //  Created by Stefano Mondino on 22/01/2020.
 //
 
-import Foundation
 import Files
+import Foundation
 public class BonePipelineCommand: Command {
     let boneName: String
     let context: JSON
     let pipeline: BonePipeline
-    
+
     public var folder: Folder = .current
-    
+
     public init(boneName: String, mainPlaceholder: String, contextString: String = "{}", params: [String] = []) throws {
         guard let jsonConversion = try? JSONSerialization.jsonObject(with: contextString.data(using: .utf8) ?? Data(), options: []) as? JSON else {
             throw CustomError.invalidJSONString
         }
-        self.pipeline = try BonePipeline(folder: folder, murrayFileName: MurrayFile.fileName, pluginManager: .shared)
+        pipeline = try BonePipeline(folder: folder, murrayFileName: MurrayFile.fileName, pluginManager: .shared)
         let placeholder = pipeline.murrayFile.mainPlaceholder ?? MurrayFile.defaultPlaceholder
-        var context:JSON = jsonConversion.reduce([placeholder: mainPlaceholder]) { a, t in
-            var accumulator = a
-            accumulator[t.key] = t.value
+        var context: JSON = jsonConversion.reduce([placeholder: mainPlaceholder]) { accumulator, tuple in
+            var accumulator = accumulator
+            accumulator[tuple.key] = tuple.value
             return accumulator
         }
         params.map {
             $0.split(separator: ":", maxSplits: 1)
         }
         .filter { $0.count == 2 }
-        .map { $0.map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)} }
-        .compactMap { array -> (key: String, value:String)? in
+        .map { $0.map { $0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) } }
+        .compactMap { array -> (key: String, value: String)? in
             guard let key = array.first,
                 let value = array.last else { return nil }
             return (key: key, value: value)
@@ -39,10 +39,8 @@ public class BonePipelineCommand: Command {
         self.boneName = boneName
         self.context = context
     }
-    
+
     public func execute() throws {
-        
-       
         try pipeline.execute(boneName: boneName, with: context)
     }
 }

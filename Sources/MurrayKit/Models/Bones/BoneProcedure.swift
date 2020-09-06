@@ -10,9 +10,9 @@ import Gloss
 
 /**
     A structure representing a BoneProcedure nested inside `Bonespec.json`
-    
+
     A BoneProcedure should expose a list of BoneItem paths that will be used by current execution.
-        
+
  */
 
 public struct BoneProcedure: Glossy {
@@ -28,24 +28,24 @@ public struct BoneProcedure: Glossy {
         Path of items included in current procedure relative to `Bonespec.json`'s folder
      */
     public private(set) var itemPaths: [String]
-    
+
     public init(name: String, description: String = "") {
         self.name = name
         self.description = description
-        self.itemPaths = []
+        itemPaths = []
     }
-    
+
     public mutating func add(itemPath: String) {
-        self.itemPaths = self.itemPaths.filter { $0 != itemPath } + [itemPath]
+        itemPaths = itemPaths.filter { $0 != itemPath } + [itemPath]
     }
-    
+
     public init?(json: JSON) {
-        guard let name:String = "name" <~~ json else { return nil }
+        guard let name: String = "name" <~~ json else { return nil }
         self.name = name
-        self.description = "description" <~~ json
-        self.itemPaths = "items" <~~ json ?? []
+        description = "description" <~~ json
+        itemPaths = "items" <~~ json ?? []
     }
-    
+
     public func toJSON() -> JSON? {
         return jsonify([
             "name" ~~> name,
@@ -53,7 +53,4 @@ public struct BoneProcedure: Glossy {
             "items" ~~> itemPaths,
         ])
     }
-    
-    
-    
 }

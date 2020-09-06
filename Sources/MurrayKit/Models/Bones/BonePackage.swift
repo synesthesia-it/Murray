@@ -5,17 +5,15 @@
 //  Created by Stefano Mondino on 13/01/2020.
 //
 
-
 import Foundation
 import Gloss
 
 /**
     A structure representing a `BonePackage.json` file.
- 
+
     A BonePackage should contain procedures of items that can easily be reused across projects or simply containing some kind of shared features.
  */
 public struct BonePackage: Glossy {
-
     public static let fileName: String = "BonePackage.json"
 
     /**
@@ -34,33 +32,36 @@ public struct BonePackage: Glossy {
             update()
         }
     }
+
     private var proceduresByName: [String: BoneProcedure] = [:]
-    
+
     public init(name: String, description: String? = nil) {
         self.name = name
         self.description = description ?? "Default description"
-        self.procedures = []
+        procedures = []
         update()
     }
-    
+
     public init?(json: JSON) {
-        guard let name:String = "name" <~~ json else { return nil }
+        guard let name: String = "name" <~~ json else { return nil }
         self.name = name
-        self.description = "description" <~~ json
-        self.procedures = "procedures" <~~ json ?? []
+        description = "description" <~~ json
+        procedures = "procedures" <~~ json ?? []
         update()
     }
+
     mutating func update() {
         proceduresByName = procedures.reduce([:]) { dictionary, procedure in
-            var d = dictionary
-            d[procedure.name] = procedure
-            return d
+            var dictionary = dictionary
+            dictionary[procedure.name] = procedure
+            return dictionary
         }
     }
+
     public mutating func add(procedure: BoneProcedure) {
-        self.procedures = self.procedures.filter { $0.name != procedure.name } + [procedure]
+        procedures = procedures.filter { $0.name != procedure.name } + [procedure]
     }
-    
+
     public func toJSON() -> JSON? {
         return jsonify([
             "name" ~~> name,
@@ -69,9 +70,5 @@ public struct BonePackage: Glossy {
         ])
     }
 
-    
-    public subscript(group: String) -> BoneProcedure? {
-        get { proceduresByName[group] }
-    }
-    
+    public subscript(group: String) -> BoneProcedure? { proceduresByName[group] }
 }

@@ -2,10 +2,9 @@ import Foundation
 import Gloss
 /**
     A structure representing a list of file templates to be resolved against BoneContexts and copied to target folders.
- 
+
  */
 public struct BoneItem: Glossy {
-
     public let name: String
     public private(set) var paths: [BonePath]
     public let parameters: [BoneParameter]
@@ -14,25 +13,25 @@ public struct BoneItem: Glossy {
 
     public static let fileName = "BoneItem.json"
 
-    public init(name: String, files:[String]) {
+    public init(name: String, files: [String]) {
         self.name = name
-        self.paths = files.map { BonePath(from: $0, to: "") }
-        self.replacements = []
-        self.pluginData = [:]
-        self.parameters = []
+        paths = files.map { BonePath(from: $0, to: "") }
+        replacements = []
+        pluginData = [:]
+        parameters = []
     }
 
     public init?(json: JSON) {
-        guard let name:String = "name" <~~ json else { return nil }
+        guard let name: String = "name" <~~ json else { return nil }
         self.name = name
-        self.paths = "paths" <~~ json ?? []
-        self.parameters = "parameters" <~~ json ?? []
-        self.replacements = "replacements" <~~ json ?? []
-        self.pluginData = "plugins" <~~ json ?? [:]
+        paths = "paths" <~~ json ?? []
+        parameters = "parameters" <~~ json ?? []
+        replacements = "replacements" <~~ json ?? []
+        pluginData = "plugins" <~~ json ?? [:]
     }
 
-    mutating public func add(path: BonePath) {
-        self.paths += [path]
+    public mutating func add(path: BonePath) {
+        paths += [path]
     }
 
     public func toJSON() -> JSON? {
@@ -41,7 +40,7 @@ public struct BoneItem: Glossy {
             "paths" ~~> paths,
             "parameters" ~~> parameters,
             "replacements" ~~> replacements,
-            "plugins" ~~> pluginData
+            "plugins" ~~> pluginData,
         ])
     }
 }
@@ -51,31 +50,32 @@ public struct BoneReplacement: Glossy {
     public let text: String?
     public let sourcePath: String?
     public let destinationPath: String
-    
+
     public init(placeholder: String, text: String, sourcePath: String? = nil, destinationPath: String) {
         self.placeholder = placeholder
         self.text = text
         self.sourcePath = sourcePath
         self.destinationPath = destinationPath
     }
+
     public init?(json: JSON) {
         guard let placeholder: String = "placeholder" <~~ json,
             let to: String = "destination" <~~ json else { return nil }
-        
+
         self.placeholder = placeholder
-        self.destinationPath = to
-        self.text = "text" <~~ json
-        self.sourcePath = "source" <~~ json
-        
-        if text == nil && sourcePath == nil { return nil }
+        destinationPath = to
+        text = "text" <~~ json
+        sourcePath = "source" <~~ json
+
+        if text == nil, sourcePath == nil { return nil }
     }
-    
+
     public func toJSON() -> JSON? {
         return jsonify([
             "text" ~~> text,
             "destination" ~~> destinationPath,
             "source" ~~> sourcePath,
-            "placeholder" ~~> placeholder
+            "placeholder" ~~> placeholder,
         ])
     }
 }

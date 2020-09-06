@@ -1,37 +1,36 @@
-import MurrayKit
 import Files
+import MurrayKit
 class CLILogger: ConsoleLogger {
-    open override func string(_ message: String, level: LogLevel, tag: String?) -> String? {
-        if (self.logLevel.rawValue > level.rawValue) { return nil }
+    override open func string(_ message: String, level: LogLevel, tag: String?) -> String? {
+        if logLevel.rawValue > level.rawValue { return nil }
 
         let string =
-        """
-        \([
-            [tag]
-                .compactMap { $0 }
-                .filter { $0.count > 0 }
-                .joined(separator: " "),
-            level
-                .colorize(string: message)
-        ]
-        .compactMap { $0 }
-        .filter { $0.count > 0 }
-        .joined(separator: ": ")
-        )
-        """
+            """
+            \([
+                [tag]
+                    .compactMap { $0 }
+                    .filter { !$0.isEmpty }
+                    .joined(separator: " "),
+                level
+                    .colorize(string: message),
+            ]
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .joined(separator: ": ")
+            )
+            """
         return string
     }
-    
 }
 
 Logger.logger = CLILogger(logLevel: .normal)
 Murray.commands.run()
 
-//try SkeletonPipeline(folder: Folder.current, projectName: "Mondini")
+// try SkeletonPipeline(folder: Folder.current, projectName: "Mondini")
 //    .execute(projectPath: "~/Desktop/Pipeline", with: [:])
 //
-//do {
+// do {
 //    tool.run()
-//} catch {
+// } catch {
 //    print("Whoops! An error occurred: \(error)")
-//}
+// }

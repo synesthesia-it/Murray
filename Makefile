@@ -8,11 +8,10 @@ project:
 # Install dependencies, download build resources and add pre-commit hook
 
 lint:
-  SWIFTLINT_PATH=`which swiftlint`
-  SWIFTFORMAT_PATH=`which swiftformat`
-  ${SWIFTFORMAT_PATH} "Sources"
-  ${SWIFTLINT_PATH} autocorrect --config "config.swiftlint.yml" "Sources"
-  ${SWIFTLINT_PATH} lint --config "config.swiftlint.yml" "Sources"
+	
+	swiftformat ./Sources
+	swiftlint autocorrect --config "config.swiftlint.yml"
+	swiftlint lint --config "config.swiftlint.yml"
   
 git_setup:
 	eval "$$add_pre_commit_script"

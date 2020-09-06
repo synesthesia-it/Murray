@@ -15,16 +15,15 @@ public struct BoneParameter: Glossy {
     public init?(json: JSON) {
         guard let name: String = "name" <~~ json else { return nil }
         self.name = name
-        self.isRequired = "isRequired" <~~ json ?? false
-        self.description = "description" <~~ json
+        isRequired = "isRequired" <~~ json ?? false
+        description = "description" <~~ json
     }
-    
+
     public func toJSON() -> JSON? {
         return jsonify([
             "name" ~~> name,
             "isRequired" ~~> isRequired,
-            "description" ~~> description
+            "description" ~~> description,
         ])
     }
-    
 }

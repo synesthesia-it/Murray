@@ -14,6 +14,6 @@ public struct BoneContext: CustomStringConvertible {
 
     public let context: JSON
     public init(_ values: JSON, environment: JSON = [:]) {
-        context = environment.merging(values, uniquingKeysWith: { e, v in return v })
+        context = environment.merging(values, uniquingKeysWith: { _, value in value })
     }
 }

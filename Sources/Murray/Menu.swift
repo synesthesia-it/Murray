@@ -5,8 +5,8 @@
 //  Created by Stefano Mondino on 12/07/18.
 //
 
-import Foundation
 import Commander
+import Foundation
 import MurrayKit
 
 public class Murray {
@@ -17,5 +17,4 @@ public class Murray {
             Scaffold.commands(for: $0)
         }
     }
-
 }
