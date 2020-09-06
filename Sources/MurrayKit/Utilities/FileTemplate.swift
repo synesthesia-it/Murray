@@ -17,7 +17,7 @@ public final class FileTemplate {
         self.context = context
     }
 
-    public func render() throws -> String {
+    public func render(recursive: Bool = true) throws -> String {
         let ext = Extension()
         ext.registerFilter("firstLowercase") { (value: Any?) in
             (value as? String)?.firstLowercased() ?? value
@@ -45,7 +45,13 @@ public final class FileTemplate {
         let environment = Environment(extensions: [ext])
 
         do {
-            return try environment.renderTemplate(string: contents, context: context.context)
+            let rendered = try environment.renderTemplate(string: contents, context: context.context)
+            if recursive, rendered != contents {
+                return try FileTemplate(fileContents: rendered, context: context)
+                    .render(recursive: recursive)
+            } else {
+                return rendered
+            }
         } catch {
             throw CustomError.unresolvableString(string: contents, context: context)
         }
