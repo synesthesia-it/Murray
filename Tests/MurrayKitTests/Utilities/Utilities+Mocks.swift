@@ -167,6 +167,13 @@ public struct Mocks {
         """
         }
 
+        public static func invalidJSON(named name: String) -> String { """
+        { "name":  "\(name)"
+           "description": "Won't be printed, comma is missing in JSON"
+        }
+        """
+        }
+
         public static func customBone(named name: String, typeRequired: Bool = false) -> String { """
         {
             "name": "\(name)",
@@ -212,6 +219,30 @@ public extension Mocks {
             boneSpec.createSource()
 
             let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simple, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
+            simpleItem.createSource()
+
+            let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))
+            simpleFile.createSource()
+
+            let replacementFile = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath, to: ""))
+            replacementFile.createSource()
+            let replacementFile2 = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath2, to: ""))
+            replacementFile2.createSource()
+
+            let templateFile = ConcreteFile(contents: "testing {{ name }} in place\n", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Replacement.swift", to: ""))
+            templateFile.createSource()
+        }
+
+        public static func invalidJSONInItem(from root: Folder) throws {
+            let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
+            try xcode.createFileIfNeeded(at: "project.pbxproj").write(testPBX)
+            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
+            murrayFile.createSource()
+
+            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
+            boneSpec.createSource()
+
+            let simpleItem = ConcreteFile(contents: Mocks.BoneItem.invalidJSON(named: "simpleItem"), folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
             simpleItem.createSource()
 
             let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))

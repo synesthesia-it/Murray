@@ -9,6 +9,27 @@ import Files
 import Foundation
 
 public enum CustomError: Swift.Error {
+    public enum Code: Int {
+        case undecodable
+
+        case fileNotFound
+
+        case unableToCreateFile
+        case unableToCreateFolder
+        case invalidPath
+
+        case unresolvableString
+
+        case boneProcedureNotFound
+
+        case invalidMurrayfile
+
+        case missingRequiredParameter
+
+        case invalidJSONString
+        case generic
+    }
+
     case undecodable(file: File, type: Any.Type)
 
     case fileNotFound(path: String, folder: Folder?)
@@ -30,6 +51,24 @@ public enum CustomError: Swift.Error {
     case generic
 }
 
+extension CustomError {
+    var code: Code {
+        switch self {
+        case .generic: return .generic
+        case .undecodable: return .undecodable
+        case .fileNotFound(path: _, folder: _): return .fileNotFound
+        case .unableToCreateFile(path: _, folder: _, contents: _): return .unableToCreateFile
+        case .unableToCreateFolder(path: _, folder: _): return .unableToCreateFolder
+        case .invalidPath(path: _): return .invalidPath
+        case .unresolvableString(string: _, context: _): return .unresolvableString
+        case .boneProcedureNotFound(name: _, package: _): return .boneProcedureNotFound
+        case .invalidMurrayfile: return .invalidMurrayfile
+        case .missingRequiredParameter(bone: _, parameter: _): return .missingRequiredParameter
+        case .invalidJSONString: return .invalidJSONString
+        }
+    }
+}
+
 extension CustomError: CustomStringConvertible {
     public var description: String {
         switch self {
@@ -41,7 +80,7 @@ extension CustomError: CustomStringConvertible {
         case .unresolvableString: return "Provided string is not resolvable."
         case let .boneProcedureNotFound(name, _): return "Group named \(name) not found."
         case .invalidMurrayfile: return "Provided Murrayfile.json is missing or invalid."
-        case let .missingRequiredParameter(bone, parameter): return "Missing\(parameter.name) parameter for item named \(bone.name)."
+        case let .missingRequiredParameter(bone, parameter): return "Missing \(parameter.name) parameter for item named \(bone.name)."
         case .invalidJSONString: return "Invalid JSON string"
         case .generic: return "Some error occurred. Please try again later."
         }
