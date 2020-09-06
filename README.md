@@ -90,6 +90,17 @@ Note: please ensure you're using at least Mint v0.12 (Swift 5)
 curl -fsSL https://raw.githubusercontent.com/synesthesia-it/Murray/master/install.sh | sh
 ```
 
+## Make
+
+If you want to try Murray and compile it directly from code, you can use `make`. 
+This is especially useful for contribution to the project.
+
+> Make sure you've installed Homebrew on your machine.
+
+`make build` will build a release version of Murray and copy the executable file it in `/usr/local/bin` folder 
+`make setup` will properly setup the environment and generate the XCode project
+`make lint` will ensure code is properly written by following the Swiftlint standard
+
 ## Linux (*experimental*, tested on Ubuntu 18)
 
 Install Swift compiler ([guide](https://gist.github.com/Azoy/8c47629fa160878cf359bf7380aaaaf9) here)

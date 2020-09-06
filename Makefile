@@ -1,7 +1,12 @@
 # Configuration variables:
-.DEFAULT_GOAL := project
+.DEFAULT_GOAL := build
 
 # Prepare Application workspace
+
+build: 
+	swift build -c release
+	cp -f .build/release/Murray /usr/local/bin/murray
+
 project:
 	swift package generate-xcodeproj
 
