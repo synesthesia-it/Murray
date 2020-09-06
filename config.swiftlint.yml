@@ -1,0 +1,62 @@
+disabled_rules: # rule identifiers to exclude from running
+- trailing_whitespace
+# - colon
+# - comma
+#- control_statement
+#- identifier_name
+#- type_name
+#- empty_count
+#- function_body_length
+#- type_body_length
+# - shorthand_operator
+#- force_cast
+#- redundant_string_enum_value
+#- file_length
+#- function_parameter_count
+opt_in_rules:
+- empty_count
+included:
+- Sources
+excluded:
+- Carthage
+- Pods
+- vendor
+
+# configurable rules can be customized from this configuration file
+# binary rules can set their severity level
+force_cast: warning # implicitly
+force_try:
+  severity: warning # explicitly
+# rules that have both warning and error levels, can set just the warning level
+# implicitly
+line_length: 180
+# they can set both implicitly with an array
+type_body_length:
+  - 300 # warning
+  - 400 # error
+# or they can set both explicitly
+file_length:
+  warning: 700
+  error: 1500
+# naming rules can set warnings/errors for min_length and max_length
+# additionally they can set excluded names
+type_name:
+  min_length: 3 # only warning
+  max_length: # warning and error
+    warning: 50
+    error: 60
+  excluded:
+    - iPhone
+    - T
+    - API
+nesting:
+  type_level: 3
+identifier_name:
+  min_length: # only min_length
+    error: 2 # only error
+  excluded: # excluded via string array
+    - id
+    - URL
+    - GlobalAPIKey
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji)
+
