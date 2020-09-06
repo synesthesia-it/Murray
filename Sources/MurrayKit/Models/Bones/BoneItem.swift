@@ -4,12 +4,12 @@ import Gloss
     A structure representing a list of file templates to be resolved against BoneContexts and copied to target folders.
 
  */
-public struct BoneItem: Glossy {
+public struct BoneItem: Glossy, PluginDataContainer {
     public let name: String
     public private(set) var paths: [BonePath]
     public let parameters: [BoneParameter]
     public let replacements: [BoneReplacement]
-    let pluginData: [String: JSON]
+    public let pluginData: [String: JSON]
 
     public static let fileName = "BoneItem.json"
 

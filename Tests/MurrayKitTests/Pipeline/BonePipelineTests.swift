@@ -48,6 +48,9 @@ class BonePipelineSpec: QuickSpec {
 
                         return pipeline
                     }.notTo(throwError())
+
+                    expect(root.containsFile(named: "before_procedure.txt")) == true
+                    expect(root.containsFile(named: "after_procedure.txt")) == true
                 }
                 it("should properly find specs") {
                     expect { try BonePipeline(folder: root).execute(packageName: "simple", boneName: "simpleGroup", with: ["name": "simple"]) }.notTo(throwError())

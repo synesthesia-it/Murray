@@ -15,7 +15,7 @@ import Gloss
 
  */
 
-public struct BoneProcedure: Glossy {
+public struct BoneProcedure: Glossy, PluginDataContainer {
     /**
         Procedure's **name**. It's the primary key used during executions to identify this procedure from the others
      */
@@ -27,11 +27,14 @@ public struct BoneProcedure: Glossy {
     /**
         Path of items included in current procedure relative to `Bonespec.json`'s folder
      */
+
+    public let pluginData: [String: JSON]
     public private(set) var itemPaths: [String]
 
     public init(name: String, description: String = "") {
         self.name = name
         self.description = description
+        pluginData = [:]
         itemPaths = []
     }
 
@@ -44,6 +47,7 @@ public struct BoneProcedure: Glossy {
         self.name = name
         description = "description" <~~ json
         itemPaths = "items" <~~ json ?? []
+        pluginData = "plugins" <~~ json ?? [:]
     }
 
     public func toJSON() -> JSON? {
@@ -51,6 +55,7 @@ public struct BoneProcedure: Glossy {
             "name" ~~> name,
             "description" ~~> description,
             "items" ~~> itemPaths,
+            "plugins" ~~> pluginData,
         ])
     }
 }

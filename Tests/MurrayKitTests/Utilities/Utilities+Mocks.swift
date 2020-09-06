@@ -83,7 +83,7 @@ public struct Mocks {
             {
                 "name": "\(name)",
                 "description": "custom description",
-                "items": \(items.map { "\($0.firstUppercased())/\($0.firstUppercased()).json" })
+                "items": \(items.map { "\($0.firstUppercased())/\($0.firstUppercased()).json" }),
             }
             """
         }
@@ -93,7 +93,13 @@ public struct Mocks {
                 {
                     "name": "simpleGroup",
                     "description": "custom description",
-                    "items": ["SimpleItem/SimpleItem.json"]
+                    "items": ["SimpleItem/SimpleItem.json"],
+                    "plugins": {
+                        "shell": {
+                            "beforeProcedure": ["touch before_procedure.txt"],
+                            "afterProcedure": ["touch after_procedure.txt"]
+                        }
+                    }
                 }
             """
         }

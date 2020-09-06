@@ -8,6 +8,12 @@
 import Files
 import Foundation
 import Gloss
+
+public protocol PluginDataContainer {
+    var name: String { get }
+    var pluginData: [String: JSON] { get }
+}
+
 open class Plugin {
     open var name: String { return "" }
 
@@ -17,7 +23,7 @@ open class Plugin {
 
     open func execute(phase _: PluginPhase, from _: Folder) throws {}
 
-    open func pluginData<T: JSONDecodable>(for item: BoneItem) -> T? {
+    open func pluginData<T: JSONDecodable>(for item: PluginDataContainer) -> T? {
         guard let json = item.pluginData[name],
             let data = T(json: json)
         else {
@@ -28,6 +34,8 @@ open class Plugin {
 }
 
 public enum PluginPhase {
+    case beforeProcedureReplace(procedure: BoneProcedure, context: BoneContext)
+    case afterProcedureReplace(procedure: BoneProcedure, context: BoneContext)
     case beforeItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
     case afterItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
 }

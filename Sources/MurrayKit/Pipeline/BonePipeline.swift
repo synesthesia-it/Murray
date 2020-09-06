@@ -181,7 +181,7 @@ public struct BonePipeline {
         }
 
         let items = try self.items(from: package, procedure: procedure)
-
+        try pluginManager.execute(phase: .beforeProcedureReplace(procedure: procedure, context: context), from: folder)
         try items.forEach { item in
             guard let folder = item.file.parent else { throw CustomError.generic }
 
@@ -198,5 +198,6 @@ public struct BonePipeline {
 
             try pluginManager.execute(phase: .afterItemReplace(item: item, context: context), from: self.folder)
         }
+        try pluginManager.execute(phase: .afterProcedureReplace(procedure: procedure, context: context), from: folder)
     }
 }

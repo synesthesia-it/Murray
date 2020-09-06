@@ -322,20 +322,32 @@ The Shell plugin will execute shell commands before and/or after each item creat
 Allowed parameters:
 `beforeItem`: array of shell commands (strings) that will be executed right before a single item resolution
 `afterItem`: array of shell commands (strings) that will be executed right after an item has been resolved and copied to destination
+`beforeProcedure`:array of shell commands (strings) that will be executed right before a single procedure is executed
+`afterProcedure`: array of shell commands (strings) that will be executed right after a single procedure is executed
 
 > Shell commands will be executed from the project root folder. 
 
-Example: 
+Example (in BoneItem.json): 
 
 ```json
 plugins: {
     "shell": {
         "beforeItem": ["echo Hello", "ls -la"],
-        "afterItem": ["make project"]
+        "afterItem": ["make project"],
     }
 }
 ```
+Example (in BonePackage.json, in a procedure JOSN node): 
 
+```json
+plugins: {
+    "shell": {
+        "beforeProcedure": ["echo Hello", "ls -la"],
+        "afterProcedure": ["make project"],
+    }
+}
+```
+> Note: `beforeItem`/`afterItem` in a procedure or `beforeProcedure`/`afterProcedure` in a BoneItem have no effect and will be ignored
 
 # CLI - Usage
 
