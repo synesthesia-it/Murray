@@ -15,7 +15,7 @@ public struct ObjectReference<T: Glossy> {
 
     public init (file: File, object: T?) throws {
         guard let object = object else {
-            throw CustomError.generic
+            throw CustomError.undecodable(file: file, type: T.self)
         }
         self.file = file
         self.object = object
@@ -33,7 +33,15 @@ public struct ListObject {
     public let package: ObjectReference<BonePackage>
     public let procedure: BoneProcedure
 }
-
+extension Folder {
+    func relativeOrAbsoluteFile(at path: String) throws -> File {
+        if path.starts(with: "/") {
+            return try File(path: path)
+        } else {
+            return try file(at: path)
+        }
+    }
+}
 public struct BonePipeline {
 
     public let murrayFile: MurrayFile
@@ -58,7 +66,7 @@ public struct BonePipeline {
             
             .reduce([:]) {
                 var packages = $0
-                let file = try folder.file(at: $1)
+                let file = try folder.relativeOrAbsoluteFile(at: $1)
                 guard let spec = try file.decodable(BonePackage.self)
                     else { throw CustomError.undecodable(file: file, type: BonePackage.self) }
                 packages[spec.name] = try ObjectReference(file: file, object: spec)
