@@ -35,7 +35,7 @@ public enum PluginPhase {
 public class PluginManager {
     public static let shared = PluginManager()
 
-    public static var defaultPlugins: [Plugin] = [XCodePlugin()]
+    public static var defaultPlugins: [Plugin] = [XCodePlugin(), ShellPlugin()]
 
     public let plugins: [Plugin]
 

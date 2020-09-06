@@ -289,6 +289,52 @@ Filters can be chained:
 ```
 converts name from `thisIsAWord` into `THIS_IS_A_WORD`
 
+## Plugins
+
+A `Plugin` is composed by custom code that may be executed in a specific moment during the pipeline.
+For example, a specific item may need some bash command to be executed every time a resolution happened (== after a group of file templates have been resolved and copied to final destination folder).
+
+A common use case, for iOS/Xcode projects, is having a new file creted by a bone item to be automatically added to proper .xcodeproj structure and target.
+
+Other platforms may need some custom code to be executed to clean/rebuild the entire project, depending on how the programming language/framework is designed.
+
+Murray currently defines two custom plugins: XCode and Shell
+
+### XCode Plugin
+
+The XCode plugin is executed if the `plugins` node in an item contains a `xcode` object with a `targets` array of targets names.
+Example in a specific BoneItem.json: 
+
+```json
+"plugins": {
+    "xcode": {
+        "targets": ["MyApp", "MyAppTVOS"]
+    }
+}
+```
+
+In the above example, every bone Item created by the execution will add created files to the "MyApp" target and the "MyAppTVOS" target. 
+
+### Shell Plugin
+
+The Shell plugin will execute shell commands before and/or after each item creation
+
+Allowed parameters:
+`beforeItem`: array of shell commands (strings) that will be executed right before a single item resolution
+`afterItem`: array of shell commands (strings) that will be executed right after an item has been resolved and copied to destination
+
+> Shell commands will be executed from the project root folder. 
+
+Example: 
+
+```json
+plugins: {
+    "shell": {
+        "beforeItem": ["echo Hello", "ls -la"],
+        "afterItem": ["make project"]
+    }
+}
+```
 
 
 # CLI - Usage

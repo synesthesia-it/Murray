@@ -129,7 +129,11 @@ public struct Mocks {
              "plugins": {
                  "xcode": {
                          "targets": ["App"]
-                     }
+                     },
+                 "shell": {
+                   "beforeItem": ["echo before"],
+                   "afterItem": ["echo after"]
+                }
              },
             "parameters": [
                 {
