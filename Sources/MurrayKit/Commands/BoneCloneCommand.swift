@@ -28,10 +28,12 @@ public class BoneCloneCommand: Command {
             try clone(from: repository, into: Folder.temporary, projectName: tmpFolderName)
 
             let tmpFolder = try Folder.temporary.subfolder(at: tmpFolderName)
-            guard let specFolder = tmpFolder.subfolders.first(where: {
-                (try? $0.decodable(BonePackage.self, at: BonePackage.fileName)) != nil
-            }) else {
-                throw CustomError.generic
+            guard let specFolder = ([tmpFolder] + tmpFolder.subfolders.map { $0.self })
+                .first(where: {
+                    (try? $0.decodable(BonePackage.self, at: BonePackage.fileName)) != nil
+                })
+            else {
+                throw CustomError.fileNotFound(path: BonePackage.fileName, folder: tmpFolder)
             }
 
             try? tmpFolder.subfolder(at: ".git").delete()
