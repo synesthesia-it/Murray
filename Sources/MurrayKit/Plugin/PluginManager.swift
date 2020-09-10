@@ -38,6 +38,8 @@ public enum PluginPhase {
     case afterProcedureReplace(procedure: BoneProcedure, context: BoneContext)
     case beforeItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
     case afterItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
+    case beforePathReplace(item: BonePath, context: BoneContext)
+    case afterPathReplace(item: ObjectReference<BonePath>, context: BoneContext)
 }
 
 public class PluginManager {

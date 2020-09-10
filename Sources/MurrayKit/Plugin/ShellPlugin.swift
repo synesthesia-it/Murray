@@ -14,33 +14,34 @@ open class ShellPlugin: Plugin {
     override open var name: String { return "shell" }
 
     struct PluginData: JSONDecodable {
-        let beforeItem: [String]?
-        let afterItem: [String]?
-        let beforeProcedure: [String]?
-        let afterProcedure: [String]?
+        let before: [String]?
+        let after: [String]?
         init?(json: JSON) {
-            beforeItem = ("beforeItem" <~~ json) ?? []
-            afterItem = ("afterItem" <~~ json) ?? []
-            beforeProcedure = ("beforeProcedure" <~~ json) ?? []
-            afterProcedure = ("afterProcedure" <~~ json) ?? []
+            before = ("before" <~~ json) ?? []
+            after = ("after" <~~ json) ?? []
         }
     }
 
     override open func execute(phase: PluginPhase, from folder: Folder) throws {
         switch phase {
-        case let .beforeItemReplace(item, context): try process(item: item.object, keyPath: \.beforeItem, projectFolder: folder, context: context)
-        case let .afterItemReplace(item, context): try process(item: item.object, keyPath: \.afterItem, projectFolder: folder, context: context)
+        case let .beforeItemReplace(item, context):
+            try process(item: item.object, keyPath: \.before, projectFolder: folder, context: context)
+        case let .afterItemReplace(item, context):
+            try process(item: item.object, keyPath: \.after, projectFolder: folder, context: context)
         case let .beforeProcedureReplace(procedure, context):
-            try process(item: procedure, keyPath: \.beforeProcedure, projectFolder: folder, context: context)
+            try process(item: procedure, keyPath: \.before, projectFolder: folder, context: context)
         case let .afterProcedureReplace(procedure, context):
-            try process(item: procedure, keyPath: \.afterProcedure, projectFolder: folder, context: context)
+            try process(item: procedure, keyPath: \.after, projectFolder: folder, context: context)
+        case let .beforePathReplace(item, context):
+            try process(item: item, keyPath: \.before, projectFolder: folder, context: context)
+        case let .afterPathReplace(item, context):
+            try process(item: item.object, keyPath: \.after, projectFolder: folder, context: context)
         }
     }
 
     func process(item: PluginDataContainer, keyPath: KeyPath<PluginData, [String]?>, projectFolder: Folder, context: BoneContext) throws {
         Logger.log("Attempting to process item '\(item.name)' with context: \(context)", level: .verbose)
         guard let data: PluginData = pluginData(for: item) else { return }
-
         let commands = try (data[keyPath: keyPath] ?? []).map { try $0.resolved(with: context) }
         guard !commands.isEmpty else { return }
         commands.forEach { command in

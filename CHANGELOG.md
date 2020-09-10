@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 2.2
+
+- Add before and after plugin to BonePaths
+- Renamed plugin phases to `before` and `after`
 
 ## 2.1
 

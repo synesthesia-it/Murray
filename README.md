@@ -320,10 +320,9 @@ In the above example, every bone Item created by the execution will add created 
 The Shell plugin will execute shell commands before and/or after each item creation
 
 Allowed parameters:
-`beforeItem`: array of shell commands (strings) that will be executed right before a single item resolution
-`afterItem`: array of shell commands (strings) that will be executed right after an item has been resolved and copied to destination
-`beforeProcedure`:array of shell commands (strings) that will be executed right before a single procedure is executed
-`afterProcedure`: array of shell commands (strings) that will be executed right after a single procedure is executed
+`before`: array of shell commands (strings) that will be executed right before a single item/procedure/path resolution
+`after`: array of shell commands (strings) that will be executed right after an item/procedure/path has been resolved and/or copied to destination
+
 
 > Shell commands will be executed from the project root folder. 
 
@@ -332,8 +331,8 @@ Example (in BoneItem.json):
 ```json
 plugins: {
     "shell": {
-        "beforeItem": ["echo Hello", "ls -la"],
-        "afterItem": ["make project"],
+        "before": ["echo Hello", "ls -la"],
+        "after": ["make project"],
     }
 }
 ```
@@ -342,12 +341,11 @@ Example (in BonePackage.json, in a procedure JOSN node):
 ```json
 plugins: {
     "shell": {
-        "beforeProcedure": ["echo Hello", "ls -la"],
-        "afterProcedure": ["make project"],
+        "before": ["echo Hello", "ls -la"],
+        "after": ["make project"],
     }
 }
 ```
-> Note: `beforeItem`/`afterItem` in a procedure or `beforeProcedure`/`afterProcedure` in a BoneItem have no effect and will be ignored
 
 # CLI - Usage
 

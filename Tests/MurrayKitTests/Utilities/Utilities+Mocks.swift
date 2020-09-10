@@ -96,8 +96,8 @@ public struct Mocks {
                     "items": ["SimpleItem/SimpleItem.json"],
                     "plugins": {
                         "shell": {
-                            "beforeProcedure": ["touch before_procedure.txt"],
-                            "afterProcedure": ["touch after_procedure.txt"]
+                            "before": ["touch before_procedure"],
+                            "after": ["touch after_procedure"]
                         }
                     }
                 }
@@ -113,10 +113,16 @@ public struct Mocks {
         public static var simple: String { """
         {
             "name": "simpleItem",
-             "description": "custom description",
+            "description": "custom description",
             "paths": [
                 { "from": "Bone.swift",
-                  "to": "Sources/Files/{{ nestedName }}/{{ customName }}.swift"
+                  "to": "Sources/Files/{{ nestedName }}/{{ customName }}.swift",
+                    "plugins": {
+                        "shell": {
+                           "before": ["touch before_path"],
+                           "after": ["touch after_path"]
+                        }
+                    }
                 }
             ],
             "replacements": [
@@ -137,8 +143,8 @@ public struct Mocks {
                          "targets": ["App"]
                      },
                  "shell": {
-                   "beforeItem": ["echo before"],
-                   "afterItem": ["echo after"]
+                   "before": ["touch before_item"],
+                   "after": ["touch after_item"]
                 }
              },
             "parameters": [

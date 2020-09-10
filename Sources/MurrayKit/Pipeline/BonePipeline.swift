@@ -90,8 +90,7 @@ public struct BonePipeline {
     public func transform(path: BonePath,
                           customFileContents: String? = nil,
                           sourceFolder: Folder,
-                          with context: BoneContext) throws
-    {
+                          with context: BoneContext) throws {
         let relativePath = try path.from.resolved(with: context)
         if let subfolder = try? sourceFolder.subfolder(at: relativePath) {
             try subfolder.subfolders.forEach { folder in
@@ -116,14 +115,17 @@ public struct BonePipeline {
             .resolved(with: context))
 
         let writer = TemplateWriter(destination: folder)
-        try writer.write(contents, to: path, context: context)
+
+        try pluginManager.execute(phase: .beforePathReplace(item: path, context: context), from: folder)
+
+        let file = try writer.write(contents, to: path, context: context)
+        try pluginManager.execute(phase: .afterPathReplace(item: ObjectReference(file: file, object: path), context: context), from: folder)
     }
 
     public func replace(from replacement: BoneReplacement,
                         customContents: String? = nil,
                         sourceFolder: Folder,
-                        with context: BoneContext) throws
-    {
+                        with context: BoneContext) throws {
         let reader = TemplateReader(source: folder)
         let contents = try reader
             .file(from: replacement.destinationPath, context: context)
