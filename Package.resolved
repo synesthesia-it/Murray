@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/tadija/AEXML",
         "state": {
           "branch": null,
-          "revision": "e4d517844dd03dac557e35d77a8e9ab438de91a6",
-          "version": "4.4.0"
+          "revision": "8623e73b193386909566a9ca20203e33a09af142",
+          "version": "4.5.0"
         }
       },
       {
@@ -20,12 +20,30 @@
         }
       },
       {
+        "package": "CwlCatchException",
+        "repositoryURL": "https://github.com/mattgallagher/CwlCatchException.git",
+        "state": {
+          "branch": null,
+          "revision": "f809deb30dc5c9d9b78c872e553261a61177721a",
+          "version": "2.0.0"
+        }
+      },
+      {
+        "package": "CwlPreconditionTesting",
+        "repositoryURL": "https://github.com/mattgallagher/CwlPreconditionTesting.git",
+        "state": {
+          "branch": null,
+          "revision": "02b7a39a99c4da27abe03cab2053a9034379639f",
+          "version": "2.0.0"
+        }
+      },
+      {
         "package": "Files",
         "repositoryURL": "https://github.com/johnsundell/files.git",
         "state": {
           "branch": null,
-          "revision": "22fe84797d499ffca911ccd896b34efaf06a50b9",
-          "version": "4.1.1"
+          "revision": "d273b5b7025d386feef79ef6bad7de762e106eaf",
+          "version": "4.2.0"
         }
       },
       {
@@ -33,8 +51,8 @@
         "repositoryURL": "https://github.com/hkellaway/Gloss.git",
         "state": {
           "branch": null,
-          "revision": "d2249d299a17418dc69b7685a00ccd31510cf14e",
-          "version": "3.1.0"
+          "revision": "efd25964891ae8a9cfbe2345628ad02fcb9a105c",
+          "version": "3.2.1"
         }
       },
       {
@@ -42,8 +60,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "72f5a90d573f7f7d70aa6b8ad84b3e1e02eabb4d",
-          "version": "8.0.9"
+          "revision": "e491a6731307bb23783bf664d003be9b2fa59ab5",
+          "version": "9.0.0"
         }
       },
       {
@@ -60,8 +78,8 @@
         "repositoryURL": "https://github.com/Quick/Quick.git",
         "state": {
           "branch": null,
-          "revision": "33682c2f6230c60614861dfc61df267e11a1602f",
-          "version": "2.2.0"
+          "revision": "0038bcbab4292f3b028632556507c124e5ba69f3",
+          "version": "3.0.0"
         }
       },
       {
@@ -69,8 +87,8 @@
         "repositoryURL": "https://github.com/onevcat/Rainbow",
         "state": {
           "branch": null,
-          "revision": "9c52c1952e9b2305d4507cf473392ac2d7c9b155",
-          "version": "3.1.5"
+          "revision": "626c3d4b6b55354b4af3aa309f998fae9b31a3d9",
+          "version": "3.2.0"
         }
       },
       {
@@ -87,8 +105,8 @@
         "repositoryURL": "https://github.com/kylef/Spectre.git",
         "state": {
           "branch": null,
-          "revision": "f14ff47f45642aa5703900980b014c2e9394b6e5",
-          "version": "0.9.0"
+          "revision": "f79d4ecbf8bc4e1579fbd86c3e1d652fb6876c53",
+          "version": "0.9.2"
         }
       },
       {
@@ -96,7 +114,7 @@
         "repositoryURL": "https://github.com/stencilproject/Stencil.git",
         "state": {
           "branch": "master",
-          "revision": "9c3468e300ba75ede0d7eb4c495897e0ac3591c3",
+          "revision": "22440c53690c84603cea018a5204c0f1e770461d",
           "version": null
         }
       },
@@ -105,17 +123,8 @@
         "repositoryURL": "https://github.com/tuist/xcodeproj.git",
         "state": {
           "branch": null,
-          "revision": "912d40cc2ea4a300eff6dd7c6a10b4f4dedbcbec",
-          "version": "7.10.0"
-        }
-      },
-      {
-        "package": "XcodeProjCExt",
-        "repositoryURL": "https://github.com/tuist/XcodeProjCExt",
-        "state": {
-          "branch": null,
-          "revision": "21a510c225ff2bc83d5920a21d902af4b1e7e218",
-          "version": "0.1.0"
+          "revision": "82bf5efcaa27e94ed8c761c1eb3e397b6dea82b9",
+          "version": "7.18.0"
         }
       }
     ]

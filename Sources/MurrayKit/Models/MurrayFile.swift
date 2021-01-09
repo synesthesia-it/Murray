@@ -30,16 +30,21 @@ public struct MurrayFile: Glossy {
     public static let fileName: String = "Murrayfile.json"
 
     public static var defaultPlaceholder = "name"
+
+    public let pluginData: [String: JSON]
+
     public init() {
         packages = []
         environment = [:]
         mainPlaceholder = nil
+        pluginData = [:]
     }
 
     public init?(json: JSON) {
         packages = "packages" <~~ json ?? []
         environment = "environment" <~~ json ?? [:]
         mainPlaceholder = "mainPlaceholder" <~~ json
+        pluginData = "plugins" <~~ json ?? [:]
     }
 
     public func toJSON() -> JSON? {
@@ -47,6 +52,7 @@ public struct MurrayFile: Glossy {
             "packages" ~~> packages,
             "environment" ~~> environment,
             "mainPlaceholder" ~~> mainPlaceholder,
+            "plugins" ~~> pluginData
         ])
     }
 

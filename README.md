@@ -118,6 +118,18 @@ alias murray='/opt/Murray/murray'
 
 (credits to @beppenmk)
 
+# Contributing
+
+Checkout the project and run 
+
+`swift package generate-xcodeproj`
+
+## IMPORTANT:
+Due to a SPM bug, it's not possible to run tests out of the box inside XCode using Quick and Nimble.
+To workaround this issue, look for the `QuickObjCRuntime` target, go to build settings and set `Enable Modules (C and Objective-C)` to `YES`.
+
+As an alternative, it's possible to run  `swift test` directly from terminal.
+
 # Key Concepts
 
 ## Skeleton

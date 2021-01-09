@@ -21,11 +21,11 @@ open class Plugin {
 
     public init() {}
 
-    open func execute(phase _: PluginPhase, from _: Folder) throws {}
+    open func execute(phase _: PluginPhase, from _: Folder, defaultData _: [String: JSON]) throws {}
 
     open func pluginData<T: JSONDecodable>(for item: PluginDataContainer) -> T? {
         guard let json = item.pluginData[name],
-            let data = T(json: json)
+              let data = T(json: json)
         else {
             return nil
         }
@@ -53,7 +53,7 @@ public class PluginManager {
         plugins = defaultPlugins
     }
 
-    public func execute(phase: PluginPhase, from folder: Folder) throws {
-        try plugins.forEach { try $0.execute(phase: phase, from: folder) }
+    public func execute(phase: PluginPhase, from folder: Folder, defaultData: [String: JSON]) throws {
+        try plugins.forEach { try $0.execute(phase: phase, from: folder, defaultData: defaultData) }
     }
 }

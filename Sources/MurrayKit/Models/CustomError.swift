@@ -10,24 +10,24 @@ import Foundation
 
 public enum CustomError: Swift.Error {
     public enum Code: Int {
-        case undecodable
+        case undecodable = 0
 
-        case fileNotFound
+        case fileNotFound = 1
 
-        case unableToCreateFile
-        case unableToCreateFolder
-        case invalidPath
+        case unableToCreateFile = 2
+        case unableToCreateFolder = 3
+        case invalidPath = 4
 
-        case unresolvableString
+        case unresolvableString = 5
 
-        case boneProcedureNotFound
+        case boneProcedureNotFound = 6
 
-        case invalidMurrayfile
+        case invalidMurrayfile = 7
 
-        case missingRequiredParameter
+        case missingRequiredParameter = 8
 
-        case invalidJSONString
-        case generic
+        case invalidJSONString = 9
+        case generic = 10
     }
 
     case undecodable(file: File, type: Any.Type)
@@ -67,6 +67,10 @@ extension CustomError {
         case .invalidJSONString: return .invalidJSONString
         }
     }
+}
+
+extension CustomError: LocalizedError {
+    public var errorDescription: String? { description }
 }
 
 extension CustomError: CustomStringConvertible {

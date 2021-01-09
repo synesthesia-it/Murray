@@ -23,31 +23,28 @@ class BonePipelineSpec: QuickSpec {
                     try! Mocks.Scenario.simple(from: root)
                 }
                 it("should properly create data in target folder") {
+                    let pipeline = try BonePipeline(folder: root)
+                    try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"])
+
                     expect {
-                        let pipeline = try BonePipeline(folder: root)
-                        expect { try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
+                        let fileContents = try root.file(at: "Sources/Files/simple/simple.swift").readAsString()
+                        expect(fileContents) == "simpleTest"
+                        return
+                    }
+                    .notTo(throwError())
 
-                        expect {
-                            let fileContents = try root.file(at: "Sources/Files/simple/simple.swift").readAsString()
-                            expect(fileContents) == "simpleTest"
-                            return fileContents
-                        }
-                        .notTo(throwError())
-
-                        expect {
-                            let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath).readAsString()
-                            expect(fileContents) == "This is a test\nsimple\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                            return fileContents
-                        }.notTo(throwError())
-
-                        expect {
-                            let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath2).readAsString()
-                            expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                            return fileContents
-                        }.notTo(throwError())
-
-                        return pipeline
+                    expect {
+                        let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath).readAsString()
+                        expect(fileContents) == "This is a test\nsimple\(Mocks.BoneItem.placeholder)\n\nEnjoy"
+                        return
                     }.notTo(throwError())
+
+                    expect {
+                        let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath2).readAsString()
+                        expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
+                        return
+                    }.notTo(throwError())
+
                     expect { try root.file(at: "before_item").readAsString() }.notTo(throwError())
                     expect { try root.file(at: "after_item").readAsString() }.notTo(throwError())
                     expect { try root.file(at: "before_procedure").readAsString() }.notTo(throwError())
@@ -56,7 +53,8 @@ class BonePipelineSpec: QuickSpec {
                     expect { try root.file(at: "after_path").readAsString() }.notTo(throwError())
                 }
                 it("should properly find specs") {
-                    expect { try BonePipeline(folder: root).execute(packageName: "simple", boneName: "simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
+                    try BonePipeline(folder: root)
+                        .execute(packageName: "simple", boneName: "simpleGroup", with: ["name": "simple"])
                 }
             }
 
@@ -69,16 +67,13 @@ class BonePipelineSpec: QuickSpec {
                 it("should properly create data in target folder") {
                     expect {
                         let pipeline = try BonePipeline(folder: root)
-                        expect { try pipeline.execute(boneName: "singleGroup", with: ["name": "someTest"]) }.notTo(throwError())
+                        try pipeline.execute(boneName: "singleGroup", with: ["name": "someTest"])
 
                         expect {
                             let fileContents = try root.file(at: "Sources/Files/Test1/SomeTest.swift").readAsString()
                             expect(fileContents) == "someTestTest - Stefano Mondino"
-                            return fileContents
-                        }
-
-                        .notTo(throwError())
-                        return pipeline
+                            return
+                        }.notTo(throwError())
                     }.notTo(throwError())
                 }
             }
@@ -101,8 +96,7 @@ class BonePipelineSpec: QuickSpec {
                         }.notTo(throwError())
                         expect { try root.file(at: "Sources/Subfolder/Nested/Nested2/file.txt").readAsString()
                         } == "someTest2"
-
-                        return pipeline
+                        return
                     }.notTo(throwError())
                 }
             }
@@ -112,13 +106,9 @@ class BonePipelineSpec: QuickSpec {
                     try! Mocks.Scenario.parameterRequired(from: root)
                 }
                 it("should not allow creation of bones if required parameters are not provided") {
-                    expect {
-                        let pipeline = try BonePipeline(folder: root)
-                        expect { try pipeline.execute(boneName: "simpleGroup", with: ["name": "someTest2"]) }.to(throwError())
-                        expect { try pipeline.execute(boneName: "simpleGroup", with: ["name": "someTest3", "type": "the type"]) }.notTo(throwError())
-
-                        return pipeline
-                    }.notTo(throwError())
+                    let pipeline = try BonePipeline(folder: root)
+                    expect { try pipeline.execute(boneName: "simpleGroup", with: ["name": "someTest2"]) }.to(throwError())
+                    try pipeline.execute(boneName: "simpleGroup", with: ["name": "someTest3", "type": "type"])
                 }
             }
 
@@ -130,32 +120,32 @@ class BonePipelineSpec: QuickSpec {
                 it("should properly create data in target folder") {
                     expect {
                         let pipeline = try BonePipeline(folder: root)
-                        expect { try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
+                        try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"])
 
                         expect {
                             let fileContents = try root.file(at: "Sources/Files/simple/simple.swift").readAsString()
                             expect(fileContents) == "simpleTest"
-                            return fileContents
+                            return
                         }
                         .notTo(throwError())
 
                         expect {
                             let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath).readAsString()
                             expect(fileContents) == "This is a test\nsimple\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                            return fileContents
+                            return
                         }.notTo(throwError())
 
                         expect {
                             let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath2).readAsString()
                             expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                            return fileContents
+                            return
                         }.notTo(throwError())
 
-                        return pipeline
+                        return
                     }.notTo(throwError())
                 }
                 it("should properly find specs") {
-                    expect { try BonePipeline(folder: root).execute(packageName: "simple", boneName: "simpleGroup", with: ["name": "simple"]) }.notTo(throwError())
+                    try BonePipeline(folder: root).execute(packageName: "simple", boneName: "simpleGroup", with: ["name": "simple"])
                 }
             }
             describe("when invalid JSON is provided in BoneItem file") {
@@ -164,14 +154,10 @@ class BonePipelineSpec: QuickSpec {
                     try! Mocks.Scenario.invalidJSONInItem(from: root)
                 }
                 it("should fail with appropriate description") {
-                    expect {
-                        let pipeline = try BonePipeline(folder: root)
-                        expect { try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"]) }.to(throwError(closure: {
-                            expect(($0 as? CustomError)?.code) == CustomError.Code.undecodable
-                        }))
-
-                        return pipeline
-                    }.notTo(throwError())
+                    let pipeline = try BonePipeline(folder: root)
+                    expect { try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"]) }.to(throwError(closure: {
+                        expect(($0 as? CustomError)?.code) == CustomError.Code.undecodable
+                    }))
                 }
             }
         }

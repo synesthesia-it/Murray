@@ -46,6 +46,9 @@ extension Folder {
 
 public struct BonePipeline {
     public let murrayFile: MurrayFile
+    public var defaultPluginData: [String: JSON] {
+        murrayFile.pluginData
+    }
 
     public let packages: [String: ObjectReference<BonePackage>]
     let folder: Folder
@@ -53,7 +56,7 @@ public struct BonePipeline {
     public let pluginManager: PluginManager
     public init(folder: Folder, murrayFileName: String = "Murrayfile.json", pluginManager: PluginManager = .shared) throws {
         guard let file = try? folder.file(named: murrayFileName).decodable(MurrayFile.self),
-            file.environment[file.mainPlaceholder ?? MurrayFile.defaultPlaceholder] == nil
+              file.environment[file.mainPlaceholder ?? MurrayFile.defaultPlaceholder] == nil
         else {
             throw CustomError.invalidMurrayfile
         }
@@ -116,10 +119,10 @@ public struct BonePipeline {
 
         let writer = TemplateWriter(destination: folder)
 
-        try pluginManager.execute(phase: .beforePathReplace(item: path, context: context), from: folder)
+        try pluginManager.execute(phase: .beforePathReplace(item: path, context: context), from: folder, defaultData: defaultPluginData)
 
         let file = try writer.write(contents, to: path, context: context)
-        try pluginManager.execute(phase: .afterPathReplace(item: ObjectReference(file: file, object: path), context: context), from: folder)
+        try pluginManager.execute(phase: .afterPathReplace(item: ObjectReference(file: file, object: path), context: context), from: folder, defaultData: defaultPluginData)
     }
 
     public func replace(from replacement: BoneReplacement,
@@ -183,13 +186,13 @@ public struct BonePipeline {
         }
 
         let items = try self.items(from: package, procedure: procedure)
-        try pluginManager.execute(phase: .beforeProcedureReplace(procedure: procedure, context: context), from: folder)
+        try pluginManager.execute(phase: .beforeProcedureReplace(procedure: procedure, context: context), from: folder, defaultData: defaultPluginData)
         try items.forEach { item in
             guard let folder = item.file.parent else { throw CustomError.generic }
 
             try self.check(item: item.object, against: context)
 
-            try pluginManager.execute(phase: .beforeItemReplace(item: item, context: context), from: self.folder)
+            try pluginManager.execute(phase: .beforeItemReplace(item: item, context: context), from: self.folder, defaultData: defaultPluginData)
 
             try item.object.paths.forEach { path in
                 try self.transform(path: path, sourceFolder: folder, with: context)
@@ -198,8 +201,8 @@ public struct BonePipeline {
                 try self.replace(from: replacement, sourceFolder: folder, with: context)
             }
 
-            try pluginManager.execute(phase: .afterItemReplace(item: item, context: context), from: self.folder)
+            try pluginManager.execute(phase: .afterItemReplace(item: item, context: context), from: self.folder, defaultData: defaultPluginData)
         }
-        try pluginManager.execute(phase: .afterProcedureReplace(procedure: procedure, context: context), from: folder)
+        try pluginManager.execute(phase: .afterProcedureReplace(procedure: procedure, context: context), from: folder, defaultData: defaultPluginData)
     }
 }

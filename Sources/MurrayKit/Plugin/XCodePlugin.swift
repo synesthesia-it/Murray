@@ -22,7 +22,7 @@ open class XCodePlugin: Plugin {
         }
     }
 
-    override open func execute(phase: PluginPhase, from folder: Folder) throws {
+    override open func execute(phase: PluginPhase, from folder: Folder, defaultData _: [String: JSON]) throws {
         switch phase {
         case let .afterItemReplace(item, context): try process(item: item.object, file: item.file, projectFolder: folder, context: context)
         default: break

@@ -22,7 +22,7 @@ open class ShellPlugin: Plugin {
         }
     }
 
-    override open func execute(phase: PluginPhase, from folder: Folder) throws {
+    override open func execute(phase: PluginPhase, from folder: Folder, defaultData _: [String: JSON]) throws {
         switch phase {
         case let .beforeItemReplace(item, context):
             try process(item: item.object, keyPath: \.before, projectFolder: folder, context: context)
