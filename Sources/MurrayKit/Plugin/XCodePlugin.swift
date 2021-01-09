@@ -16,22 +16,38 @@ open class XCodePlugin: Plugin {
     override open var name: String { return "xcode" }
     private struct PluginData: JSONDecodable {
         let targets: [String]
+
+        init(targets: [String]) {
+            self.targets = targets
+        }
+
         init?(json: JSON) {
             guard let targets: [String] = "targets" <~~ json else { return nil }
             self.targets = targets
         }
+
+        func adding(defaultData: JSON) -> PluginData {
+            guard
+                let newData = PluginData(json: defaultData)
+            else {
+                return self
+            }
+            return PluginData(targets: [newData.targets, targets].compactMap { $0 }.flatMap { $0 })
+        }
     }
 
-    override open func execute(phase: PluginPhase, from folder: Folder, defaultData _: [String: JSON]) throws {
+    override open func execute(phase: PluginPhase, from folder: Folder, defaultData: JSON?) throws {
         switch phase {
-        case let .afterItemReplace(item, context): try process(item: item.object, file: item.file, projectFolder: folder, context: context)
+        case let .afterItemReplace(item, context): try process(item: item.object, file: item.file, projectFolder: folder, context: context, defaultData: defaultData)
         default: break
         }
     }
 
-    func process(item: BoneItem, file: File, projectFolder: Folder, context: BoneContext) throws {
+    func process(item: BoneItem, file: File, projectFolder: Folder, context: BoneContext, defaultData: JSON?) throws {
         Logger.log("Attempting to process item '\(item.name)', file '\(file)' with context: \(context)", level: .verbose)
-        guard let data: PluginData = pluginData(for: item) else { return }
+        guard let data: PluginData = pluginData(for: item, type: PluginData.self)?
+            .adding(defaultData: defaultData ?? [:])
+        else { return }
         guard let projectFolder = projectFolder.subfolders
             .filter({ $0.name.contains(".xcodeproj") })
             .first else { return }
