@@ -18,13 +18,14 @@ let package = Package(
             url: "https://github.com/johnsundell/files.git",
             from: "4.0.0"
         ),
-        .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj.git", from: "7.9.0"),
+        .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj.git", from: "8.0.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "9.0.0"),
         .package(url: "https://github.com/hkellaway/Gloss.git", from: "3.1.0"),
         .package(url: "https://github.com/Quick/Quick.git", from: "3.0.0"),
         .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.3.0"),
         .package(url: "https://github.com/kylef/Commander.git", from: "0.8.0"),
-        .package(url: "https://github.com/stencilproject/Stencil.git", .branch("master"))
+        .package(url: "https://github.com/stencilproject/Stencil.git", .branch("master")),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.3")
 
     ],
     targets: [
@@ -32,7 +33,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(name: "Murray", dependencies: ["MurrayKit", "Commander"]),
         .target(name: "MurrayKit", dependencies:
-            ["Files", "ShellOut", "Rainbow", "Stencil", "Gloss", "XcodeProj"]),
+            ["Files", "ShellOut", "Rainbow", "Stencil", "Gloss", "XcodeProj", "Yams"]),
         .testTarget(
             name: "MurrayKitTests",
             dependencies: ["MurrayKit", "Nimble", "Quick"]

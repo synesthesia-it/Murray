@@ -8,6 +8,7 @@
 import Files
 import Foundation
 import Gloss
+import Yams
 
 public extension Folder {
     private struct SubElement {
@@ -70,6 +71,25 @@ public extension Folder {
 public extension File {
     func decodable<T: JSONDecodable>(_: T.Type) throws -> T? {
         let data = try read()
-        return T(data: data)
+        return T(data: data, serializer: GlossJSONSerializer()) ?? T(data: data, serializer: YAMLSerializer())
+    }
+}
+
+struct YAMLSerializer: JSONSerializer {
+    init() {}
+    func json(from data: Data, options _: JSONSerialization.ReadingOptions) -> JSON? {
+        guard let string = String(data: data, encoding: .utf8),
+              let json = try? Yams.load(yaml: string) as? JSON else { return nil }
+        return json
+    }
+
+    func jsonArray(from data: Data, options _: JSONSerialization.ReadingOptions) -> [JSON]? {
+        guard let string = String(data: data, encoding: .utf8),
+              let json = try? Yams.load(yaml: string) as? [JSON] else { return nil }
+        return json
+    }
+
+    func data(from json: JSON, options _: JSONSerialization.WritingOptions?) -> Data? {
+        (try? Yams.dump(object: json))?.data(using: .utf8)
     }
 }

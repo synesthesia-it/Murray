@@ -42,6 +42,13 @@ extension Folder {
             return try file(at: path)
         }
     }
+
+    func firstFile(named names: [String]) throws -> File {
+        guard let file = names.compactMap({ try? self.file(named: $0) }).first else {
+            throw LocationError(path: path, reason: .emptyFilePath)
+        }
+        return file
+    }
 }
 
 public struct BonePipeline {
@@ -54,9 +61,11 @@ public struct BonePipeline {
     let folder: Folder
     //    var tree: [TreeObject] = []
     public let pluginManager: PluginManager
-    public init(folder: Folder, murrayFileName: String = "Murrayfile.json", pluginManager: PluginManager = .shared) throws {
-        guard let file = try? folder.file(named: murrayFileName).decodable(MurrayFile.self),
-              file.environment[file.mainPlaceholder ?? MurrayFile.defaultPlaceholder] == nil
+    public init(folder: Folder, murrayFileName: String = "Murrayfile", pluginManager: PluginManager = .shared) throws {
+        guard let file = try? folder.firstFile(named: ["", ".json", ".yml", ".yaml"]
+            .map { "\(murrayFileName)\($0)" })
+            .decodable(MurrayFile.self),
+            file.environment[file.mainPlaceholder ?? MurrayFile.defaultPlaceholder] == nil
         else {
             throw CustomError.invalidMurrayfile
         }

@@ -17,32 +17,62 @@ class BonePipelineSpec: QuickSpec {
         let root = tempFolder(for: "BonePipeline")
 
         context("a pipeline") {
-            describe("for simple context") {
+            describe("for simple context with no internal plugin data") {
                 beforeEach {
                     try! root.empty()
-                    try! Mocks.Scenario.simple(from: root)
+                    try! Mocks.Scenario.simpleNoInternalPlugin(from: root)
                 }
-                it("should properly create data in target folder") {
+                it("should properly create data in target folder and execute plugins") {
                     let pipeline = try BonePipeline(folder: root)
                     try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"])
 
                     expect {
                         let fileContents = try root.file(at: "Sources/Files/simple/simple.swift").readAsString()
                         expect(fileContents) == "simpleTest"
-                        return
                     }
                     .notTo(throwError())
 
                     expect {
                         let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath).readAsString()
                         expect(fileContents) == "This is a test\nsimple\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                        return
                     }.notTo(throwError())
 
                     expect {
                         let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath2).readAsString()
                         expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                        return
+                    }.notTo(throwError())
+
+                    expect { try root.file(at: "plugin.data").readAsString() }
+                        .notTo(throwError())
+                }
+                it("should properly find specs") {
+                    try BonePipeline(folder: root)
+                        .execute(packageName: "simple", boneName: "simpleGroup", with: ["name": "simple"])
+                }
+            }
+            describe("for simple context with internal plugin data") {
+                beforeEach {
+                    try! root.empty()
+                    try! Mocks.Scenario.simple(from: root)
+                }
+                it("should properly create data in target folder and execute plugins") {
+                    let pipeline = try BonePipeline(folder: root)
+                    try pipeline.execute(boneName: "simpleGroup", with: ["name": "simple"])
+
+                    expect {
+                        let fileContents = try root.file(at: "Sources/Files/simple/simple.swift").readAsString()
+                        expect(fileContents) == "simpleTest"
+                    }
+                    .notTo(throwError())
+
+                    expect {
+                        let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath).readAsString()
+                        expect(fileContents) == "This is a test\nsimple\(Mocks.BoneItem.placeholder)\n\nEnjoy"
+                    }.notTo(throwError())
+
+                    expect {
+                        let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath2).readAsString()
+                        expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
                     }.notTo(throwError())
 
                     expect { try root.file(at: "before_item").readAsString() }.notTo(throwError())
@@ -51,6 +81,9 @@ class BonePipelineSpec: QuickSpec {
                     expect { try root.file(at: "after_procedure").readAsString() }.notTo(throwError())
                     expect { try root.file(at: "before_path").readAsString() }.notTo(throwError())
                     expect { try root.file(at: "after_path").readAsString() }.notTo(throwError())
+
+                    expect { try root.file(at: "plugin.data").readAsString() }
+                        .notTo(throwError())
                 }
                 it("should properly find specs") {
                     try BonePipeline(folder: root)
@@ -72,7 +105,6 @@ class BonePipelineSpec: QuickSpec {
                         expect {
                             let fileContents = try root.file(at: "Sources/Files/Test1/SomeTest.swift").readAsString()
                             expect(fileContents) == "someTestTest - Stefano Mondino"
-                            return
                         }.notTo(throwError())
                     }.notTo(throwError())
                 }
@@ -96,7 +128,6 @@ class BonePipelineSpec: QuickSpec {
                         }.notTo(throwError())
                         expect { try root.file(at: "Sources/Subfolder/Nested/Nested2/file.txt").readAsString()
                         } == "someTest2"
-                        return
                     }.notTo(throwError())
                 }
             }
@@ -125,23 +156,18 @@ class BonePipelineSpec: QuickSpec {
                         expect {
                             let fileContents = try root.file(at: "Sources/Files/simple/simple.swift").readAsString()
                             expect(fileContents) == "simpleTest"
-                            return
                         }
                         .notTo(throwError())
 
                         expect {
                             let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath).readAsString()
                             expect(fileContents) == "This is a test\nsimple\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                            return
                         }.notTo(throwError())
 
                         expect {
                             let fileContents = try root.file(at: Mocks.BoneItem.placeholderFilePath2).readAsString()
                             expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
-                            return
                         }.notTo(throwError())
-
-                        return
                     }.notTo(throwError())
                 }
                 it("should properly find specs") {

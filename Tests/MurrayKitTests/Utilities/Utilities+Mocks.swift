@@ -10,8 +10,8 @@ import Foundation
 
 import MurrayKit
 
-public struct Mocks {
-    public struct Skeletonfile {
+public enum Mocks {
+    public enum Skeletonfile {
         public static func simple() -> String {
             return """
             {
@@ -29,8 +29,21 @@ public struct Mocks {
         }
     }
 
-    public struct Murrayfile {
-        public static func simple(specPath: String = "Murray/Simple/Simple.json") -> String {
+    public enum Murrayfile {
+        public static func simple(specPath: String = "Murray/Simple/Simple.json", useYAML: Bool = false) -> String {
+            if useYAML {
+                return """
+                environment:
+                  author: "Stefano Mondino"
+                  customName: "{{name}}"
+                  nestedName: "{{customName}}"
+                mainPlaceholder: "name"
+                packages: ["\(specPath)"]
+                plugins:
+                  shell:
+                    after: "touch plugin.data"
+                """
+            }
             return """
             {
                 "environment": {
@@ -39,13 +52,16 @@ public struct Mocks {
                     "nestedName": "{{customName}}"
                 },
                 "mainPlaceholder": "name",
-                "packages": ["\(specPath)"]
+                "packages": ["\(specPath)"],
+                "plugins" : {
+                        "shell": { "after": ["touch plugin.data"]}
+                      }
             }
             """
         }
     }
 
-    public struct BonePackage {
+    public enum BonePackage {
         public static var simple: String {
             return """
                 {
@@ -77,7 +93,7 @@ public struct Mocks {
         }
     }
 
-    public struct BoneProcedure {
+    public enum BoneProcedure {
         public static func procedure(named name: String, items: [String]) -> String {
             return """
             {
@@ -105,11 +121,46 @@ public struct Mocks {
         }
     }
 
-    public struct BoneItem {
+    public enum BoneItem {
         public static let placeholderFileContents = "This is a test\n\(placeholder)\n\nEnjoy"
         public static let placeholder = "//Murray Placeholder"
         public static let placeholderFilePath = "Sources/Files/Default/Test.swift"
         public static let placeholderFilePath2 = "Sources/Files/Default/Test2.swift"
+
+        public static var simpleNoPlugin: String { """
+                {
+                    "name": "simpleItem",
+                    "description": "custom description",
+                    "paths": [
+                        { "from": "Bone.swift",
+                          "to": "Sources/Files/{{ nestedName }}/{{ customName }}.swift",
+                        }
+                    ],
+                    "replacements": [
+                         {
+                             "text": "{{ name }}",
+                             "placeholder": "\(placeholder)",
+                             "destination": "\(placeholderFilePath)"
+                         },
+                         {
+                             "text": "{{ name }}",
+                             "source": "Replacement.swift",
+                             "placeholder": "\(placeholder)",
+                             "destination": "\(placeholderFilePath2)"
+                         }
+                     ],
+                    "parameters": [
+                        {
+                        "name": "name",
+                        "isRequired": true
+                        },
+                        {
+                        "name": "type"
+                        }
+                    ]
+                }
+        """ }
+
         public static var simple: String { """
         {
             "name": "simpleItem",
@@ -224,17 +275,41 @@ public struct Mocks {
 }
 
 public extension Mocks {
-    struct Scenario {
-        public static func simple(from root: Folder) throws {
+    enum Scenario {
+        public static func simple(from root: Folder, useYAML: Bool = false) throws {
             let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
             try xcode.createFileIfNeeded(at: "project.pbxproj").write(testPBX)
-            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(), folder: root, path: BonePath(from: "Murrayfile.json", to: ""))
+            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(useYAML: useYAML), folder: root, path: BonePath(from: "Murrayfile", to: ""))
             murrayFile.createSource()
 
             let boneSpec = ConcreteFile(contents: Mocks.BonePackage.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
             boneSpec.createSource()
 
             let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simple, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
+            simpleItem.createSource()
+
+            let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))
+            simpleFile.createSource()
+
+            let replacementFile = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath, to: ""))
+            replacementFile.createSource()
+            let replacementFile2 = ConcreteFile(contents: Mocks.BoneItem.placeholderFileContents, folder: root, path: BonePath(from: Mocks.BoneItem.placeholderFilePath2, to: ""))
+            replacementFile2.createSource()
+
+            let templateFile = ConcreteFile(contents: "testing {{ name }} in place\n", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Replacement.swift", to: ""))
+            templateFile.createSource()
+        }
+
+        public static func simpleNoInternalPlugin(from root: Folder, useYAML: Bool = false) throws {
+            let xcode = try root.createSubfolderIfNeeded(at: "Test.xcodeproj")
+            try xcode.createFileIfNeeded(at: "project.pbxproj").write(testPBX)
+            let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(useYAML: useYAML), folder: root, path: BonePath(from: "Murrayfile", to: ""))
+            murrayFile.createSource()
+
+            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
+            boneSpec.createSource()
+
+            let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simpleNoPlugin, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))
             simpleItem.createSource()
 
             let simpleFile = ConcreteFile(contents: "{{name}}Test", folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/Bone.swift", to: ""))
