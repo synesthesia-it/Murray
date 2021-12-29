@@ -42,8 +42,11 @@ class BonePipelineSpec: QuickSpec {
                         expect(fileContents) == "This is a test\ntesting simple in place\n\(Mocks.BoneItem.placeholder)\n\nEnjoy"
                     }.notTo(throwError())
 
-                    expect { try root.file(at: "plugin.data").readAsString() }
-                        .notTo(throwError())
+                    expect {
+                        try root.file(at: "plugin.data")
+                            .readAsString()
+                            .trimmingCharacters(in: .whitespacesAndNewlines)
+                    } == "test"
                 }
                 it("should properly find specs") {
                     try BonePipeline(folder: root)

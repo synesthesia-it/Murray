@@ -54,7 +54,7 @@ public enum Mocks {
                 "mainPlaceholder": "name",
                 "packages": ["\(specPath)"],
                 "plugins" : {
-                        "shell": { "after": ["touch plugin.data"]}
+                        "shell": { "after": ["echo test >> plugin.data"]}
                       }
             }
             """
@@ -68,6 +68,16 @@ public enum Mocks {
                     "name": "simple",
                     "description": "Simple bone spec for testing purposes",
                     "procedures": [\(Mocks.BoneProcedure.simple)]
+                }
+            """
+        }
+
+        public static var simpleNoPlugins: String {
+            return """
+                {
+                    "name": "simple",
+                    "description": "Simple bone spec for testing purposes",
+                    "procedures": [\(Mocks.BoneProcedure.simpleNoPlugins)]
                 }
             """
         }
@@ -116,6 +126,16 @@ public enum Mocks {
                             "after": ["touch after_procedure"]
                         }
                     }
+                }
+            """
+        }
+
+        public static var simpleNoPlugins: String {
+            return """
+                {
+                    "name": "simpleGroup",
+                    "description": "custom description",
+                    "items": ["SimpleItem/SimpleItem.json"]
                 }
             """
         }
@@ -306,7 +326,7 @@ public extension Mocks {
             let murrayFile = ConcreteFile(contents: Mocks.Murrayfile.simple(useYAML: useYAML), folder: root, path: BonePath(from: "Murrayfile", to: ""))
             murrayFile.createSource()
 
-            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.simple, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
+            let boneSpec = ConcreteFile(contents: Mocks.BonePackage.simpleNoPlugins, folder: root, path: BonePath(from: "Murray/Simple/Simple.json", to: ""))
             boneSpec.createSource()
 
             let simpleItem = ConcreteFile(contents: Mocks.BoneItem.simpleNoPlugin, folder: root, path: BonePath(from: "Murray/Simple/SimpleItem/SimpleItem.json", to: ""))

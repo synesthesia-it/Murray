@@ -19,7 +19,7 @@ open class ShellPlugin: Plugin {
         init?(before: [String], after: [String]) {
             self.before = before.isEmpty ? nil : before
             self.after = after.isEmpty ? nil : after
-            if before == nil, after == nil {
+            if self.before == nil, self.after == nil {
                 return nil
             }
         }
@@ -46,17 +46,17 @@ open class ShellPlugin: Plugin {
     override open func execute(phase: PluginPhase, from folder: Folder, defaultData: JSON?) throws {
         switch phase {
         case let .beforeItemReplace(item, context):
-            try process(item: item.object, keyPath: \.before, projectFolder: folder, context: context, defaultData: defaultData)
+            try process(item: item.object, keyPath: \.before, projectFolder: folder, context: context, defaultData: nil)
         case let .afterItemReplace(item, context):
-            try process(item: item.object, keyPath: \.after, projectFolder: folder, context: context, defaultData: defaultData)
+            try process(item: item.object, keyPath: \.after, projectFolder: folder, context: context, defaultData: nil)
         case let .beforeProcedureReplace(procedure, context):
             try process(item: procedure, keyPath: \.before, projectFolder: folder, context: context, defaultData: defaultData)
         case let .afterProcedureReplace(procedure, context):
             try process(item: procedure, keyPath: \.after, projectFolder: folder, context: context, defaultData: defaultData)
         case let .beforePathReplace(item, context):
-            try process(item: item, keyPath: \.before, projectFolder: folder, context: context, defaultData: defaultData)
+            try process(item: item, keyPath: \.before, projectFolder: folder, context: context, defaultData: nil)
         case let .afterPathReplace(item, context):
-            try process(item: item.object, keyPath: \.after, projectFolder: folder, context: context, defaultData: defaultData)
+            try process(item: item.object, keyPath: \.after, projectFolder: folder, context: context, defaultData: nil)
         }
     }
 
