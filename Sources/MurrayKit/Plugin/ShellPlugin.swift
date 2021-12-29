@@ -16,14 +16,20 @@ open class ShellPlugin: Plugin {
     struct PluginData: JSONDecodable {
         let before: [String]?
         let after: [String]?
-        init(before: [String], after: [String]) {
+        init?(before: [String], after: [String]) {
             self.before = before.isEmpty ? nil : before
             self.after = after.isEmpty ? nil : after
+            if before == nil, after == nil {
+                return nil
+            }
         }
 
         init?(json: JSON) {
-            before = ("before" <~~ json) ?? []
-            after = ("after" <~~ json) ?? []
+            before = ("before" <~~ json)
+            after = ("after" <~~ json)
+            if before == nil, after == nil {
+                return nil
+            }
         }
 
         func adding(defaultData: JSON) -> PluginData {
@@ -33,7 +39,7 @@ open class ShellPlugin: Plugin {
                 return self
             }
             return PluginData(before: [newData.before, before].compactMap { $0 }.flatMap { $0 },
-                              after: [newData.after, after].compactMap { $0 }.flatMap { $0 })
+                              after: [newData.after, after].compactMap { $0 }.flatMap { $0 }) ?? self
         }
     }
 
@@ -60,7 +66,7 @@ open class ShellPlugin: Plugin {
                  defaultData: JSON?) throws {
         Logger.log("Attempting to process item '\(item.name)' with context: \(context)", level: .verbose)
         guard let data = pluginData(for: item, type: PluginData.self)?
-            .adding(defaultData: defaultData ?? [:]) else { return }
+            .adding(defaultData: defaultData ?? [:]) ?? PluginData(json: defaultData ?? [:]) else { return }
         let commands = try (data[keyPath: keyPath] ?? []).map { try $0.resolved(with: context) }
         guard !commands.isEmpty else { return }
         commands.forEach { command in
