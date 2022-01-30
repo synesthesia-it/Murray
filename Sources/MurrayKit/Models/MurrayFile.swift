@@ -1,66 +1,34 @@
 //
-//  BoneFile.swift
-//  MurrayKit
+//  File.swift
 //
-//  Created by Stefano Mondino on 13/01/2020.
+//
+//  Created by Stefano Mondino on 30/01/22.
 //
 
+import Files
 import Foundation
-import Gloss
-/**
-    A structure defining main Murrayfile.json
 
-    The `Murrayfile.json` file should contain all the informations needed by murray to find and execute commands.
-
- */
-public struct MurrayFile: Glossy {
-    /**
-        An array of paths representing `Bonespec.json` **local** references, relative to Murrayfile directory.
-     */
+public struct Murrayfile: Codable, Equatable {
     public private(set) var packages: [String]
+    public private(set) var environment: [String: AnyCodable]
+    private var mainPlaceholder: String?
+    private var plugins: [String: AnyCodable]?
 
-    /**
-        A JSON dictionary representing global variables and object that will be resolved by Murray during execution
-
-     */
-    public private(set) var environment: JSON
-
-    public let mainPlaceholder: String?
-
-    public static let fileName: String = "Murrayfile.json"
-
-    public static var defaultPlaceholder = "name"
-
-    public let pluginData: [String: JSON]
-
-    public init() {
-        packages = []
-        environment = [:]
-        mainPlaceholder = nil
-        pluginData = [:]
+    public var pluginData: [String: AnyCodable] {
+        plugins ?? [:]
     }
 
-    public init?(json: JSON) {
-        packages = "packages" <~~ json ?? []
-        environment = "environment" <~~ json ?? [:]
-        mainPlaceholder = "mainPlaceholder" <~~ json
-        pluginData = "plugins" <~~ json ?? [:]
+    /// The default parameter used in all commands as main name to be replaced. Defaults to "name"
+    public var namePlaceholder: String {
+        mainPlaceholder ?? "name"
     }
+}
 
-    public func toJSON() -> JSON? {
-        return jsonify([
-            "packages" ~~> packages,
-            "environment" ~~> environment,
-            "mainPlaceholder" ~~> mainPlaceholder,
-            "plugins" ~~> pluginData
-        ])
-    }
-
-    public mutating func addSpecPath(_ spec: String) {
-        packages += [spec]
-    }
-
-    public mutating func update(environment: JSON) {
-        self.environment = environment
+public extension CodableFile where Object == Murrayfile {
+    init(in folder: Folder, murrayfileName: String = "Murrayfile") throws {
+        let extensions = ["", ".json", ".yml", ".yaml"]
+        let names = extensions.map { murrayfileName + $0 }
+        let file = try folder.firstFile(named: names)
+        try self.init(file: file)
     }
 }

@@ -1,0 +1,17 @@
+name: simpleItem
+description: custom description
+paths:
+- from: "Bone.swift"
+  to: "Sources/Files/{{ nestedName }}/{{ customName }}.swift"
+replacements:
+- "text": "{{ name }}"
+  "placeholder": "//Murray Placeholder"
+  "destination": "Sources/Files/Default/Test.swift"
+- "text": "{{ name }}"
+  "source": "Replacement.swift"
+  "placeholder": "//Murray Placeholder"
+  "destination": "Sources/Files/Default/Test2.swift"
+parameters:
+- "name": "name"
+  "isRequired": true
+- "name": "type"
