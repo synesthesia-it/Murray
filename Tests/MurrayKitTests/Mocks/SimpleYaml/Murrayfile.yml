@@ -7,5 +7,5 @@ packages:
   - "Murray/Simple/Simple.yml"
 plugins: 
   shell:
-    after: |
-            echo test >> plugin.data
+    after:
+    - "echo test >> plugin.data"

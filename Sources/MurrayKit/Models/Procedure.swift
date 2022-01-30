@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Procedure: Codable {
-    let name: String
-    let description: String
+public struct Procedure: Codable {
+    public let name: String
+    public let description: String
 }

@@ -35,23 +35,26 @@ struct Scenario {
 }
 
 extension Scenario {
+    private static func simpleMock(type: String) -> Murrayfile {
+        .init(packages: ["Murray/Simple/Simple.\(type)"],
+              environment: [
+                  "author": "Stefano Mondino",
+                  "customName": "{{name}}",
+                  "nestedName": "{{customName}}",
+              ],
+              mainPlaceholder: "name",
+              plugins: ["shell":
+                  ["after":
+                      ["echo test >> plugin.data"]]])
+    }
+
     static var simpleJSON: Scenario {
         .init(name: "SimpleJSON",
-              murrayFile: .init(packages: ["Murray/Simple/Simple.json"],
-                                environment: [
-                                    "author": "Stefano Mondino",
-                                    "customName": "{{name}}",
-                                    "nestedName": "{{customName}}",
-                                ]))
+              murrayFile: simpleMock(type: "json"))
     }
 
     static var simpleYaml: Scenario {
         .init(name: "SimpleYaml",
-              murrayFile: .init(packages: ["Murray/Simple/Simple.yml"],
-                                environment: [
-                                    "author": "Stefano Mondino",
-                                    "customName": "{{name}}",
-                                    "nestedName": "{{customName}}",
-                                ]))
+              murrayFile: simpleMock(type: "yml"))
     }
 }

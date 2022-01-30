@@ -9,12 +9,23 @@ import Files
 import Foundation
 
 public struct Murrayfile: Codable, Equatable {
-    public private(set) var packages: [String]
-    public private(set) var environment: [String: AnyCodable]
-    private var mainPlaceholder: String?
-    private var plugins: [String: AnyCodable]?
+    public init(packages: [String],
+                environment: Parameters,
+                mainPlaceholder: String? = nil,
+                plugins: Parameters? = nil)
+    {
+        self.packages = packages
+        self.environment = environment
+        self.mainPlaceholder = mainPlaceholder
+        self.plugins = plugins
+    }
 
-    public var pluginData: [String: AnyCodable] {
+    public private(set) var packages: [String]
+    public private(set) var environment: Parameters
+    private var mainPlaceholder: String?
+    private var plugins: Parameters?
+
+    public var pluginData: Parameters {
         plugins ?? [:]
     }
 
