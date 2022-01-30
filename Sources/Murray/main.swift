@@ -24,7 +24,7 @@ import MurrayKit
 // }
 
 // Logger.logger = CLILogger(logLevel: .normal)
-Murray.commands.run()
+commands().run()
 
 // try SkeletonPipeline(folder: Folder.current, projectName: "Mondini")
 //    .execute(projectPath: "~/Desktop/Pipeline", with: [:])

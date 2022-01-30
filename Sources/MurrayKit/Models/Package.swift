@@ -8,7 +8,16 @@
 import Foundation
 
 public struct Package: Codable {
-    let name: String
-    let description: String
-    let procedures: [Procedure]
+    public let name: String
+    public let description: String
+    public let procedures: [Procedure]
 }
+
+// public extension CodableFile where Object == Package {
+//    func procedures() throws -> [CodableFile<Procedure>] {
+//        object.procedures.compactMap { procedure in
+//            try file.parent?.file(named: procedure)
+//        }
+//        .map { .init(file: $0)}
+//    }
+// }

@@ -9,6 +9,7 @@ import Files
 import Foundation
 
 public struct Murrayfile: Codable, Equatable {
+    public static var defaultName = "Murrayfile"
     public init(packages: [String],
                 environment: Parameters,
                 mainPlaceholder: String? = nil,
@@ -36,10 +37,16 @@ public struct Murrayfile: Codable, Equatable {
 }
 
 public extension CodableFile where Object == Murrayfile {
-    init(in folder: Folder, murrayfileName: String = "Murrayfile") throws {
+    init(in folder: Folder, murrayfileName: String = Murrayfile.defaultName) throws {
         let extensions = ["", ".json", ".yml", ".yaml"]
         let names = extensions.map { murrayfileName + $0 }
         let file = try folder.firstFile(named: names)
         try self.init(file: file)
+    }
+
+    func packages() throws -> [CodableFile<Package>] {
+        try object.packages
+            .compactMap { try file.parent?.file(named: $0) }
+            .map { try .init(file: $0) }
     }
 }
