@@ -9,4 +9,5 @@ import Foundation
 
 public enum Errors: Swift.Error {
     case unparsableFile(String)
+    case unknown
 }
