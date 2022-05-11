@@ -10,7 +10,16 @@ import Yams
 
 extension YAMLDecoder: Decoder {
     public func decode<Value>(_ data: Data) throws -> Value where Value: Decodable {
-        try decode(Value.self, from: data)
+        do {
+            return try decode(Value.self, from: data)
+        } catch let error {
+            switch error {
+            
+            case DecodingError.dataCorrupted(let inner):
+                throw inner.underlyingError ?? error
+            default: throw error
+            }
+        }
     }
 }
 

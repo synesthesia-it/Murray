@@ -19,4 +19,12 @@ class ListTests: XCTestCase {
         let procedures = try command.list()
         XCTAssertEqual(procedures.count, 1)
     }
+    func testListInFolder() throws {
+        let scenario = Scenario.simpleYaml
+        let root = try scenario.make()
+        
+        let command = try List(folder: root, murrayfileName: "Murrayfile")
+        let procedures = try command.list()
+        XCTAssertEqual(procedures.count, 1)
+    }
 }

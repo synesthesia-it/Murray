@@ -20,12 +20,13 @@ public struct CodableFile<Object: Codable> {
     }
 
     public init(file: File, type _: Object.Type = Object.self) throws {
-        self.file = file
+//        self.file = file
         let data = try file.read()
         if let ext = file.extension,
            let decoder: Decoder = Self.decoder(from: ext)
         {
-            object = try decoder.decode(data)
+            self.init(file: file, object: try decoder.decode(data))
+
         } else {
             let decoders: [Decoder] = [JSONDecoder(), YAMLDecoder()]
             guard let object = decoders
@@ -35,7 +36,7 @@ public struct CodableFile<Object: Codable> {
             else {
                 throw Errors.unparsableFile(file.path)
             }
-            self.object = object
+            self.init(file: file, object: object)
         }
     }
 

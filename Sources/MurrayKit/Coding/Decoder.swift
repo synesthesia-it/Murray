@@ -16,4 +16,8 @@ public extension Decoder {
     func decode<Value: Decodable>(_ data: Data, of _: Value.Type) throws -> Value {
         try decode(data)
     }
+    func decode<Value: Decodable>(_ string: String, encoding: String.Encoding = .utf8, of _: Value.Type) throws -> Value {
+        let data = string.data(using: encoding) ?? Data()
+        return try decode(data)
+    }
 }

@@ -7,6 +7,8 @@
 
 import Foundation
 
+public typealias JSON = [String: Any]
+
 public struct Parameters: Codable,
     Equatable,
     ExpressibleByDictionaryLiteral,
@@ -25,6 +27,16 @@ public struct Parameters: Codable,
         init(_ parameters: Parameters) {
             self = parameters.value
         }
+        var value: Any? {
+            switch self {
+            case let .dictionary(value): return value.reduce(into: JSON()) {
+                $0[$1.key] = $1.value.value.value
+            }
+            case let .array(value): return value.compactMap { $0.value }
+            case let .string(value): return value
+            default: return nil
+            }
+        }
     }
 
     public var startIndex: Int { array?.startIndex ?? 0 }
@@ -39,6 +51,17 @@ public struct Parameters: Codable,
             return value
         default: return nil
         }
+    }
+    
+    var dictionaryValue: JSON? {
+        value.value as? JSON
+    }
+    var arrayValue: [Any]? {
+        value.value as? [Any]
+    }
+    
+    var stringValue: String? {
+        readValue()
     }
 
     public init(from decoder: Swift.Decoder) throws {

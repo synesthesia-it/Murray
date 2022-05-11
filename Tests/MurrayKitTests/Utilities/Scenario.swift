@@ -9,13 +9,19 @@ import Files
 import Foundation
 @testable import MurrayKit
 
+extension Folder {
+    static func mock(at name: String = "") throws -> Folder {
+        try Folder(path: Bundle.module.resourcePath ?? Bundle.module.bundlePath)
+            .subfolder(at: "Mocks/\(name)")
+    }
+}
+
 struct Scenario {
     let name: String
     let murrayFile: Murrayfile
 
     func make() throws -> Folder {
-        let origin = try Folder(path: Bundle.module.resourcePath ?? Bundle.module.bundlePath)
-            .subfolder(at: "Mocks/\(name)")
+        let origin = try Folder.mock(at: name)
 
         let destinationParent = try Folder
             .temporary
