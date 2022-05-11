@@ -1,0 +1,28 @@
+name: Swift
+
+on:
+  push: {}
+  pull_request: {}
+
+jobs:
+  macOS:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Resolve
+      run: swift package resolve
+    - name: Build
+      run: swift build
+    - name: Run tests
+      run: swift test 2>&1 | xcpretty
+  linux:
+    runs-on: ubuntu-latest
+    container: swift:5.2
+    steps:
+      - uses: actions/checkout@v2
+      - name: Resolve
+        run: swift package resolve
+      - name: Build
+        run: swift build
+      - name: Run tests
+        run: swift test 2>&1
