@@ -29,8 +29,8 @@ public struct Item: Codable, CustomStringConvertible {
         public let from: String
         public let to: String
         private let plugins: Parameters?
-        public var pluginData: JSON? {
-            plugins?.dictionaryValue
+        public var pluginData: JSON {
+            plugins?.dictionaryValue ?? [:]
         }
         public var description: String {
             "From: \(from) to: \(to)"
@@ -87,3 +87,13 @@ public struct Item: Codable, CustomStringConvertible {
     public let replacements: [Replacement]
     
 }
+
+extension CodableFile where Object == Item {
+    func files(with context: Template.Context) throws -> [CodableFile<Item.Path>] {
+        guard let folder = file.parent else { return [] }
+        return try object
+            .paths
+            .map { try .init(file: folder.file(at: $0.from.resolve(with: context))) }
+    }
+}
+

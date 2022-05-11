@@ -16,4 +16,5 @@ public enum Errors: Swift.Error, Equatable {
     case unresolvableString(string: String, context: JSON)
     case invalidReplacement
     case unknown
+    case procedureNotFound(name: String)
 }
