@@ -8,6 +8,20 @@
       "items": [
         "SimpleItem/SimpleItem.json"
       ]
+    },
+    {
+      "name": "replacementOnly",
+      "description": "custom description",
+      "items": [
+        "ReplacementOnly/item.yml"
+      ]
+    },
+    {
+      "name": "folder",
+      "description": "custom description",
+      "items": [
+        "Folder/item.yml"
+      ]
     }
   ]
 }

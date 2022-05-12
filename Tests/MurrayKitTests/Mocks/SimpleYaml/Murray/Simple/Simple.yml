@@ -5,3 +5,7 @@ procedures:
   description: custom description
   items:
   - "SimpleItem/SimpleItem.yml"
+- name: replacementOnly
+  description: custom description
+  items:
+  - "ReplacementOnly/item.yml"

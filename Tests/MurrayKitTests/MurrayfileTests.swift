@@ -23,13 +23,15 @@ class MurrayfileTests: XCTestCase {
         try assertMurrayfile(scenario: .simpleYaml)
     }
 
-    fileprivate func assertMurrayfile(scenario: Scenario, line: UInt = #line) throws {
+    fileprivate func assertMurrayfile(scenario: Scenario,
+                                      file: StaticString = #file,
+                                      line: UInt = #line) throws {
         let root = try scenario.make()
         let murrayfile = try CodableFile<Murrayfile>(in: root).object
         XCTAssertEqual(murrayfile, scenario.murrayFile, line: line)
         let packagePath = try XCTUnwrap(murrayfile.packages.first)
         let package = try CodableFile<Package>(file: root.file(named: packagePath))
-        XCTAssertEqual(package.object.procedures.count, 1)
+        XCTAssertGreaterThan(package.object.procedures.count, 0)
         XCTAssertEqual(murrayfile.pluginData["shell"]?["after"]?.first, "echo test >> plugin.data")
         let name: String? = murrayfile.environment["author"]
         XCTAssertEqual(name, "Stefano Mondino")

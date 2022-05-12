@@ -17,7 +17,7 @@ class ListTests: XCTestCase {
         let murrayfile = try CodableFile(in: root)
         let command = try List(murrayfile: murrayfile)
         let procedures = try command.list()
-        XCTAssertEqual(procedures.count, 1)
+        XCTAssertEqual(procedures.count, 2)
     }
     func testListInFolder() throws {
         let scenario = Scenario.simpleYaml
@@ -25,6 +25,6 @@ class ListTests: XCTestCase {
         
         let command = try List(folder: root, murrayfileName: "Murrayfile")
         let procedures = try command.list()
-        XCTAssertEqual(procedures.count, 1)
+        XCTAssertEqual(procedures.count, 2)
     }
 }

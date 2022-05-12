@@ -29,3 +29,11 @@ public extension String {
         return regex?.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1_$2")
     }
 }
+
+extension String {
+    func appendingPathComponent(_ path: String) -> String {
+        return (components(separatedBy: "/") + path.components(separatedBy: "/"))
+            .filter { !$0.isEmpty }
+            .joined(separator: "/")
+    }
+}
