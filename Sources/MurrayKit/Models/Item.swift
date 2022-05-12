@@ -20,7 +20,7 @@ public struct Item: Codable, CustomStringConvertible {
         
         public init(from decoder: Swift.Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.name = try container.decode(String.self, forKey:   .name)
+            self.name = try container.decode(String.self, forKey: .name)
             self.isRequired = try container.decodeIfPresent(Bool.self, forKey: .isRequired) ?? false
         }
     }
@@ -70,7 +70,7 @@ public struct Item: Codable, CustomStringConvertible {
         case parameters
         case paths
         case plugins
-        case _description = "description"
+        case optionalDescription = "description"
         case replacements
     }
     
@@ -78,8 +78,8 @@ public struct Item: Codable, CustomStringConvertible {
     public let parameters: [Parameter]
     public private(set) var paths: [Path]
     private let plugins: Parameters?
-    private let _description: String?
-    public var description: String { _description ?? name }
+    private let optionalDescription: String?
+    public var description: String { optionalDescription ?? name }
     public var pluginData: JSON? {
         plugins?.dictionaryValue
     }
@@ -96,4 +96,3 @@ extension CodableFile where Object == Item {
             .map { try .init(file: folder.file(at: $0.from.resolve(with: context))) }
     }
 }
-

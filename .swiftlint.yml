@@ -11,20 +11,20 @@ excluded:
 
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level
-force_cast: warning # implicitly
+force_cast: error # implicitly
 force_try:
-  severity: warning # explicitly
+  severity: error # explicitly
 # rules that have both warning and error levels, can set just the warning level
 # implicitly
-line_length: 180
+line_length: 120
 # they can set both implicitly with an array
 type_body_length:
   - 300 # warning
   - 400 # error
 # or they can set both explicitly
 file_length:
-  warning: 700
-  error: 1500
+  warning: 300
+  error: 700
 # naming rules can set warnings/errors for min_length and max_length
 # additionally they can set excluded names
 type_name:
@@ -32,8 +32,6 @@ type_name:
   max_length: # warning and error
     warning: 50
     error: 60
-  excluded:
-    - T
 nesting:
   type_level: 3
 identifier_name:

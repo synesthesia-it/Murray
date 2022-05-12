@@ -23,8 +23,7 @@ public struct CodableFile<Object: Codable> {
 //        self.file = file
         let data = try file.read()
         if let ext = file.extension,
-           let decoder: Decoder = Self.decoder(from: ext)
-        {
+           let decoder: Decoder = Self.decoder(from: ext) {
             self.init(file: file, object: try decoder.decode(data))
 
         } else {

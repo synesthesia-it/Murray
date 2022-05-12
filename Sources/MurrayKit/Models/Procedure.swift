@@ -11,15 +11,15 @@ public struct Procedure: Codable {
     
     private enum CodingKeys: String, CodingKey {
         case name
-        case _description = "description"
+        case optionalDescription = "description"
         case plugins
         case itemPaths = "items"
     }
     
     public let name: String
     
-    private let _description: String?
-    public var description: String { _description ?? name }
+    private let optionalDescription: String?
+    public var description: String { optionalDescription ?? name }
     
     private let plugins: Parameters?
     public var pluginData: JSON { plugins?.dictionaryValue ?? [:] }
@@ -47,7 +47,7 @@ public struct PackagedProcedure {
         guard let procedure = package
             .object
             .procedures
-            .first (where: { $0.name == name || $0.name == "\(package.object.name).\(name)"})
+            .first(where: { $0.name == name || $0.name == "\(package.object.name).\(name)"})
         else {
             throw Errors.procedureNotFound(name: name)
         }

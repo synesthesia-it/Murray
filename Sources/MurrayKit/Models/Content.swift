@@ -25,5 +25,3 @@ extension Content: Resolvable {
         try contents().resolve(with: context)
     }
 }
-
-

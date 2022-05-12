@@ -17,8 +17,7 @@ public struct Parameters: Codable,
     ExpressibleByNilLiteral,
     CustomDebugStringConvertible,
     CustomStringConvertible,
-    Collection
-{
+    Collection {
     private enum WrappedValue: Codable, Equatable {
         case `nil`
         case string(String)
@@ -186,7 +185,7 @@ public struct Parameters: Codable,
         }
     }
 
-    public func index(after i: Int) -> Int {
-        array?.index(after: i) ?? 0
+    public func index(after index: Int) -> Int {
+        array?.index(after: index) ?? 0
     }
 }

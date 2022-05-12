@@ -61,7 +61,7 @@ open class ConsoleLogger: LoggerType {
                     .filter { !$0.isEmpty }
                     .joined(separator: " "),
                 level
-                    .colorize(string: message),
+                    .colorize(string: message)
             ]
             .compactMap { $0 }
             .filter { !$0.isEmpty }

@@ -17,8 +17,7 @@ public struct List {
 
     public init(folder: Folder,
                 murrayfileName: String = Murrayfile.defaultName)
-        throws
-    {
+        throws {
         let murrayfile = try CodableFile(in: folder, murrayfileName: murrayfileName)
         try self.init(murrayfile: murrayfile)
     }

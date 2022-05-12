@@ -41,10 +41,10 @@ struct Pipeline {
         let packages = try murrayfile.packages()
         self.procedures = try procedureNames.map { procedureName in
             guard let procedure = packages
-                .compactMap ({ try? PackagedProcedure(package: $0, procedureName: procedureName) })
+                .compactMap({ try? PackagedProcedure(package: $0, procedureName: procedureName) })
                 .first else {
-                    throw Errors.procedureNotFound(name: procedureName)
-                }
+                throw Errors.procedureNotFound(name: procedureName)
+            }
             return procedure
         }
         
@@ -65,7 +65,7 @@ struct Pipeline {
     }
     
     func writeableFiles() throws -> [WriteableFile] {
-       try procedures.flatMap { try writeableFiles(for: $0) }
+        try procedures.flatMap { try writeableFiles(for: $0) }
     }
     
     private func rootFolder() -> Folder {
@@ -80,9 +80,6 @@ struct Pipeline {
         return try items.flatMap { try writeableFiles(for: $0) }
     }
     private func writeableFiles(for item: CodableFile<Item>) throws -> [WriteableFile] {
-//        let items = try procedure.procedure.itemPaths.map {
-//            try self.item(at: $0, in: procedure)
-//        }
         
         let paths = try item.object.paths.flatMap {
             try writeableFiles(for: $0, item: item)
@@ -97,19 +94,19 @@ struct Pipeline {
     
     private func writeableFiles(in folder: Folder, destinationPath: String) throws -> [WriteableFile] {
         
-            let files = try folder.files.map { file -> WriteableFile in
-                let destinationName = try file.name.resolve(with: context)
-                let path = destinationPath.appendingPathComponent(destinationName)
-                return WriteableFile(content: .file(file),
-                                     path: path,
-                                     destinationRoot: rootFolder(),
-                                     action: .create(context: context))
-            }
-            let subfolders = try folder.subfolders.flatMap { subfolder in
-                try writeableFiles(in: subfolder,
+        let files = try folder.files.map { file -> WriteableFile in
+            let destinationName = try file.name.resolve(with: context)
+            let path = destinationPath.appendingPathComponent(destinationName)
+            return WriteableFile(content: .file(file),
+                                 path: path,
+                                 destinationRoot: rootFolder(),
+                                 action: .create(context: context))
+        }
+        let subfolders = try folder.subfolders.flatMap { subfolder in
+            try writeableFiles(in: subfolder,
                                destinationPath: destinationPath.appendingPathComponent(subfolder.name))
-            }
-            return files + subfolders
+        }
+        return files + subfolders
     }
     
     private func writeableFiles(for path: Item.Path, item: CodableFile<Item>) throws -> [WriteableFile] {
@@ -125,9 +122,9 @@ struct Pipeline {
         }
         
         return [WriteableFile(content: .file(file),
-                             path: path.to,
-                             destinationRoot: rootFolder(),
-                             action: .create(context: context))]
+                              path: path.to,
+                              destinationRoot: rootFolder(),
+                              action: .create(context: context))]
     }
     
     private func writeableFile(for replacement: Item.Replacement, item: CodableFile<Item>) throws -> WriteableFile {
@@ -154,4 +151,3 @@ struct Pipeline {
     }
     
 }
-

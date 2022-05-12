@@ -25,12 +25,10 @@ func commands() -> Group {
 
     return Group { group in
         group.group("bone",
-                    "A set of commands to interact with bones in current folder")
-        { group in
+                    "A set of commands to interact with bones in current folder") { group in
             group.command("list",
                           Flag("verbose"),
-                          description: "List all available bones.")
-            { verbose in
+                          description: "List all available bones.") { verbose in
                 setVerbose(verbose)
                 try List(folder: folder).execute()
             }
@@ -44,7 +42,9 @@ func commands() -> Group {
 public extension List {
     func execute() throws {
         let list = try self.list()
-        let strings = list.map { "\($0.package.object.name.lightGreen).\($0.procedure.name.green): \($0.procedure.description)\n" }
+        let strings = list.map {
+            "\($0.package.object.name.lightGreen).\($0.procedure.name.green): \($0.procedure.description)\n"
+        }
         strings.forEach { Logger.log($0, level: .normal) }
     }
 }

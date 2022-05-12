@@ -21,9 +21,9 @@ public struct WriteableFile {
     public let action: Action
     
     public init(content: Content,
-         path: String,
-         destinationRoot: Folder,
-         action: Action) {
+                path: String,
+                destinationRoot: Folder,
+                action: Action) {
         self.content = content
         self.path = path
         self.root = destinationRoot
@@ -56,9 +56,8 @@ public struct WriteableFile {
         return destination
     }
     
-    
     private func update(searching placeholder: String,
-                with context: Template.Context) throws -> File {
+                        with context: Template.Context) throws -> File {
         let destination = try root.file(at: path.resolve(with: context))
         let contents = try replace(searching: placeholder, with: context)
         try destination.write(contents)
@@ -66,7 +65,7 @@ public struct WriteableFile {
     }
     
     private func replace(searching placeholder: String,
-                 with context: Template.Context) throws -> String {
+                         with context: Template.Context) throws -> String {
         let destination = try root.file(at: path.resolve(with: context))
         let replacement = try content.resolve(with: context) + placeholder
         return try destination.readAsString()
@@ -82,4 +81,3 @@ extension WriteableFile: Resolvable {
     }
     
 }
-
