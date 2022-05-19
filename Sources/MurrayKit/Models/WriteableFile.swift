@@ -11,10 +11,11 @@ import Files
 public struct WriteableFile {
     
     public enum Action {
-        case create(context: Template.Context)
-        case edit(context: Template.Context, placeholder: String)
+        case create//(context: Template.Context)
+        case edit(placeholder: String)
     }
     
+    public let identifier = UUID()
     public let content: Content
     public let path: String
     public let root: Folder
@@ -30,21 +31,29 @@ public struct WriteableFile {
         self.action = action
     }
     
-    public func preview() throws -> String {
+    public func preview(context: Template.Context) throws -> String {
         switch action {
-        case .create(let context):
+        case .create:
+            try Logger.log("File will be created at \(path.resolve(with: context))\n",
+                       level: .normal)
             return try resolve(with: context)
-        case .edit(let context, let placeholder):
+        case .edit(let placeholder):
+            try Logger.log("Contents of file at \(path.resolve(with: context)) will be replaced when placeholder: '\(placeholder)' is found",
+                       level: .normal)
             return try replace(searching: placeholder, with: context)
         }
     }
     
     @discardableResult
-    public func commit() throws -> File {
+    public func commit(context: Template.Context) throws -> File {
         switch action {
-        case .create(let context):
+        case .create:
+            try Logger.log("Will create file at \(path.resolve(with: context))\n",
+                       level: .normal)
             return try create(with: context)
-        case .edit(let context, let placeholder):
+        case .edit(let placeholder):
+            try Logger.log("Will replace contents of file at \(path.resolve(with: context)), looking for placeholder: '\(placeholder)'",
+                       level: .normal)
             return try update(searching: placeholder, with: context)
         }
     }

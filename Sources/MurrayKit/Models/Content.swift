@@ -12,7 +12,7 @@ public enum Content {
     case file(File)
     case text(String)
     
-    fileprivate func contents() throws -> String {
+    public func contents() throws -> String {
         switch self {
         case .file(let file): return try file.readAsString()
         case .text(let text): return text

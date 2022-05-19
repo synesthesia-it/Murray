@@ -19,12 +19,12 @@ class WriteableFileTests: XCTestCase {
         let file = WriteableFile(content: .text("replaced with {{name}}"),
                                  path: "Sources/{{name}}/{{name}}.swift",
                                  destinationRoot: root,
-                                 action: .create(context: context))
+                                 action: .create)
         
         
-        XCTAssertEqual(try file.preview(), "replaced with TEST")
+        XCTAssertEqual(try file.preview(context: context), "replaced with TEST")
         
-        let destination = try file.commit()
+        let destination = try file.commit(context: context)
         
         XCTAssertEqual(destination.path(relativeTo: root), "Sources/TEST/TEST.swift")
         XCTAssertEqual(try destination.readAsString(), "replaced with TEST")
@@ -39,7 +39,7 @@ class WriteableFileTests: XCTestCase {
         let file = WriteableFile(content: .text("replaced with {{name}}\n"),
                                  path: "Sources/Files/{{customizedPath}}/Test.swift",
                                  destinationRoot: root,
-                                 action: .edit(context: context, placeholder: placeholder))
+                                 action: .edit(placeholder: placeholder))
         
         let expected = """
                         This is a test
@@ -49,9 +49,9 @@ class WriteableFileTests: XCTestCase {
                         Enjoy
                         
                         """
-        XCTAssertEqual(try file.preview(), expected)
+        XCTAssertEqual(try file.preview(context: context), expected)
         
-        let destination = try file.commit()
+        let destination = try file.commit(context: context)
         
         XCTAssertEqual(destination.path(relativeTo: root), "Sources/Files/Default/Test.swift")
         XCTAssertEqual(try destination.readAsString(), expected)

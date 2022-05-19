@@ -89,7 +89,20 @@ public struct Parameters: Codable,
             break
         }
     }
-
+    
+    private init?(_ undefined: Any) {
+        switch undefined {
+        case let string as String: self.init(value: .string(string))
+        case let array as [Any]: self.init(value: .array(array.compactMap { Parameters.init($0) }))
+        case let dictionary as JSON: self.init(dictionary)
+        default: return nil
+        }
+    }
+    public init(_ json: JSON) {
+        value = .dictionary(json.reduce(into: [:]) {
+            $0[$1.0] = Parameters($1.1)
+        })
+    }
     public init(dictionaryLiteral elements: (String, Parameters)...) {
         value = .dictionary(elements.reduce(into: [:]) {
             $0[$1.0] = $1.1

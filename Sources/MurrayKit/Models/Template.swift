@@ -13,11 +13,14 @@ public struct Template {
     public struct Context: ExpressibleByDictionaryLiteral, CustomStringConvertible {
         public var description: String { values.description }
         
-        fileprivate let values: JSON
+        public let values: JSON
         
         public init(_ parameters: Parameters, environment: Parameters = [:]) {
             self.values = (environment.dictionaryValue ?? [:])
                 .merging(parameters.dictionaryValue ?? [:]) { _, other in other }
+        }
+        public init(_ values: JSON) {
+            self.values = values
         }
         public init(dictionaryLiteral elements: (String, Any)...) {
             self.values = elements.reduce(into: [:]) { $0[$1.0] = $1.1 }

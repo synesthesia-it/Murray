@@ -6,9 +6,12 @@
 //
 
 import Foundation
-
+/** Swift model for a procedure
+ 
+ A procedure represents a sequence of items executed with the same context.
+ 
+*/
 public struct Procedure: Codable {
-    
     private enum CodingKeys: String, CodingKey {
         case name
         case optionalDescription = "description"
@@ -31,26 +34,3 @@ public struct Procedure: Codable {
     }
 }
 
-public struct PackagedProcedure {
-
-    public let package: CodableFile<Package>
-    public let procedure: Procedure
-    
-    internal init(package: CodableFile<Package>, procedure: Procedure) {
-        self.package = package
-        self.procedure = procedure
-    }
-    
-    init(package: CodableFile<Package>,
-         procedureName name: String) throws {
-        self.package = package
-        guard let procedure = package
-            .object
-            .procedures
-            .first(where: { $0.name == name || $0.name == "\(package.object.name).\(name)"})
-        else {
-            throw Errors.procedureNotFound(name: name)
-        }
-        self.procedure = procedure
-    }
-}

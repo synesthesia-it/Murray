@@ -40,7 +40,26 @@ public enum LogLevel: Int {
 
 public protocol LoggerType: AnyObject {
     var logLevel: LogLevel { get set }
-    func log(_ message: String, level: LogLevel, tag: String?)
+    func log(_ log: Log, level: LogLevel, tag: String?)
+}
+
+public enum Log: CustomStringConvertible, CustomDebugStringConvertible {
+    case error(Errors)
+    case message(String)
+    
+    public var debugDescription: String {
+        switch self {
+        case .error(let error): return error.localizedDescription
+        case .message(let string): return string
+        }
+    }
+    
+    public var description: String {
+        switch self {
+        case .error(let error): return error.localizedDescription
+        case .message(let string): return string
+        }
+    }
 }
 
 open class ConsoleLogger: LoggerType {
@@ -49,7 +68,7 @@ open class ConsoleLogger: LoggerType {
     public init(logLevel: LogLevel) {
         self.logLevel = logLevel
     }
-
+    
     open func string(_ message: String, level: LogLevel, tag: String?) -> String? {
         if logLevel.rawValue > level.rawValue { return nil }
 
@@ -71,8 +90,8 @@ open class ConsoleLogger: LoggerType {
         return string
     }
 
-    open func log(_ message: String, level: LogLevel, tag: String?) {
-        guard let string = string(message, level: level, tag: tag) else { return }
+    open func log(_ log: Log, level: LogLevel, tag: String?) {
+        guard let string = string(log.description, level: level, tag: tag) else { return }
         print(string)
     }
 }
@@ -80,7 +99,8 @@ open class ConsoleLogger: LoggerType {
 public final class TestLogger: ConsoleLogger {
     public var lastMessage: String?
 
-    override public func log(_ message: String, level: LogLevel, tag: String?) {
+    override public func log(_ log: Log, level: LogLevel, tag: String?) {
+        let message = log.description
         guard let string = string(message, level: level, tag: tag) else { return }
         print(string)
         lastMessage = message
@@ -95,6 +115,9 @@ public enum Logger {
     }
 
     public static func log(_ message: String, level: LogLevel = .error, tag: String? = nil) {
-        logger.log(message, level: level, tag: tag)
+        log(.message(message), level: level, tag: tag)
+    }
+    public static func log(_ log: Log, level: LogLevel = .error, tag: String? = nil) {
+        logger.log(log, level: level, tag: tag)
     }
 }

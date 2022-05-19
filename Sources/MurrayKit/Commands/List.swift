@@ -21,7 +21,11 @@ public struct List {
         let murrayfile = try CodableFile(in: folder, murrayfileName: murrayfileName)
         try self.init(murrayfile: murrayfile)
     }
-
+    
+    public func packages() throws -> [CodableFile<Package>] {
+        try murrayfile.packages()
+    }
+    
     public func list() throws -> [PackagedProcedure] {
         try murrayfile.packages()
             .flatMap { package in
