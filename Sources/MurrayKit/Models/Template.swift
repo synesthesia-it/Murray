@@ -35,6 +35,7 @@ public struct Template {
         self.contents = contents
         self.context = context
     }
+    
     public init(_ file: File, context: Context) throws {
         self.contents = try file.readAsString()
         self.context = context

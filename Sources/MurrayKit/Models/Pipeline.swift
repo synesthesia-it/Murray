@@ -51,14 +51,6 @@ public struct Pipeline {
         self.context = Template.Context(context, environment: murrayfile.object.environment)
     }
     
-//    func item(at path: String, in procedure: PackagedProcedure) throws -> CodableFile<Item> {
-//        guard let file = try procedure.package.file.parent?.file(at: path) else {
-//            throw Errors.unparsableFile(path)
-//        }
-//        return try CodableFile<Item>(file: file)
-//    }
-    
-    
     public func run() throws {
         try writeableFiles().forEach {
             try $0.commit(context: self.context)

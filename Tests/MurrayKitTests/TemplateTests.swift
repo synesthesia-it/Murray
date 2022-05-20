@@ -10,7 +10,7 @@ import Foundation
 @testable import MurrayKit
 import XCTest
 
-class TemplateTests: XCTestCase {
+class TemplateTests: TestCase {
     
     private func test(_ text: String,
                             context: Template.Context,

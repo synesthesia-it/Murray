@@ -97,13 +97,15 @@ open class ConsoleLogger: LoggerType {
 }
 
 public final class TestLogger: ConsoleLogger {
-    public var lastMessage: String?
+    public var messages: [Log] = []
+    
+    public var lastMessage: Log? { messages.last }
 
     override public func log(_ log: Log, level: LogLevel, tag: String?) {
-        let message = log.description
-        guard let string = string(message, level: level, tag: tag) else { return }
-        print(string)
-        lastMessage = message
+//        let message = log.description
+//        guard let string = string(message, level: level, tag: tag) else { return }
+//        print(string)
+        messages.append(log)
     }
 }
 

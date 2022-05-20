@@ -6,15 +6,14 @@
 //
 
 import Foundation
-import MurrayKit
 import Files
 
-protocol Command {
+public protocol Command {
     func execute() throws
     func executeAndCatch(verbose: Bool)
 }
 
-extension Command {
+public extension Command {
     
     func executeAndCatch(verbose: Bool) {
         do {

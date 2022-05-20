@@ -11,7 +11,7 @@ import Yams
 @testable import MurrayKit
 import XCTest
 
-class ItemTests: XCTestCase {
+class ItemTests: TestCase {
     func testSimpleItem() throws {
         let file = try Folder.mock().file(at: "SimpleJSON/Murray/Simple/SimpleItem/SimpleItem.json")
         

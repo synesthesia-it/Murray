@@ -10,7 +10,7 @@ import Foundation
 @testable import MurrayKit
 import XCTest
 
-class MurrayfileTests: XCTestCase {
+class MurrayfileTests: TestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
     }

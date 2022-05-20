@@ -11,7 +11,7 @@ import Yams
 @testable import MurrayKit
 import XCTest
 
-class PipelineTests: XCTestCase {
+class PipelineTests: TestCase {
     
     func testSimpleJSONPipeline() throws {
         let root = try Scenario.simpleJSON.make()

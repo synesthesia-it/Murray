@@ -11,7 +11,7 @@ import Yams
 @testable import MurrayKit
 import XCTest
 
-class ProcedureTests: XCTestCase {
+class ProcedureTests: TestCase {
     
     func testJSONValidProcedure() throws {
         let json = """

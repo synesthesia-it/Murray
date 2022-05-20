@@ -11,7 +11,7 @@ import Yams
 @testable import MurrayKit
 import XCTest
 
-class WriteableFileTests: XCTestCase {
+class WriteableFileTests: TestCase {
     
     func testFileCreation() throws {
         let root = try Scenario.simpleJSON.make()
