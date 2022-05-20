@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Files
+
 
 public enum Content {
     case file(File)

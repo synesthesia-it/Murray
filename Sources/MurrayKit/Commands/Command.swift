@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Files
+
 
 public protocol Command {
     func execute() throws
@@ -24,8 +24,8 @@ public extension Command {
         } catch let error {
             switch error {
             case let error as Errors: Logger.log(.error(error))
-            case let error as Files.LocationError:
-                Logger.log("Some error occured with file at:\(error.path)")
+//            case let error as Files.LocationError:
+//                Logger.log("Some error occured with file at:\(error.path)")
             default: Logger.log(error.localizedDescription)
             }
         }

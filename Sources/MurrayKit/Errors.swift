@@ -16,7 +16,15 @@ public enum Errors: Swift.Error, Equatable {
     case unresolvableString(string: String, context: JSON)
     case invalidReplacement
     case unknown
+    case folderLocationError(String)
+    case fileLocationError(String)
+    case unreadableFile(String)
+    case unwriteableFile(String)
+    case copyFolder(String)
+    case createFolder(String)
+    case deleteFolder(String)
     case procedureNotFound(name: String)
+    case murrayfileNotFound(String)
 }
 
 extension Errors: LocalizedError {
@@ -27,6 +35,14 @@ extension Errors: LocalizedError {
             return "Provided string is not properly resolvable\n\nString:\n\(string)\n\nContext:\n\n\(context)"
         case .invalidReplacement: return "Error during replacement"
         case .procedureNotFound(let name): return "Procedure '\(name)' not found."
+        case .folderLocationError(let path): return "Invalid folder at \(path)"
+        case .fileLocationError(let path): return "Invalid file at \(path)"
+        case .unreadableFile(let path): return "Unreadable file at \(path)"
+        case .unwriteableFile(let path): return "Unwriteable file at \(path)"
+        case .copyFolder(let path): return "Error copying folder at \(path)"
+        case .createFolder(let path): return "Error creating folder at \(path)"
+        case .deleteFolder(let path): return "Error deleting folder at \(path)"
+        case .murrayfileNotFound(let path): return "No valid Murrayfile found in \(path)"
         case .unknown: return "Some error occurred"
         }
     }

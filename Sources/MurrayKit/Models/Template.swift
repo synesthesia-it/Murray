@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Files
+
 import Stencil
 
 public struct Template {

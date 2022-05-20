@@ -5,21 +5,25 @@
 //  Created by Stefano Mondino on 30/01/22.
 //
 
-import Files
+
 import Foundation
 
 public struct List {
     public let murrayfile: CodableFile<Murrayfile>
 
-    public init(murrayfile: CodableFile<Murrayfile>) throws {
+    public init(murrayfile: CodableFile<Murrayfile>) {
         self.murrayfile = murrayfile
     }
 
     public init(folder: Folder,
                 murrayfileName: String = Murrayfile.defaultName)
         throws {
-        let murrayfile = try CodableFile(in: folder, murrayfileName: murrayfileName)
-        try self.init(murrayfile: murrayfile)
+            do {
+                let murrayfile = try CodableFile(in: folder, murrayfileName: murrayfileName)
+                self.init(murrayfile: murrayfile)
+        } catch {
+            throw Errors.murrayfileNotFound(folder.path)
+            }
     }
     
     public func packages() throws -> [CodableFile<Package>] {

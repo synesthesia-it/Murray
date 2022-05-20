@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Files
+
 /** A procedure with reference to parent Package
  
  A procedure itself is not represented by a single file, as it's merely contained into a Package.

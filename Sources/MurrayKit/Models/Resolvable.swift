@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Files
+
 public protocol Resolvable {
     func resolve(with context: Template.Context) throws -> String
 }
