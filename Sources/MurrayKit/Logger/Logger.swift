@@ -43,7 +43,7 @@ public protocol LoggerType: AnyObject {
     func log(_ log: Log, level: LogLevel, tag: String?)
 }
 
-public enum Log: CustomStringConvertible, CustomDebugStringConvertible {
+public enum Log: CustomStringConvertible, CustomDebugStringConvertible, Equatable {
     case error(Errors)
     case message(String)
     
@@ -105,6 +105,7 @@ public final class TestLogger: ConsoleLogger {
 //        let message = log.description
 //        guard let string = string(message, level: level, tag: tag) else { return }
 //        print(string)
+        if logLevel.rawValue > level.rawValue { return }
         messages.append(log)
     }
 }

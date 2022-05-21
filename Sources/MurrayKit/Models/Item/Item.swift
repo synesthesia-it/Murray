@@ -8,6 +8,8 @@
 import Foundation
 
 public struct Item: Codable, CustomStringConvertible {
+
+    
     
     public struct Parameter: Codable, CustomStringConvertible {
         private enum CodingKeys: String, CodingKey {
@@ -26,6 +28,8 @@ public struct Item: Codable, CustomStringConvertible {
     }
     
     public struct Path: Codable, CustomStringConvertible {
+
+        
         public let from: String
         public let to: String
         private let plugins: Parameters?
@@ -34,6 +38,11 @@ public struct Item: Codable, CustomStringConvertible {
         }
         public var description: String {
             "From: \(from) to: \(to)"
+        }
+        public init(from: String, to: String, plugins: Parameters? = nil) {
+            self.from = from
+            self.to = to
+            self.plugins = plugins
         }
     }
     
@@ -63,6 +72,7 @@ public struct Item: Codable, CustomStringConvertible {
         public var description: String {
             destination
         }
+
     }
     
     private enum CodingKeys: String, CodingKey {
@@ -86,6 +96,19 @@ public struct Item: Codable, CustomStringConvertible {
     
     public let replacements: [Replacement]
     
+    public init(name: String,
+                parameters: [Item.Parameter],
+                paths: [Item.Path],
+                plugins: Parameters?,
+                optionalDescription: String?,
+                replacements: [Item.Replacement]) {
+        self.name = name
+        self.parameters = parameters
+        self.paths = paths
+        self.plugins = plugins
+        self.optionalDescription = optionalDescription
+        self.replacements = replacements
+    }
 }
 
 extension CodableFile where Object == Item {

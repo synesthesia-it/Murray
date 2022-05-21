@@ -44,6 +44,10 @@ class TemplateTests: TestCase {
                  context: ["name": "Test"],
                  expected: "testViewController")
         
+        try test("{{name|snakeCase}}ViewController",
+                 context: ["name": "TestWithSnakeCaseStuff"],
+                 expected: "test_with_snake_case_stuffViewController")
+        
     }
     
     func testNestedParametersConversion() throws {

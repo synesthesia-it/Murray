@@ -1,5 +1,7 @@
 # Murray
 
+[![Swift](https://github.com/synesthesia-it/Murray/actions/workflows/tests.yml/badge.svg)](https://github.com/synesthesia-it/Murray/actions/workflows/tests.yml)
+
 Murray is a set of tools for Skeleton-based software development.
 
 **Skeleton-based** software usually consists of code generated through lots of boilerplate that can't be abstracted and re-used through software architecture principles.

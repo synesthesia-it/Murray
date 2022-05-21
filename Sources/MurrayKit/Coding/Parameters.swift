@@ -7,18 +7,20 @@
 
 import Foundation
 
-public typealias JSON = [String: Any]
+public typealias JSON = [String: AnyHashable]
 
 public struct Parameters: Codable,
-    Equatable,
-    ExpressibleByDictionaryLiteral,
-    ExpressibleByStringLiteral,
-    ExpressibleByArrayLiteral,
-    ExpressibleByNilLiteral,
-    CustomDebugStringConvertible,
-    CustomStringConvertible,
-    Collection {
-    private enum WrappedValue: Codable, Equatable {
+                          Hashable,
+                          Equatable,
+                          ExpressibleByDictionaryLiteral,
+                          ExpressibleByStringLiteral,
+                          ExpressibleByArrayLiteral,
+                          ExpressibleByNilLiteral,
+                          CustomDebugStringConvertible,
+                          CustomStringConvertible,
+                          Collection {
+    
+    private enum WrappedValue: Codable, Equatable, Hashable {
         case `nil`
         case string(String)
         case array([Parameters])
@@ -26,7 +28,7 @@ public struct Parameters: Codable,
         init(_ parameters: Parameters) {
             self = parameters.value
         }
-        var value: Any? {
+        var value: AnyHashable? {
             switch self {
             case let .dictionary(value): return value.reduce(into: JSON()) {
                 $0[$1.key] = $1.value.value.value
@@ -37,6 +39,7 @@ public struct Parameters: Codable,
             }
         }
     }
+
 
     public var startIndex: Int { array?.startIndex ?? 0 }
 
@@ -55,8 +58,8 @@ public struct Parameters: Codable,
     var dictionaryValue: JSON? {
         value.value as? JSON
     }
-    var arrayValue: [Any]? {
-        value.value as? [Any]
+    var arrayValue: [JSON.Value]? {
+        value.value as? [JSON.Value]
     }
     
     var stringValue: String? {
@@ -93,7 +96,7 @@ public struct Parameters: Codable,
     private init?(_ undefined: Any) {
         switch undefined {
         case let string as String: self.init(value: .string(string))
-        case let array as [Any]: self.init(value: .array(array.compactMap { Parameters.init($0) }))
+        case let array as [JSON.Value]: self.init(value: .array(array.compactMap { Parameters.init($0) }))
         case let dictionary as JSON: self.init(dictionary)
         default: return nil
         }

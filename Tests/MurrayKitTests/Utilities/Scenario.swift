@@ -14,6 +14,19 @@ extension Folder {
         try Folder(path: Bundle.module.resourcePath ?? Bundle.module.bundlePath)
             .subfolder(at: "Mocks/\(name)")
     }
+    
+    static func testFolder() throws -> Folder {
+        try Folder
+            .temporary
+            .createSubfolderIfNeeded(withName: "Murray")
+    }
+    
+    static func emptyTestFolder() throws -> Folder {
+        try? Folder.temporary.subfolder(named: "emptyTest").delete()
+        return try Folder
+            .temporary
+            .createSubfolderIfNeeded(withName: "emptyTest")
+    }
 }
 
 struct Scenario {
@@ -23,13 +36,12 @@ struct Scenario {
     func make() throws -> Folder {
         let origin = try Folder.mock(at: name)
 
-        let destinationParent = try Folder
-            .temporary
-            .createSubfolderIfNeeded(withName: "Murray")
+        let destinationParent = try Folder.testFolder()
 
         try? destinationParent
             .subfolder(named: name)
             .delete()
+        
         try origin
             .copy(to: destinationParent)
 

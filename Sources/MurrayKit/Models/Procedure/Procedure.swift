@@ -11,7 +11,8 @@ import Foundation
  A procedure represents a sequence of items executed with the same context.
  
 */
-public struct Procedure: Codable {
+public struct Procedure: Codable, Hashable {
+
     private enum CodingKeys: String, CodingKey {
         case name
         case optionalDescription = "description"
@@ -28,6 +29,17 @@ public struct Procedure: Codable {
     public var pluginData: JSON { plugins?.dictionaryValue ?? [:] }
     
     public private(set) var itemPaths: [String]
+    
+    internal init(name: String,
+                  description: String?,
+                  plugins: Parameters?,
+                  itemPaths: [String]) {
+        self.name = name
+        self.optionalDescription = description
+        self.plugins = plugins
+        self.itemPaths = itemPaths
+    }
+    
     
     public mutating func add(itemPath: String) {
         itemPaths = itemPaths.filter { $0 != itemPath } + [itemPath]

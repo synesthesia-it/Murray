@@ -10,14 +10,21 @@ import Foundation
 public struct Package: Codable {
     public let name: String
     public let description: String
-    public let procedures: [Procedure]
+    public private(set) var procedures: [Procedure]
+    
+    public mutating func add(procedure: Procedure) {
+        if !procedures.contains(procedure) {
+            procedures.append(procedure)
+        }
+    }
+//    public let itemPaths: [String]
 }
 
 // public extension CodableFile where Object == Package {
-//    func procedures() throws -> [CodableFile<Procedure>] {
-//        object.procedures.compactMap { procedure in
-//            try file.parent?.file(named: procedure)
+//    func items() throws -> [CodableFile<Item>] {
+//        try object.itemPaths.compactMap { itemPath in
+//            try file.parent?.file(at: itemPath)
 //        }
-//        .map { .init(file: $0)}
+//        .map { try .init(file: $0) }
 //    }
 // }

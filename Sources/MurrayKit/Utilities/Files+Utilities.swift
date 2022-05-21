@@ -87,6 +87,7 @@ public struct Folder {
             throw Errors.folderLocationError(path)
         }
     }
+    @discardableResult
     public func copy(to folder: Folder) throws -> Folder {
         do {
             return try Folder(self.folder.copy(to: folder.folder))
@@ -98,7 +99,7 @@ public struct Folder {
     @discardableResult
     public func createSubfolderIfNeeded(withName name: String) throws -> Folder {
         do {
-            return try Folder(try folder.createSubfolderIfNeeded(at: name))
+            return Folder(try folder.createSubfolderIfNeeded(at: name))
         } catch {
             throw Errors.createFolder(name)
         }

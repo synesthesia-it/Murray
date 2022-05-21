@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Errors: Swift.Error, Equatable {
+public enum Errors: Swift.Error, Equatable, Hashable {
     public static func == (lhs: Errors, rhs: Errors) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
@@ -25,6 +25,8 @@ public enum Errors: Swift.Error, Equatable {
     case deleteFolder(String)
     case procedureNotFound(name: String)
     case murrayfileNotFound(String)
+    case invalidPackageName(String)
+    case itemAlreadyExists(String)
 }
 
 extension Errors: LocalizedError {
@@ -43,6 +45,8 @@ extension Errors: LocalizedError {
         case .createFolder(let path): return "Error creating folder at \(path)"
         case .deleteFolder(let path): return "Error deleting folder at \(path)"
         case .murrayfileNotFound(let path): return "No valid Murrayfile found in \(path)"
+        case .invalidPackageName(let name): return "Provided package name '\(name)' is invalid. Check your Murrayfile."
+        case .itemAlreadyExists(let name): return "Item named'\(name)' already exists."
         case .unknown: return "Some error occurred"
         }
     }

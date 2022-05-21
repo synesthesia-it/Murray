@@ -16,7 +16,7 @@ class ListTests: TestCase {
         let scenario = Scenario.simpleYaml
         let root = try scenario.make()
         let murrayfile = try CodableFile(in: root)
-        let command = try List(murrayfile: murrayfile)
+        let command = List(murrayfile: murrayfile)
         let procedures = try command.list()
         XCTAssertEqual(procedures.count, 2)
     }

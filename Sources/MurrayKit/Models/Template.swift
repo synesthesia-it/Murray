@@ -22,7 +22,7 @@ public struct Template {
         public init(_ values: JSON) {
             self.values = values
         }
-        public init(dictionaryLiteral elements: (String, Any)...) {
+        public init(dictionaryLiteral elements: (String, AnyHashable)...) {
             self.values = elements.reduce(into: [:]) { $0[$1.0] = $1.1 }
         }
    
