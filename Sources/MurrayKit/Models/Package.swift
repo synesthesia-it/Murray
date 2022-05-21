@@ -50,7 +50,5 @@ public struct Package: Codable, Hashable {
          return Array(Set(automatic + fromProcedures)).sorted {
              $0.object.name < $1.object.name
          }
-         
-
      }
  }

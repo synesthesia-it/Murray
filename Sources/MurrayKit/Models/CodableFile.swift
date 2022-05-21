@@ -26,6 +26,16 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
             case .yml: return YAMLEncoder()
             }
         }
+        public init?(rawValue: String?) {
+            guard let rawValue = rawValue else {
+                return nil
+            }
+            switch rawValue {
+            case "json": self = .json
+            case "yml", "yaml": self = .yml
+            default: return nil
+            }
+        }
     }
     
     public let file: File

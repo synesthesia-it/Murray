@@ -14,14 +14,14 @@ extension Commander.Group {
     func runCommand(in folder: Folder, name: String = "run") {
         command(name,
                 Argument<String>("name",
-                                 description: Strings.runNameDescription),
+                                 description: .runNameDescription),
                 Argument<String>("mainPlaceholder",
-                                 description: Strings.runMainPlaceholderDescription),
-                Flag("verbose", description: Strings.verboseDescription),
-                Flag("preview", description: Strings.runPreviewDescription),
+                                 description: .runMainPlaceholderDescription),
+                Flag("verbose", description: .verboseDescription),
+                Flag("preview", description: .runPreviewDescription),
                 Argument<[String]?>("parameters",
-                                    description: Strings.runParametersDescription),
-                description: Strings.runDescription) { name, mainPlaceholder, verbose, preview, params in
+                                    description: .runParametersDescription),
+                description: .runDescription) { name, mainPlaceholder, verbose, preview, params in
             
             Run(folder: folder,
                        mainPlaceholder: mainPlaceholder,

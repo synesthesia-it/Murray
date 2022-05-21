@@ -13,8 +13,8 @@ import MurrayKit
 extension Commander.Group {
     func listCommand(in folder: Folder, name: String = "list") {
         command(name,
-                Flag("verbose", description: Strings.verboseDescription),
-                description: Strings.listDescription) { verbose in
+                Flag("verbose", description: .verboseDescription),
+                description: .listDescription) { verbose in
             
            try List(folder: folder)
             .executeAndCatch(verbose: verbose)

@@ -8,14 +8,14 @@
 import Foundation
 import Yams
 
-struct Scaffold: Command {
+public struct Scaffold: Command {
     private let closure: () throws -> Void
     
     private init(_ closure: @escaping () throws -> Void) {
         self.closure = closure
     }
     
-    static func murrayfile(named name: String = Murrayfile.defaultName,
+    public static func murrayfile(named name: String = Murrayfile.defaultName,
                            encoding: CodableFile<Murrayfile>.Encoding,
                            in folder: Folder) -> Scaffold {
         .init {
@@ -27,7 +27,7 @@ struct Scaffold: Command {
         }
     }
     
-    static func package(named name: String,
+    public static func package(named name: String,
                         encoding: CodableFile<Package>.Encoding? = nil,
                         description: String,
                         rootFolder: Folder,
@@ -56,7 +56,7 @@ struct Scaffold: Command {
         }
     }
     
-    static func item(named name: String,
+    public static func item(named name: String,
                      package packageName: String,
                      encoding: CodableFile<Item>.Encoding? = nil,
                      description: String,
@@ -112,7 +112,7 @@ struct Scaffold: Command {
         }
     }
     
-    static func procedure(named name: String,
+    public static func procedure(named name: String,
               package packageName: String,
               description: String,
               rootFolder: Folder,
@@ -152,7 +152,7 @@ struct Scaffold: Command {
         }
     }
     
-    func execute() throws {
+    public func execute() throws {
         try closure()
     }
 }

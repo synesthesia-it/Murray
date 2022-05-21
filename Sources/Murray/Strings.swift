@@ -7,8 +7,7 @@
 
 import Foundation
 
-struct Strings {
-    private init() {}
+extension String {
     
     @Translation("Print complete log during command execution")
     static var verboseDescription: String
@@ -34,6 +33,13 @@ struct Strings {
     
     @Translation("Custom parameters for templates. Use key:value syntax (ex: \"author:yourname with spaces\")")
     static var runParametersDescription: String
+    
+    @Translation("Create a new Murrayfile in current folder")
+    static var scaffoldMurrayfileDescription: String
+
+    @Translation("File format for file. Can be yml or json")
+    static var scaffoldFileFormatDescription: String
+
 }
 
 @propertyWrapper
