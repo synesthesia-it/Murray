@@ -2,7 +2,7 @@ name: "replacementOnly"
 description: "Simple item replacement"
 paths: []
 replacements:
-- text: {{name}}
+- text: "{{name}}"
   placeholder: "//Murray Placeholder"
   destination: "Sources/Files/Default/TestReplacementOnly.swift"
 parameters:

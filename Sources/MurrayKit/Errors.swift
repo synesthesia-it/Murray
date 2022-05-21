@@ -27,6 +27,8 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case murrayfileNotFound(String)
     case invalidPackageName(String)
     case itemAlreadyExists(String)
+    case itemNotFound(String)
+    case procedureAlreadyExists(String)
 }
 
 extension Errors: LocalizedError {
@@ -47,6 +49,8 @@ extension Errors: LocalizedError {
         case .murrayfileNotFound(let path): return "No valid Murrayfile found in \(path)"
         case .invalidPackageName(let name): return "Provided package name '\(name)' is invalid. Check your Murrayfile."
         case .itemAlreadyExists(let name): return "Item named'\(name)' already exists."
+        case .itemNotFound(let name): return "Item named '\(name)' not found"
+        case .procedureAlreadyExists(let name): return "Procedure named '\(name)' already exists"
         case .unknown: return "Some error occurred"
         }
     }

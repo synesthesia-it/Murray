@@ -112,6 +112,46 @@ struct Scaffold: Command {
         }
     }
     
+    static func procedure(named name: String,
+              package packageName: String,
+              description: String,
+              rootFolder: Folder,
+              itemNames: [String]) -> Scaffold {
+        Scaffold {
+            let murrayfile = try CodableFile(in: rootFolder,
+                                             murrayfileName: Murrayfile.defaultName)
+            guard var package = try murrayfile
+                .packages()
+                .first(where: { $0.object.name == packageName}),
+                  let packageFolder = package.file.parent else {
+                throw Errors.invalidPackageName(packageName)
+            }
+            
+            guard package.object
+                .procedures
+                .first(where: { $0.name.lowercased() == name.lowercased() }) == nil else {
+                throw Errors.procedureAlreadyExists(name)
+            }
+                
+            let availableItems = Set(try package.items())
+            let itemPaths = try itemNames.map { itemName -> String in
+                guard let item = availableItems.first(where: {$0.object.name == itemName }) else {
+                    throw Errors.itemNotFound(itemName)
+                }
+                return item.file.path(relativeTo: packageFolder)
+            }
+            
+            let procedure = Procedure(name: name,
+                                      description: description,
+                                      plugins: nil,
+                                      itemPaths: itemPaths)
+            
+            try package.update {
+                $0.add(procedure: procedure)
+            }
+        }
+    }
+    
     func execute() throws {
         try closure()
     }

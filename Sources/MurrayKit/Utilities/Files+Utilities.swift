@@ -8,7 +8,7 @@
 import Files
 import Foundation
 
-public struct File {
+public struct File: Hashable {
     private let file: Files.File
     
     public var parent: Folder? {
@@ -24,6 +24,11 @@ public struct File {
     init(_ file: Files.File) {
         self.file = file
     }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(path)
+    }
+    
     public func path(relativeTo folder: Folder) -> String {
         file.path(relativeTo: folder.folder)
     }
@@ -52,7 +57,7 @@ public struct File {
     }
 
 }
-public struct Folder {
+public struct Folder: Hashable {
     fileprivate let folder: Files.Folder
     
     public var path: String { folder.path }
@@ -86,6 +91,9 @@ public struct Folder {
         } catch {
             throw Errors.folderLocationError(path)
         }
+    }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(path)
     }
     @discardableResult
     public func copy(to folder: Folder) throws -> Folder {

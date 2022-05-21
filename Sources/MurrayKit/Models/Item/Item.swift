@@ -7,11 +7,11 @@
 
 import Foundation
 
-public struct Item: Codable, CustomStringConvertible {
+public struct Item: Codable, CustomStringConvertible, Hashable {
 
     
     
-    public struct Parameter: Codable, CustomStringConvertible {
+    public struct Parameter: Codable, CustomStringConvertible, Hashable {
         private enum CodingKeys: String, CodingKey {
             case name
             case isRequired
@@ -27,7 +27,7 @@ public struct Item: Codable, CustomStringConvertible {
         }
     }
     
-    public struct Path: Codable, CustomStringConvertible {
+    public struct Path: Codable, CustomStringConvertible, Hashable {
 
         
         public let from: String
@@ -46,7 +46,7 @@ public struct Item: Codable, CustomStringConvertible {
         }
     }
     
-    public struct Replacement: Codable, CustomStringConvertible {
+    public struct Replacement: Codable, CustomStringConvertible, Hashable {
         
         private enum CodingKeys: String, CodingKey {
             case placeholder

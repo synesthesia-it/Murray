@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Murrayfile: Codable, Equatable {
+public struct Murrayfile: Codable, Hashable {
     public static var defaultName = "Murrayfile"
     
     public init(packages: [String],

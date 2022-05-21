@@ -16,7 +16,7 @@ import Foundation
  This structure is used to keep that kind of reference.
  
  */
-public struct PackagedProcedure {
+public struct PackagedProcedure: Hashable {
 
     public let package: CodableFile<Package>
     public let procedure: Procedure

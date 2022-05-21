@@ -10,11 +10,16 @@ import Foundation
 import Yams
 
 /// A codable object with a local file system (File) representation
-public struct CodableFile<Object: Codable> {
+public struct CodableFile<Object: Codable & Hashable>: Hashable {
     
     public enum Encoding: String {
         case json
         case yml
+        
+        static var allValidExtensions: [String] {
+            ["json", "yml", "yaml"]
+        }
+        
         fileprivate var encoder: Encoder {
             switch self {
             case .json: return JSONEncoder()
@@ -31,7 +36,12 @@ public struct CodableFile<Object: Codable> {
         self.object = object
     }
     
-    public init(file: File, type _: Object.Type = Object.self) throws {
+    public mutating func reload() throws {
+        self.object = try Self.init(file: file).object
+    }
+    
+    public init(file: File,
+                type _: Object.Type = Object.self) throws {
 //        self.file = file
         let data = try file.read()
         if let ext = file.extension,
