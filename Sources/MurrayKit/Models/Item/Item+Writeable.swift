@@ -45,7 +45,8 @@ extension CodableFile where Object == Item {
         return [WriteableFile(content: .file(file),
                               path: path.to,
                               destinationRoot: destinationRoot,
-                              action: .create)]
+                              action: .create,
+                              reference: path)]
     }
     
     private func writeableFiles(in folder: Folder,
@@ -93,7 +94,8 @@ extension CodableFile where Object == Item {
         return WriteableFile(content: content,
                              path: replacement.destination,
                              destinationRoot: destinationRoot,
-                             action: .edit(placeholder: replacement.placeholder))
+                             action: .edit(placeholder: replacement.placeholder),
+                             reference: replacement)
     }
     
 }

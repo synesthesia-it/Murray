@@ -29,12 +29,11 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
     
     public struct Path: Codable, CustomStringConvertible, Hashable {
 
-        
         public let from: String
         public let to: String
         private let plugins: Parameters?
-        public var pluginData: JSON {
-            plugins?.dictionaryValue ?? [:]
+        public var pluginData: Parameters? {
+            plugins
         }
         public var description: String {
             "From: \(from) to: \(to)"
@@ -53,18 +52,21 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
             case destination
             case text
             case source
+            case plugins
         }
         
         public let placeholder: String
         public let destination: String
         public let text: String?
         public let source: String?
-        
+        public let plugins: Parameters?
+        public var pluginData: Parameters? { plugins }
         public init(from decoder: Swift.Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             self.placeholder = try container.decode(String.self, forKey: .placeholder)
             self.destination = try container.decode(String.self, forKey: .destination)
             self.text = try container.decodeIfPresent(String.self, forKey: .text)
+            self.plugins = try container.decodeIfPresent(Parameters.self, forKey: .plugins)
             self.source = try container.decodeIfPresent(String.self, forKey: .source)
             if text == nil, source == nil { throw Errors.invalidReplacement }
         }
@@ -90,8 +92,8 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
     private let plugins: Parameters?
     private let optionalDescription: String?
     public var description: String { optionalDescription ?? name }
-    public var pluginData: JSON? {
-        plugins?.dictionaryValue
+    public var pluginData: Parameters? {
+        plugins
     }
     
     public let replacements: [Replacement]

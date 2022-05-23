@@ -26,7 +26,7 @@ public struct Procedure: Codable, Hashable {
     public var description: String { optionalDescription ?? name }
     
     private let plugins: Parameters?
-    public var pluginData: JSON { plugins?.dictionaryValue ?? [:] }
+    public var pluginData: Parameters? { plugins }
     
     public private(set) var itemPaths: [String]
     

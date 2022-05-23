@@ -16,5 +16,6 @@ class TestCase: XCTestCase {
         try super.setUpWithError()
         logger = TestLogger(logLevel: .normal)
         Logger.logger = logger
+        
     }
 }

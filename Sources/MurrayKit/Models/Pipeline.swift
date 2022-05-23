@@ -52,9 +52,63 @@ public struct Pipeline {
     }
     
     public func run() throws {
-        try writeableFiles().forEach {
-            try $0.commit(context: self.context)
+//        try writeableFiles().forEach {
+//            try $0.commit(context: self.context)
+//        }
+        
+        guard let destinationFolder = murrayfile.file.parent else {
+            // no destination folder provided
+            throw Errors.unknown
         }
+        let manager = PluginManager.shared
+        try manager.execute(.init(element: murrayfile.object,
+                                           context: context,
+                                           phase: .before))
+        try procedures.forEach { procedure in
+            try manager.execute(.init(element: procedure.procedure,
+                                               context: context,
+                                               phase: .before))
+            try procedure.items().forEach { item in
+                try manager.execute(.init(element: item.object,
+                                                   context: context,
+                                                   phase: .before))
+                try item.writeableFiles(context: context,
+                                        destinationRoot: destinationFolder).forEach { file in
+                    switch file.reference {
+                    case let path as Item.Path: try manager.execute(.init(element: path,
+                                                                          context: context,
+                                                                          phase: .before))
+                    case let replacement as Item.Replacement: try manager.execute(.init(element: replacement,
+                                                                          context: context,
+                                                                          phase: .before))
+                    default: break
+                    }
+                    
+                    try file.commit(context: context)
+                    
+                    switch file.reference {
+                    case let path as Item.Path: try manager.execute(.init(element: path,
+                                                                          context: context,
+                                                                          phase: .after))
+                    case let replacement as Item.Replacement: try manager.execute(.init(element: replacement,
+                                                                          context: context,
+                                                                          phase: .after))
+                    default: break
+                    }
+                }
+                
+                try manager.execute(.init(element: item.object,
+                                                   context: context,
+                                                   phase: .after))
+            }
+            
+            try manager.execute(.init(element: procedure.procedure,
+                                               context: context,
+                                               phase: .before))
+        }
+        try manager.execute(.init(element: murrayfile.object,
+                                           context: context,
+                                           phase: .after))
     }
     
     public func writeableFiles() throws -> [WriteableFile] {

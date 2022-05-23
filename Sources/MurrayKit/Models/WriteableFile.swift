@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public struct WriteableFile {
     
     public enum Action {
@@ -20,15 +19,17 @@ public struct WriteableFile {
     public let path: String
     public let root: Folder
     public let action: Action
-    
+    let reference: Any?
     public init(content: Content,
                 path: String,
                 destinationRoot: Folder,
-                action: Action) {
+                action: Action,
+                reference: Any? = nil) {
         self.content = content
         self.path = path
         self.root = destinationRoot
         self.action = action
+        self.reference = reference
     }
     
     public func preview(context: Template.Context) throws -> String {

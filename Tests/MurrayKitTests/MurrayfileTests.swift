@@ -32,7 +32,7 @@ class MurrayfileTests: TestCase {
         let packagePath = try XCTUnwrap(murrayfile.packages.first)
         let package = try CodableFile<Package>(file: root.file(named: packagePath))
         XCTAssertGreaterThan(package.object.procedures.count, 0)
-        XCTAssertEqual(murrayfile.pluginData["shell"]?["after"]?.first, "echo test >> plugin.data")
+        XCTAssertEqual(murrayfile.pluginData?["shell"]?["after"]?.first, "echo test >> plugin.data")
         let name: String? = murrayfile.environment["author"]
         XCTAssertEqual(name, "Stefano Mondino")
     }

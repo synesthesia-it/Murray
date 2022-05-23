@@ -31,9 +31,9 @@ public struct Parameters: Codable,
         var value: AnyHashable? {
             switch self {
             case let .dictionary(value): return value.reduce(into: JSON()) {
-                $0[$1.key] = $1.value.value.value
+                $0[$1.key.description] = $1.value.value.value
             }
-            case let .array(value): return value.compactMap { $0.value }
+            case let .array(value): return value.compactMap { $0.value.value }
             case let .string(value): return value
             default: return nil
             }

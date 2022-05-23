@@ -26,8 +26,8 @@ public struct Murrayfile: Codable, Hashable {
     private var mainPlaceholder: String?
     private var plugins: Parameters?
 
-    public var pluginData: Parameters {
-        plugins ?? [:]
+    public var pluginData: Parameters? {
+        plugins
     }
 
     /// The default parameter used in all commands as main name to be replaced. Defaults to "name"

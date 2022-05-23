@@ -36,8 +36,50 @@ extension String {
     
     @Translation("Create a new Murrayfile in current folder")
     static var scaffoldMurrayfileDescription: String
+    
+    @Translation("Create a new Package in specified folder")
+    static var scaffoldPackageDescription: String
+    
+    @Translation("Package name")
+    static var scaffoldPackageNameDescription: String
+    
+    @Translation("Default folder containing all Murray packages, relative to Murrayfile directory.")
+    static var scaffoldPackageFolderDescription: String
+    
+    @Translation("A package named %@ created from scaffold")
+    static var scaffoldPackageDefaultDescriptionFormat: String
+    
+    @Translation("An item named %@ created from scaffold")
+    static var scaffoldItemDefaultDescriptionFormat: String
+    
+    @Translation("An procedure named %@ created from scaffold")
+    static var scaffoldProcedureDefaultDescriptionFormat: String
+    
+    @Translation("Create a new item in specified package.")
+    static var scaffoldItemDescription: String
+    
+    @Translation("Name of item to be created")
+    static var scaffoldItemNameDescription: String
+    @Translation("Name of package where current item will be included into")
+    static var scaffoldItemPackageNameDescription: String
+    
+    @Translation("File names to be created (empty) and associated to current item")
+    static var scaffoldItemFilesDescription: String
 
-    @Translation("File format for file. Can be yml or json")
+    @Translation("Create a procedure named like current item.")
+    static var scaffoldItemCreateProcedureDescription: String
+
+    
+    @Translation("Create a new procedure in specified package with provided items in sequence.")
+    static var scaffoldProcedureDescription: String
+    @Translation("Name of package where procedure will be included into")
+    static var scaffoldProcedurePackageNameDescription: String
+    @Translation("Name of the procedure that will be used in run command")
+    static var scaffoldProcedureNameDescription: String
+    @Translation("Item names to include in this procedure")
+    static var scaffoldProcedureItemsDescription: String
+    
+    @Translation("File format for file. Can be yml or json. Defaults to yml.")
     static var scaffoldFileFormatDescription: String
 
 }

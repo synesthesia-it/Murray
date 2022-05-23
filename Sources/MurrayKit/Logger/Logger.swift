@@ -107,6 +107,7 @@ public final class TestLogger: ConsoleLogger {
 //        print(string)
         if logLevel.rawValue > level.rawValue { return }
         messages.append(log)
+        print(log.description)
     }
 }
 
