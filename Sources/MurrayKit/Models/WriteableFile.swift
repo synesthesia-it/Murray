@@ -83,6 +83,15 @@ public struct WriteableFile {
                                   with: replacement)
         
     }
+    
+    public func enrichedContext(from originalContext: Template.Context) -> Template.Context {
+        
+        let fileContext: JSON = ["_destinationPath": root.path.appendingPathComponent(path),
+                                 "_destinationRoot": root.path,
+                                 "_destinationFilename": path.components(separatedBy: "/").last]
+        
+        return originalContext.adding(fileContext)
+    }
 }
 
 extension WriteableFile: Resolvable {

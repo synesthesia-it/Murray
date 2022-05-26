@@ -56,4 +56,16 @@ class PipelineTests: TestCase {
             XCTAssertEqual(error as? Errors, .procedureNotFound(name: "wrongName"))
         }
     }
+    
+    func testPluginExecutionWithCustomPlaceholders() throws {
+        let root = try Scenario.simpleYaml.make()
+        let pipeline = try Pipeline(murrayfile: .init(in: root),
+                                    procedure: "simpleGroup",
+                                    context: ["name": "test"])
+        
+        try pipeline.run()
+        
+        let file = try root.file(at: "Sources/Files/test/test.swift.test")
+        XCTAssertEqual(try file.readAsString(), "test.swift\n")
+    }
 }

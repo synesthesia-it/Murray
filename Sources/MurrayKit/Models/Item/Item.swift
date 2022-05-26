@@ -43,6 +43,9 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
             self.to = to
             self.plugins = plugins
         }
+        public func customParameters() -> JSON {
+            ["_path": ["_from": from, "_to": to]]
+        }
     }
     
     public struct Replacement: Codable, CustomStringConvertible, Hashable {
@@ -73,6 +76,9 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
         
         public var description: String {
             destination
+        }
+        public func customParameters() -> JSON {
+            ["_replacement": try? dictionary()]
         }
 
     }
@@ -120,4 +126,9 @@ extension CodableFile where Object == Item {
             .paths
             .map { try .init(file: folder.file(at: $0.from.resolve(with: context))) }
     }
+    
+    func customParameters() -> JSON {
+        ["_item": (try? object.dictionary()) ]
+    }
+    
 }

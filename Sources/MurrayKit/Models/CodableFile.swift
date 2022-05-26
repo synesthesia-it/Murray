@@ -133,3 +133,10 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
         try self.update(self.object)
     }
 }
+
+extension Encodable {
+    public func dictionary() throws -> JSON? {
+        let data = try JSONEncoder().encode(self)
+        return try JSONSerialization.jsonObject(with: data) as? JSON
+    }
+}

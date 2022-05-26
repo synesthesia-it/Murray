@@ -65,46 +65,57 @@ public struct Pipeline {
                                            context: context,
                                            phase: .before))
         try procedures.forEach { procedure in
+            let procedureContext = context.adding(procedure.customParameters())
             try manager.execute(.init(element: procedure.procedure,
-                                               context: context,
+                                               context: procedureContext,
                                                phase: .before))
             try procedure.items().forEach { item in
+                
+                let itemContext = procedureContext.adding(item.customParameters())
+                
                 try manager.execute(.init(element: item.object,
-                                                   context: context,
+                                          context: itemContext,
                                                    phase: .before))
+                
                 try item.writeableFiles(context: context,
                                         destinationRoot: destinationFolder).forEach { file in
+                    let enrichedContext = file.enrichedContext(from: itemContext)
                     switch file.reference {
-                    case let path as Item.Path: try manager.execute(.init(element: path,
-                                                                          context: context,
-                                                                          phase: .before))
-                    case let replacement as Item.Replacement: try manager.execute(.init(element: replacement,
-                                                                          context: context,
-                                                                          phase: .before))
-                    default: break
+                    case let path as Item.Path:
+                        let localContext = enrichedContext.adding(path.customParameters())
+                        try manager.execute(.init(element: path,
+                                                  context: localContext,
+                                                  phase: .before))
+                        
+                        try file.commit(context: localContext)
+                        
+                        try manager.execute(.init(element: path,
+                                                  context: localContext,
+                                                  phase: .after))
+                        
+                    case let replacement as Item.Replacement:
+                        let localContext = enrichedContext.adding(replacement.customParameters())
+                        try manager.execute(.init(element: replacement,
+                                                  context: localContext,
+                                                  phase: .before))
+                        try file.commit(context: localContext)
+                        try manager.execute(.init(element: replacement,
+                                                  context: localContext,
+                                                  phase: .after))
+                    default:
+                        try file.commit(context: enrichedContext)
                     }
                     
-                    try file.commit(context: context)
-                    
-                    switch file.reference {
-                    case let path as Item.Path: try manager.execute(.init(element: path,
-                                                                          context: context,
-                                                                          phase: .after))
-                    case let replacement as Item.Replacement: try manager.execute(.init(element: replacement,
-                                                                          context: context,
-                                                                          phase: .after))
-                    default: break
-                    }
                 }
                 
                 try manager.execute(.init(element: item.object,
-                                                   context: context,
-                                                   phase: .after))
+                                          context: itemContext,
+                                          phase: .after))
             }
             
             try manager.execute(.init(element: procedure.procedure,
-                                               context: context,
-                                               phase: .before))
+                                               context: procedureContext,
+                                               phase: .after))
         }
         try manager.execute(.init(element: murrayfile.object,
                                            context: context,

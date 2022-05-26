@@ -60,7 +60,8 @@ extension CodableFile where Object == Item {
             return WriteableFile(content: .file(file),
                                  path: path,
                                  destinationRoot: destinationRoot,
-                                 action: .create)
+                                 action: .create,
+                                 reference: Item.Path(from: file.path, to: path))
         }
         let subfolders = try folder.subfolders.flatMap { subfolder in
             try writeableFiles(in: subfolder,

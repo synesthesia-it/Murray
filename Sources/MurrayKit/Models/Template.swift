@@ -25,6 +25,10 @@ public struct Template {
         public init(dictionaryLiteral elements: (String, AnyHashable)...) {
             self.values = elements.reduce(into: [:]) { $0[$1.0] = $1.1 }
         }
+        
+        public func adding(_ newValues: JSON) -> Context {
+            .init(values.merging(newValues) { original, _ in original })
+        }
    
     }
     

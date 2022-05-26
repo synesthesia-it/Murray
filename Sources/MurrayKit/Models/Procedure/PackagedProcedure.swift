@@ -58,4 +58,7 @@ public struct PackagedProcedure: Hashable {
         }
         
     }
+    public func customParameters() -> JSON {
+        ["_procedure": try? procedure.dictionary() ]
+    }
 }
