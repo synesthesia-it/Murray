@@ -63,19 +63,22 @@ public struct Pipeline {
         let manager = PluginManager.shared
         try manager.execute(.init(element: murrayfile.object,
                                            context: context,
-                                           phase: .before))
+                                           phase: .before,
+                                  root: destinationFolder))
         try procedures.forEach { procedure in
             let procedureContext = context.adding(procedure.customParameters())
             try manager.execute(.init(element: procedure.procedure,
                                                context: procedureContext,
-                                               phase: .before))
+                                               phase: .before,
+                                      root: destinationFolder))
             try procedure.items().forEach { item in
                 
                 let itemContext = procedureContext.adding(item.customParameters())
                 
                 try manager.execute(.init(element: item.object,
                                           context: itemContext,
-                                                   phase: .before))
+                                                   phase: .before,
+                                          root: destinationFolder))
                 
                 try item.writeableFiles(context: context,
                                         destinationRoot: destinationFolder).forEach { file in
@@ -85,23 +88,27 @@ public struct Pipeline {
                         let localContext = enrichedContext.adding(path.customParameters())
                         try manager.execute(.init(element: path,
                                                   context: localContext,
-                                                  phase: .before))
+                                                  phase: .before,
+                                                  root: destinationFolder))
                         
                         try file.commit(context: localContext)
                         
                         try manager.execute(.init(element: path,
                                                   context: localContext,
-                                                  phase: .after))
+                                                  phase: .after,
+                                                  root: destinationFolder))
                         
                     case let replacement as Item.Replacement:
                         let localContext = enrichedContext.adding(replacement.customParameters())
                         try manager.execute(.init(element: replacement,
                                                   context: localContext,
-                                                  phase: .before))
+                                                  phase: .before,
+                                                  root: destinationFolder))
                         try file.commit(context: localContext)
                         try manager.execute(.init(element: replacement,
                                                   context: localContext,
-                                                  phase: .after))
+                                                  phase: .after,
+                                                  root: destinationFolder))
                     default:
                         try file.commit(context: enrichedContext)
                     }
@@ -110,16 +117,19 @@ public struct Pipeline {
                 
                 try manager.execute(.init(element: item.object,
                                           context: itemContext,
-                                          phase: .after))
+                                          phase: .after,
+                                          root: destinationFolder))
             }
             
             try manager.execute(.init(element: procedure.procedure,
                                                context: procedureContext,
-                                               phase: .after))
+                                               phase: .after,
+                                      root: destinationFolder))
         }
         try manager.execute(.init(element: murrayfile.object,
                                            context: context,
-                                           phase: .after))
+                                           phase: .after,
+                                  root: destinationFolder))
     }
     
     public func writeableFiles() throws -> [WriteableFile] {

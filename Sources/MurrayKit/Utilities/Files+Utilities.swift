@@ -139,7 +139,7 @@ public struct Folder: Hashable {
         }
     }
     
-    public func path(relative to: Folder) -> String {
+    public func path(relativeTo to: Folder) -> String {
         folder.path(relativeTo: to.folder)
     }
     
@@ -166,6 +166,11 @@ public struct Folder: Hashable {
         } catch {
             throw Errors.folderLocationError(path.appendingPathComponent(name))
         }
+    }
+    
+    public var parent: Folder? {
+        guard let value = folder.parent else { return nil }
+        return .init(value)
     }
 }
 

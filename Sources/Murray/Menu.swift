@@ -22,8 +22,9 @@ func commands() -> Group {
     return Group { group in
         group.listCommand(in: folder)
         group.runCommand(in: folder)
+        group.scaffoldCommand(in: folder)
         group.group("bone",
-                    String.boneDescription) { group in
+                    .boneDescription) { group in
             group.listCommand(in: folder)
             group.runCommand(in: folder, name: "new")
             

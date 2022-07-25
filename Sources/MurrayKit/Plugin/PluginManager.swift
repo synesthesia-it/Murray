@@ -10,7 +10,7 @@ import Foundation
 public class PluginManager {
     static let shared: PluginManager = {
         let manager = PluginManager()
-        manager.add(plugins: [ShellPlugin()])
+        manager.add(plugins: [ShellPlugin(), XcodePlugin()])
         return manager
     }()
     

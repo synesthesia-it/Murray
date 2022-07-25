@@ -16,20 +16,26 @@ public struct PluginExecution<Element: PluginDataContainer> {
     let element: Element
     let file: WriteableFile?
     let phase: Phase
+    let root: Folder
     private let originalContext: Template.Context
 
     internal init(element: Element,
                   file: WriteableFile? = nil,
                   context: Template.Context,
-                  phase: Phase) {
+                  phase: Phase,
+                  root: Folder) {
         self.element = element
         self.file = file
         self.originalContext = context
         self.phase = phase
+        self.root = root
     }
     
     func context() -> Template.Context {
-        let fileContext = ["_path": file?.root.path.appendingPathComponent(file?.path ?? ""),
+        let fileContext = ["_path": file?
+            .root
+            .path
+            .appendingPathComponent(file?.path ?? ""),
                            "_root": file?.root.path]
         let all = originalContext.values.merging(fileContext) { original, _ in original }
         return .init(all)

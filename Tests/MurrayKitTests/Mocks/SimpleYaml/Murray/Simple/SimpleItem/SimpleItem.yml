@@ -4,6 +4,8 @@ paths:
 - from: "Bone.swift"
   to: "Sources/Files/{{ nestedName }}/{{ customName }}.swift"
   plugins:
+    xcode:
+      targets: ["App"]
     shell:
       after:
       - "echo {{_destinationFilename}} >> /{{ _destinationPath }}.test"
