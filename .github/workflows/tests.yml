@@ -1,10 +1,10 @@
-name: Swift
+name: MurrayKit Tests
 
 on:
   pull_request: {}
 
 jobs:
-  macOS:
+  TestMurrayKit:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v2
