@@ -54,7 +54,8 @@ extension Commander.Group {
                                  description: .scaffoldItemPackageNameDescription),
                 Argument<String>("name",
                                  description: .scaffoldItemNameDescription),
-                Flag("createProcedure", description: .scaffoldItemCreateProcedureDescription),
+                Flag("createProcedure",
+                     description: .scaffoldItemCreateProcedureDescription),
                 Argument<[String]>("files",
                                    description: .scaffoldItemFilesDescription),
                 description: .scaffoldItemDescription) { verbose, name, package, createProcedure, files in

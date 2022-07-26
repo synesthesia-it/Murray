@@ -16,7 +16,8 @@ force_try:
   severity: error # explicitly
 # rules that have both warning and error levels, can set just the warning level
 # implicitly
-line_length: 120
+line_length: 155
+function_body_length: 60
 # they can set both implicitly with an array
 type_body_length:
   - 300 # warning

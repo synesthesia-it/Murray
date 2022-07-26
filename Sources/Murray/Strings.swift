@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+// swiftlint:disable identifier_name line_length
 extension String {
     @Translation("Print complete log during command execution")
     static var verboseDescription: String
