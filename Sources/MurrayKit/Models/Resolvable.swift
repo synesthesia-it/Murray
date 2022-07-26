@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 11/05/22.
 //
@@ -17,6 +17,7 @@ extension String: Resolvable {
             .resolve(recursive: true)
     }
 }
+
 //
 // extension CodableFile: Resolvable {
 //    public func resolve(with context: Template.Context) throws -> String {

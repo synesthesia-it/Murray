@@ -9,11 +9,12 @@ import Foundation
 
 public struct Murrayfile: Codable, Hashable {
     public static var defaultName = "Murrayfile"
-    
+
     public init(packages: [String],
                 environment: Parameters,
                 mainPlaceholder: String? = nil,
-                plugins: Parameters? = nil) {
+                plugins: Parameters? = nil)
+    {
         self.packages = packages
         self.environment = environment
         self.mainPlaceholder = mainPlaceholder
@@ -33,9 +34,11 @@ public struct Murrayfile: Codable, Hashable {
     public var namePlaceholder: String {
         mainPlaceholder ?? "name"
     }
+
     public mutating func add(packagePath: String) {
-        self.packages.append(packagePath)
+        packages.append(packagePath)
     }
+
     public static var empty: Murrayfile = .init(packages: [], environment: nil)
 }
 
@@ -52,9 +55,9 @@ public extension CodableFile where Object == Murrayfile {
             .compactMap { try file.parent?.file(named: $0) }
             .map { try .init(file: $0) }
     }
-    
-    func encoding<Object: Codable>(_ type: Object.Type = Object.self) -> CodableFile<Object>.Encoding {
-        switch self.file.extension?.lowercased() ?? "" {
+
+    func encoding<Object: Codable>(_: Object.Type = Object.self) -> CodableFile<Object>.Encoding {
+        switch file.extension?.lowercased() ?? "" {
         case "yaml", "yml": return .yml
         default: return .json
         }

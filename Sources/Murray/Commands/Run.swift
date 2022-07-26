@@ -1,12 +1,12 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 19/05/22.
 //
 
-import Foundation
 import Commander
+import Foundation
 import MurrayKit
 
 extension Commander.Group {
@@ -21,15 +21,14 @@ extension Commander.Group {
                 Argument<[String]?>("parameters",
                                     description: .runParametersDescription),
                 description: .runDescription) { name, mainPlaceholder, verbose, preview, params in
-            
+
             Run(folder: folder,
-                       mainPlaceholder: mainPlaceholder,
-                       name: name,
-                       preview: preview,
-                       verbose: verbose,
-                       params: params)
-            .executeAndCatch(verbose: verbose)
-            
+                mainPlaceholder: mainPlaceholder,
+                name: name,
+                preview: preview,
+                verbose: verbose,
+                params: params)
+                .executeAndCatch(verbose: verbose)
         }
     }
 }

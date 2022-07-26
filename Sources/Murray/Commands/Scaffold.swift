@@ -1,16 +1,15 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 19/05/22.
 //
 
-import Foundation
 import Commander
+import Foundation
 import MurrayKit
 
 extension Commander.Group {
-    
     private func murrayfile(in folder: Folder, name: String = "murrayfile") {
         command(name,
                 Flag("verbose"),
@@ -21,18 +20,19 @@ extension Commander.Group {
                 .executeAndCatch(verbose: verbose)
         }
     }
-    
+
     private func package(in folder: Folder,
-                         name: String = "package") {
+                         name: String = "package")
+    {
         command(name,
                 Flag("verbose"),
                 Argument<String>("name",
                                  description: .scaffoldPackageNameDescription),
-                
+
                 Option<String>("folder",
-                                 default: "Murray",
-                                 description: .scaffoldPackageFolderDescription),
-                
+                               default: "Murray",
+                               description: .scaffoldPackageFolderDescription),
+
                 Option<String?>("format",
                                 default: nil,
                                 description: .scaffoldFileFormatDescription),
@@ -46,9 +46,10 @@ extension Commander.Group {
                 .executeAndCatch(verbose: verbose)
         }
     }
-    
+
     private func item(in folder: Folder,
-                      name: String = "item") {
+                      name: String = "item")
+    {
         command(name,
                 Flag("verbose"),
                 Argument<String>("packageName",
@@ -65,12 +66,13 @@ extension Commander.Group {
                           rootFolder: folder,
                           createProcedure: createProcedure,
                           files: files)
-            .executeAndCatch(verbose: verbose)
+                .executeAndCatch(verbose: verbose)
         }
     }
-    
+
     private func procedure(in folder: Folder,
-                      name: String = "procedure") {
+                           name: String = "procedure")
+    {
         command(name,
                 Flag("verbose"),
                 Argument<String>("packageName",
@@ -85,10 +87,10 @@ extension Commander.Group {
                                description: .init(format: .scaffoldProcedureDefaultDescriptionFormat, name),
                                rootFolder: folder,
                                itemNames: items)
-            .executeAndCatch(verbose: verbose)
+                .executeAndCatch(verbose: verbose)
         }
     }
-    
+
     func scaffoldCommand(in folder: Folder, name: String = "scaffold") {
         group(name) {
             $0.murrayfile(in: folder)
@@ -96,6 +98,5 @@ extension Commander.Group {
             $0.item(in: folder)
             $0.procedure(in: folder)
         }
-        
     }
 }

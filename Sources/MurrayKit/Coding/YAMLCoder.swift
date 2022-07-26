@@ -12,10 +12,9 @@ extension YAMLDecoder: Decoder {
     public func decode<Value>(_ data: Data) throws -> Value where Value: Decodable {
         do {
             return try decode(Value.self, from: data)
-        } catch let error {
+        } catch {
             switch error {
-            
-            case DecodingError.dataCorrupted(let inner):
+            case let DecodingError.dataCorrupted(inner):
                 throw inner.underlyingError ?? error
             default: throw error
             }

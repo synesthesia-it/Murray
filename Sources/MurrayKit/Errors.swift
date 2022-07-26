@@ -11,7 +11,7 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     public static func == (lhs: Errors, rhs: Errors) -> Bool {
         lhs.localizedDescription == rhs.localizedDescription
     }
-    
+
     case unparsableFile(String)
     case unresolvableString(string: String, context: JSON)
     case invalidReplacement
@@ -34,23 +34,23 @@ public enum Errors: Swift.Error, Equatable, Hashable {
 extension Errors: LocalizedError {
     var localizedDescription: String {
         switch self {
-        case .unparsableFile(let filePath): return "Path at \(filePath) is not parsable"
-        case .unresolvableString(let string, let context):
+        case let .unparsableFile(filePath): return "Path at \(filePath) is not parsable"
+        case let .unresolvableString(string, context):
             return "Provided string is not properly resolvable\n\nString:\n\(string)\n\nContext:\n\n\(context)"
         case .invalidReplacement: return "Error during replacement"
-        case .procedureNotFound(let name): return "Procedure '\(name)' not found."
-        case .folderLocationError(let path): return "Invalid folder at \(path)"
-        case .fileLocationError(let path): return "Invalid file at \(path)"
-        case .unreadableFile(let path): return "Unreadable file at \(path)"
-        case .unwriteableFile(let path): return "Unwriteable file at \(path)"
-        case .copyFolder(let path): return "Error copying folder at \(path)"
-        case .createFolder(let path): return "Error creating folder at \(path)"
-        case .deleteFolder(let path): return "Error deleting folder at \(path)"
-        case .murrayfileNotFound(let path): return "No valid Murrayfile found in \(path)"
-        case .invalidPackageName(let name): return "Provided package name '\(name)' is invalid. Check your Murrayfile."
-        case .itemAlreadyExists(let name): return "Item named'\(name)' already exists."
-        case .itemNotFound(let name): return "Item named '\(name)' not found"
-        case .procedureAlreadyExists(let name): return "Procedure named '\(name)' already exists"
+        case let .procedureNotFound(name): return "Procedure '\(name)' not found."
+        case let .folderLocationError(path): return "Invalid folder at \(path)"
+        case let .fileLocationError(path): return "Invalid file at \(path)"
+        case let .unreadableFile(path): return "Unreadable file at \(path)"
+        case let .unwriteableFile(path): return "Unwriteable file at \(path)"
+        case let .copyFolder(path): return "Error copying folder at \(path)"
+        case let .createFolder(path): return "Error creating folder at \(path)"
+        case let .deleteFolder(path): return "Error deleting folder at \(path)"
+        case let .murrayfileNotFound(path): return "No valid Murrayfile found in \(path)"
+        case let .invalidPackageName(name): return "Provided package name '\(name)' is invalid. Check your Murrayfile."
+        case let .itemAlreadyExists(name): return "Item named'\(name)' already exists."
+        case let .itemNotFound(name): return "Item named '\(name)' not found"
+        case let .procedureAlreadyExists(name): return "Procedure named '\(name)' already exists"
         case .unknown: return "Some error occurred"
         }
     }

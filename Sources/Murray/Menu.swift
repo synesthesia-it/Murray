@@ -16,16 +16,16 @@ func commands() -> Group {
     #if DEBUG
         Rainbow.enabled = false
     #endif
-    
+
     return Group { group in
         group.listCommand(in: folder)
         group.runCommand(in: folder)
         group.scaffoldCommand(in: folder)
         group.group("bone",
-                    .boneDescription) { group in
+                    .boneDescription)
+        { group in
             group.listCommand(in: folder)
             group.runCommand(in: folder, name: "new")
-            
         }
         //            Skeleton.commands(for: $0)
         //            Bone.commands(for: $0)

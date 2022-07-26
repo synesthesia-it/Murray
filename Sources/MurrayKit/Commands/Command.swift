@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 19/05/22.
 //
@@ -13,14 +13,13 @@ public protocol Command {
 }
 
 public extension Command {
-    
     func executeAndCatch(verbose: Bool) {
         do {
             if verbose {
                 Logger.logLevel = .verbose
             }
             try execute()
-        } catch let error {
+        } catch {
             switch error {
             case let error as Errors: Logger.log(.error(error))
 //            case let error as Files.LocationError:

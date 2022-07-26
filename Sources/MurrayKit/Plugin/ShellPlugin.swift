@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 23/05/22.
 //
@@ -9,7 +9,7 @@ import Foundation
 
 struct ShellPlugin: Plugin {
     var name: String { "shell" }
-        
+
     struct PluginData: Codable {
         let before: [String]?
         let after: [String]?
@@ -21,12 +21,13 @@ struct ShellPlugin: Plugin {
         case .before: keyPath = \.before
         case .after: keyPath = \.after
         }
-       
-        guard let data = try self.data(for: execution.element),
-        let commands = data[keyPath: keyPath] else {
+
+        guard let data = try data(for: execution.element),
+              let commands = data[keyPath: keyPath]
+        else {
             return
         }
-        
+
         let context = execution.context()
         try commands.map {
             try $0.resolve(with: context)
@@ -35,13 +36,13 @@ struct ShellPlugin: Plugin {
             try Process().launchBash(with: $0)
         }
     }
-    
 }
 
 private extension Process {
     @discardableResult func launchBash(with command: String,
                                        outputHandle: FileHandle? = nil,
-                                       errorHandle: FileHandle? = nil) throws -> String {
+                                       errorHandle: FileHandle? = nil) throws -> String
+    {
         launchPath = "/bin/bash"
         arguments = ["-c", command]
 
@@ -61,30 +62,30 @@ private extension Process {
         standardError = errorPipe
 
         #if !os(Linux)
-        outputPipe.fileHandleForReading.readabilityHandler = { handler in
-            let data = handler.availableData
-            outputQueue.async {
-                outputData.append(data)
-                outputHandle?.write(data)
+            outputPipe.fileHandleForReading.readabilityHandler = { handler in
+                let data = handler.availableData
+                outputQueue.async {
+                    outputData.append(data)
+                    outputHandle?.write(data)
+                }
             }
-        }
 
-        errorPipe.fileHandleForReading.readabilityHandler = { handler in
-            let data = handler.availableData
-            outputQueue.async {
-                errorData.append(data)
-                errorHandle?.write(data)
+            errorPipe.fileHandleForReading.readabilityHandler = { handler in
+                let data = handler.availableData
+                outputQueue.async {
+                    errorData.append(data)
+                    errorHandle?.write(data)
+                }
             }
-        }
         #endif
 
         launch()
 
         #if os(Linux)
-        outputQueue.sync {
-            outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-        }
+            outputQueue.sync {
+                outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+                errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+            }
         #endif
 
         waitUntilExit()
@@ -98,8 +99,8 @@ private extension Process {
         }
 
         #if !os(Linux)
-        outputPipe.fileHandleForReading.readabilityHandler = nil
-        errorPipe.fileHandleForReading.readabilityHandler = nil
+            outputPipe.fileHandleForReading.readabilityHandler = nil
+            errorPipe.fileHandleForReading.readabilityHandler = nil
         #endif
 
         // Block until all writes have occurred to outputData and errorData,
@@ -138,19 +139,19 @@ private extension Data {
         }
 
         return output
-
     }
 }
+
 /// Error type thrown by the `shellOut()` function, in case the given command failed
 struct ShellOutError: Swift.Error {
     /// The termination status of the command that was run
-     let terminationStatus: Int32
+    let terminationStatus: Int32
     /// The error message as a UTF8 string, as returned through `STDERR`
-     var message: String { return errorData.shellOutput() }
+    var message: String { return errorData.shellOutput() }
     /// The raw error buffer data, as returned through `STDERR`
-     let errorData: Data
+    let errorData: Data
     /// The raw output buffer data, as retuned through `STDOUT`
-     let outputData: Data
+    let outputData: Data
     /// The output of the command as a UTF8 string, as returned through `STDOUT`
-     var output: String { return outputData.shellOutput() }
+    var output: String { return outputData.shellOutput() }
 }

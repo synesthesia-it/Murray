@@ -11,74 +11,79 @@ public struct Pipeline {
     let murrayfile: CodableFile<Murrayfile>
     let procedures: [PackagedProcedure]
     public let context: Template.Context
-    
+
     public init(murrayfile: CodableFile<Murrayfile>,
-         procedure: PackagedProcedure,
-         context: Parameters) throws {
+                procedure: PackagedProcedure,
+                context: Parameters) throws
+    {
         try self.init(murrayfile: murrayfile, procedures: [procedure], context: context)
     }
-    
+
     public init(murrayfile: CodableFile<Murrayfile>,
-         procedures: [PackagedProcedure],
-         context: Parameters) throws {
+                procedures: [PackagedProcedure],
+                context: Parameters) throws
+    {
         self.murrayfile = murrayfile
         self.procedures = procedures
         self.context = Template.Context(context, environment: murrayfile.object.environment)
     }
-    
+
     public init(murrayfile: CodableFile<Murrayfile>,
-         procedure procedureName: String,
-         context: Parameters) throws {
+                procedure procedureName: String,
+                context: Parameters) throws
+    {
         try self.init(murrayfile: murrayfile, procedures: [procedureName], context: context)
     }
-    
+
     public init(murrayfile: CodableFile<Murrayfile>,
-         procedures procedureNames: [String],
-         context: Parameters) throws {
+                procedures procedureNames: [String],
+                context: Parameters) throws
+    {
         self.murrayfile = murrayfile
-        
+
         let packages = try murrayfile.packages()
-        self.procedures = try procedureNames.map { procedureName in
+        procedures = try procedureNames.map { procedureName in
             guard let procedure = packages
                 .compactMap({ try? PackagedProcedure(package: $0, procedureName: procedureName) })
-                .first else {
+                .first
+            else {
                 throw Errors.procedureNotFound(name: procedureName)
             }
             return procedure
         }
-        
+
         self.context = Template.Context(context, environment: murrayfile.object.environment)
     }
-    
+
     public func run() throws {
 //        try writeableFiles().forEach {
 //            try $0.commit(context: self.context)
 //        }
-        
+
         guard let destinationFolder = murrayfile.file.parent else {
             // no destination folder provided
             throw Errors.unknown
         }
         let manager = PluginManager.shared
         try manager.execute(.init(element: murrayfile.object,
-                                           context: context,
-                                           phase: .before,
+                                  context: context,
+                                  phase: .before,
                                   root: destinationFolder))
         try procedures.forEach { procedure in
             let procedureContext = context.adding(procedure.customParameters())
             try manager.execute(.init(element: procedure.procedure,
-                                               context: procedureContext,
-                                               phase: .before,
+                                      context: procedureContext,
+                                      phase: .before,
                                       root: destinationFolder))
             try procedure.items().forEach { item in
-                
+
                 let itemContext = procedureContext.adding(item.customParameters())
-                
+
                 try manager.execute(.init(element: item.object,
                                           context: itemContext,
-                                                   phase: .before,
+                                          phase: .before,
                                           root: destinationFolder))
-                
+
                 try item.writeableFiles(context: context,
                                         destinationRoot: destinationFolder).forEach { file in
                     let enrichedContext = file.enrichedContext(from: itemContext)
@@ -89,14 +94,14 @@ public struct Pipeline {
                                                   context: localContext,
                                                   phase: .before,
                                                   root: destinationFolder))
-                        
+
                         try file.commit(context: localContext)
-                        
+
                         try manager.execute(.init(element: path,
                                                   context: localContext,
                                                   phase: .after,
                                                   root: destinationFolder))
-                        
+
                     case let replacement as Item.Replacement:
                         let localContext = enrichedContext.adding(replacement.customParameters())
                         try manager.execute(.init(element: replacement,
@@ -111,26 +116,25 @@ public struct Pipeline {
                     default:
                         try file.commit(context: enrichedContext)
                     }
-                    
                 }
-                
+
                 try manager.execute(.init(element: item.object,
                                           context: itemContext,
                                           phase: .after,
                                           root: destinationFolder))
             }
-            
+
             try manager.execute(.init(element: procedure.procedure,
-                                               context: procedureContext,
-                                               phase: .after,
+                                      context: procedureContext,
+                                      phase: .after,
                                       root: destinationFolder))
         }
         try manager.execute(.init(element: murrayfile.object,
-                                           context: context,
-                                           phase: .after,
+                                  context: context,
+                                  phase: .after,
                                   root: destinationFolder))
     }
-    
+
     public func writeableFiles() throws -> [WriteableFile] {
         guard let destinationFolder = murrayfile.file.parent else {
             // no destination folder provided
@@ -138,7 +142,7 @@ public struct Pipeline {
         }
         return try procedures.flatMap {
             try $0.writeableFiles(context: context,
-                              destinationFolder: destinationFolder)
+                                  destinationFolder: destinationFolder)
         }
     }
 }

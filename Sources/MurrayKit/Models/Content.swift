@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 11/05/22.
 //
@@ -10,11 +10,11 @@ import Foundation
 public enum Content {
     case file(File)
     case text(String)
-    
+
     public func contents() throws -> String {
         switch self {
-        case .file(let file): return try file.readAsString()
-        case .text(let text): return text
+        case let .file(file): return try file.readAsString()
+        case let .text(text): return text
         }
     }
 }

@@ -46,18 +46,18 @@ public protocol LoggerType: AnyObject {
 public enum Log: CustomStringConvertible, CustomDebugStringConvertible, Equatable {
     case error(Errors)
     case message(String)
-    
+
     public var debugDescription: String {
         switch self {
-        case .error(let error): return error.localizedDescription
-        case .message(let string): return string
+        case let .error(error): return error.localizedDescription
+        case let .message(string): return string
         }
     }
-    
+
     public var description: String {
         switch self {
-        case .error(let error): return error.localizedDescription
-        case .message(let string): return string
+        case let .error(error): return error.localizedDescription
+        case let .message(string): return string
         }
     }
 }
@@ -68,7 +68,7 @@ open class ConsoleLogger: LoggerType {
     public init(logLevel: LogLevel) {
         self.logLevel = logLevel
     }
-    
+
     open func string(_ message: String, level: LogLevel, tag: String?) -> String? {
         if logLevel.rawValue > level.rawValue { return nil }
 
@@ -80,7 +80,7 @@ open class ConsoleLogger: LoggerType {
                     .filter { !$0.isEmpty }
                     .joined(separator: " "),
                 level
-                    .colorize(string: message)
+                    .colorize(string: message),
             ]
             .compactMap { $0 }
             .filter { !$0.isEmpty }
@@ -98,10 +98,10 @@ open class ConsoleLogger: LoggerType {
 
 public final class TestLogger: ConsoleLogger {
     public var messages: [Log] = []
-    
+
     public var lastMessage: Log? { messages.last }
 
-    override public func log(_ log: Log, level: LogLevel, tag: String?) {
+    override public func log(_ log: Log, level: LogLevel, tag _: String?) {
 //        let message = log.description
 //        guard let string = string(message, level: level, tag: tag) else { return }
 //        print(string)
@@ -121,6 +121,7 @@ public enum Logger {
     public static func log(_ message: String, level: LogLevel = .error, tag: String? = nil) {
         log(.message(message), level: level, tag: tag)
     }
+
     public static func log(_ log: Log, level: LogLevel = .error, tag: String? = nil) {
         logger.log(log, level: level, tag: tag)
     }
