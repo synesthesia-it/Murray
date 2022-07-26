@@ -16,11 +16,11 @@ extension Commander.Group {
                 Argument<String>("mainPlaceholder",
                                  description: .runMainPlaceholderDescription),
                 Argument<String>("git",
-                                 description: .runNameDescription),
+                                 description: .cloneGitDescription),
                 Flag("verbose", description: .verboseDescription),
                 Argument<[String]?>("parameters",
                                     description: .runParametersDescription),
-                description: .listDescription) { name, git, verbose, parameters in
+                description: .cloneDescription) { name, git, verbose, parameters in
 
             try List(folder: folder)
                 .executeAndCatch(verbose: verbose)
