@@ -18,7 +18,7 @@ public struct List {
                 murrayfileName: String = Murrayfile.defaultName)
         throws {
         do {
-            let murrayfile = try CodableFile(in: folder, murrayfileName: murrayfileName)
+            let murrayfile = try CodableFile<Murrayfile>(in: folder, defaultName: murrayfileName)
             self.init(murrayfile: murrayfile)
         } catch {
             throw Errors.murrayfileNotFound(folder.path)

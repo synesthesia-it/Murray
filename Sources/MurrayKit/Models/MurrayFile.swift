@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Murrayfile: Codable, Hashable {
+public struct Murrayfile: Hashable, RootFile {
     public static var defaultName = "Murrayfile"
 
     public init(packages: [String],
@@ -42,12 +42,6 @@ public struct Murrayfile: Codable, Hashable {
 }
 
 public extension CodableFile where Object == Murrayfile {
-    init(in folder: Folder, murrayfileName: String = Murrayfile.defaultName) throws {
-        let extensions = ["", ".json", ".yml", ".yaml"]
-        let names = extensions.map { murrayfileName + $0 }
-        let file = try folder.firstFile(named: names)
-        try self.init(file: file)
-    }
 
     func packages() throws -> [CodableFile<Package>] {
         try object.packages
@@ -55,10 +49,4 @@ public extension CodableFile where Object == Murrayfile {
             .map { try .init(file: $0) }
     }
 
-    func encoding<Object: Codable>(_: Object.Type = Object.self) -> CodableFile<Object>.Encoding {
-        switch file.extension?.lowercased() ?? "" {
-        case "yaml", "yml": return .yml
-        default: return .json
-        }
-    }
 }

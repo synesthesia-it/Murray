@@ -23,12 +23,15 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case copyFolder(String)
     case createFolder(String)
     case deleteFolder(String)
+    case deleteFile(String)
     case procedureNotFound(name: String)
     case murrayfileNotFound(String)
     case invalidPackageName(String)
     case itemAlreadyExists(String)
     case itemNotFound(String)
     case procedureAlreadyExists(String)
+    case noValidSkeletonFound(String)
+    case invalidGitRepository(String)
 }
 
 extension Errors: LocalizedError {
@@ -46,11 +49,14 @@ extension Errors: LocalizedError {
         case let .copyFolder(path): return "Error copying folder at \(path)"
         case let .createFolder(path): return "Error creating folder at \(path)"
         case let .deleteFolder(path): return "Error deleting folder at \(path)"
+        case let .deleteFile(path): return "Error deleting file at \(path)"
         case let .murrayfileNotFound(path): return "No valid Murrayfile found in \(path)"
         case let .invalidPackageName(name): return "Provided package name '\(name)' is invalid. Check your Murrayfile."
         case let .itemAlreadyExists(name): return "Item named'\(name)' already exists."
         case let .itemNotFound(name): return "Item named '\(name)' not found"
         case let .procedureAlreadyExists(name): return "Procedure named '\(name)' already exists"
+        case let .noValidSkeletonFound(path): return "No valid skeleton file found at \(path)"
+        case let .invalidGitRepository(path): return "Invalid git repository at \(path)"
         case .unknown: return "Some error occurred"
         }
     }

@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct Skeleton: Codable {
+public struct Skeleton: RootFile, Hashable {
+
     private enum CodingKeys: String, CodingKey {
         case scripts
         case paths
@@ -17,7 +18,23 @@ public struct Skeleton: Codable {
     public let scripts: [String]
     public let paths: [Item.Path]
     public let initializeGit: Bool
-
+    
+    public static var defaultName: String { "Skeleton" }
+    
+    public static var empty: Skeleton {
+        .init(scripts: [],
+              paths: [],
+              initializeGit: true)
+    }
+    
+    public init(scripts: [String],
+                paths: [Item.Path],
+                initializeGit: Bool) {
+        self.scripts = scripts
+        self.paths = paths
+        self.initializeGit = initializeGit
+    }
+    
     public init(from decoder: Swift.Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         scripts = try container.decode([String].self, forKey: .scripts)

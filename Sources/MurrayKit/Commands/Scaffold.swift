@@ -26,6 +26,18 @@ public struct Scaffold: Command {
                                    in: folder)
         }
     }
+    
+    public static func skeletonfile(named name: String = Skeleton.defaultName,
+                                  encoding: CodableFile<Skeleton>.Encoding,
+                                  in folder: Folder) -> Scaffold {
+        .init {
+            let file = Skeleton.empty
+            try CodableFile.create(file,
+                                   encoding: encoding,
+                                   named: "\(name).\(encoding.rawValue)",
+                                   in: folder)
+        }
+    }
 
     public static func package(named name: String,
                                encoding: CodableFile<Package>.Encoding? = nil,
@@ -33,8 +45,7 @@ public struct Scaffold: Command {
                                rootFolder: Folder,
                                path: String = "Murray") -> Scaffold {
         return Scaffold {
-            var murrayfile = try CodableFile(in: rootFolder,
-                                             murrayfileName: Murrayfile.defaultName)
+            var murrayfile = try CodableFile<Murrayfile>(in: rootFolder)
 
             let encoding = encoding ?? murrayfile.encoding()
 
@@ -64,8 +75,7 @@ public struct Scaffold: Command {
                             createProcedure: Bool = true,
                             files: [String]) -> Scaffold {
         Scaffold {
-            let murrayfile = try CodableFile(in: rootFolder,
-                                             murrayfileName: Murrayfile.defaultName)
+            let murrayfile = try CodableFile<Murrayfile>(in: rootFolder)
             guard var package = try murrayfile
                 .packages()
                 .first(where: { $0.object.name == packageName }),
@@ -119,8 +129,7 @@ public struct Scaffold: Command {
                                  rootFolder: Folder,
                                  itemNames: [String]) -> Scaffold {
         Scaffold {
-            let murrayfile = try CodableFile(in: rootFolder,
-                                             murrayfileName: Murrayfile.defaultName)
+            let murrayfile = try CodableFile<Murrayfile>(in: rootFolder)
             guard var package = try murrayfile
                 .packages()
                 .first(where: { $0.object.name == packageName }),

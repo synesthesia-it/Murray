@@ -21,6 +21,7 @@ func commands() -> Group {
         group.listCommand(in: folder)
         group.runCommand(in: folder)
         group.scaffoldCommand(in: folder)
+        group.cloneCommand(in: folder)
         group.group("bone",
                     .boneDescription) { group in
             group.listCommand(in: folder)

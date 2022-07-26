@@ -14,9 +14,20 @@ extension Commander.Group {
         command(name,
                 Flag("verbose"),
                 Option<String?>("format", default: nil, description: .scaffoldFileFormatDescription),
-                description: .scaffoldMurrayfileDescription) { verbose, format in
+                description: .scaffoldSkeletonfileDescription) { verbose, format in
             Scaffold
                 .murrayfile(encoding: .init(rawValue: format) ?? .yml, in: folder)
+                .executeAndCatch(verbose: verbose)
+        }
+    }
+    
+    private func skeletonfile(in folder: Folder, name: String = "murrayfile") {
+        command(name,
+                Flag("verbose"),
+                Option<String?>("format", default: nil, description: .scaffoldFileFormatDescription),
+                description: .scaffoldMurrayfileDescription) { verbose, format in
+            Scaffold
+                .skeletonfile(encoding: .init(rawValue: format) ?? .yml, in: folder)
                 .executeAndCatch(verbose: verbose)
         }
     }
@@ -92,6 +103,7 @@ extension Commander.Group {
     func scaffoldCommand(in folder: Folder, name: String = "scaffold") {
         group(name) {
             $0.murrayfile(in: folder)
+            $0.skeletonfile(in: folder)
             $0.package(in: folder)
             $0.item(in: folder)
             $0.procedure(in: folder)

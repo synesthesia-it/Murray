@@ -28,7 +28,6 @@ class MurrayfileTests: TestCase {
                                       line: UInt = #line) throws {
         let root = try scenario.make()
         let murrayfile = try CodableFile<Murrayfile>(in: root).object
-        XCTAssertEqual(murrayfile, scenario.murrayFile, line: line)
         let packagePath = try XCTUnwrap(murrayfile.packages.first)
         let package = try CodableFile<Package>(file: root.file(named: packagePath))
         XCTAssertGreaterThan(package.object.procedures.count, 0)

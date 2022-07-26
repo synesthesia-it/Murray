@@ -34,6 +34,9 @@ extension String {
 
     @Translation("Create a new Murrayfile in current folder")
     static var scaffoldMurrayfileDescription: String
+    
+    @Translation("Create a new Skeleton in current folder")
+    static var scaffoldSkeletonfileDescription: String
 
     @Translation("Create a new Package in specified folder")
     static var scaffoldPackageDescription: String
