@@ -23,8 +23,7 @@ public struct PluginExecution<Element: PluginDataContainer> {
                   file: WriteableFile? = nil,
                   context: Template.Context,
                   phase: Phase,
-                  root: Folder)
-    {
+                  root: Folder) {
         self.element = element
         self.file = file
         originalContext = context

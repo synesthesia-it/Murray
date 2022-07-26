@@ -20,8 +20,7 @@ public struct Run: Command {
                 name: String,
                 preview: Bool,
                 verbose: Bool,
-                params: [String]?)
-    {
+                params: [String]?) {
         self.folder = folder
         self.mainPlaceholder = mainPlaceholder
         self.name = name

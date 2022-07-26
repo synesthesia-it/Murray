@@ -26,8 +26,7 @@ public struct PackagedProcedure: Hashable {
     }
 
     public init(package: CodableFile<Package>,
-                procedureName name: String) throws
-    {
+                procedureName name: String) throws {
         self.package = package
         guard let procedure = package
             .object
@@ -51,8 +50,7 @@ public struct PackagedProcedure: Hashable {
     }
 
     public func writeableFiles(context: Template.Context,
-                               destinationFolder: Folder) throws -> [WriteableFile]
-    {
+                               destinationFolder: Folder) throws -> [WriteableFile] {
         try items().flatMap {
             try $0.writeableFiles(context: context,
                                   destinationRoot: destinationFolder)

@@ -22,8 +22,7 @@ extension Commander.Group {
     }
 
     private func package(in folder: Folder,
-                         name: String = "package")
-    {
+                         name: String = "package") {
         command(name,
                 Flag("verbose"),
                 Argument<String>("name",
@@ -48,8 +47,7 @@ extension Commander.Group {
     }
 
     private func item(in folder: Folder,
-                      name: String = "item")
-    {
+                      name: String = "item") {
         command(name,
                 Flag("verbose"),
                 Argument<String>("packageName",
@@ -71,8 +69,7 @@ extension Commander.Group {
     }
 
     private func procedure(in folder: Folder,
-                           name: String = "procedure")
-    {
+                           name: String = "procedure") {
         command(name,
                 Flag("verbose"),
                 Argument<String>("packageName",

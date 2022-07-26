@@ -32,8 +32,7 @@ public struct Procedure: Codable, Hashable {
     internal init(name: String,
                   description: String?,
                   plugins: Parameters?,
-                  itemPaths: [String])
-    {
+                  itemPaths: [String]) {
         self.name = name
         optionalDescription = description
         self.plugins = plugins

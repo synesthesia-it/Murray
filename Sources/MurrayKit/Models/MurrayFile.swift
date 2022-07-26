@@ -13,8 +13,7 @@ public struct Murrayfile: Codable, Hashable {
     public init(packages: [String],
                 environment: Parameters,
                 mainPlaceholder: String? = nil,
-                plugins: Parameters? = nil)
-    {
+                plugins: Parameters? = nil) {
         self.packages = packages
         self.environment = environment
         self.mainPlaceholder = mainPlaceholder

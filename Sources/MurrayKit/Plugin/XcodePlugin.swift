@@ -90,8 +90,7 @@ struct XcodePlugin: Plugin {
     // swiftlint:disable function_body_length
     // adapted from here https://github.com/yonaskolb/XcodeGen/blob/master/Sources/XcodeGenKit/SourceGenerator.swift
     private func getBuildPhase(for path: PathKit.Path,
-                               target: PBXTarget) throws -> PBXBuildPhase?
-    {
+                               target: PBXTarget) throws -> PBXBuildPhase? {
         if path.lastComponent == "Info.plist" {
             return nil
         }

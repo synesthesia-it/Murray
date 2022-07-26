@@ -14,15 +14,13 @@ public struct Pipeline {
 
     public init(murrayfile: CodableFile<Murrayfile>,
                 procedure: PackagedProcedure,
-                context: Parameters) throws
-    {
+                context: Parameters) throws {
         try self.init(murrayfile: murrayfile, procedures: [procedure], context: context)
     }
 
     public init(murrayfile: CodableFile<Murrayfile>,
                 procedures: [PackagedProcedure],
-                context: Parameters) throws
-    {
+                context: Parameters) throws {
         self.murrayfile = murrayfile
         self.procedures = procedures
         self.context = Template.Context(context, environment: murrayfile.object.environment)
@@ -30,15 +28,13 @@ public struct Pipeline {
 
     public init(murrayfile: CodableFile<Murrayfile>,
                 procedure procedureName: String,
-                context: Parameters) throws
-    {
+                context: Parameters) throws {
         try self.init(murrayfile: murrayfile, procedures: [procedureName], context: context)
     }
 
     public init(murrayfile: CodableFile<Murrayfile>,
                 procedures procedureNames: [String],
-                context: Parameters) throws
-    {
+                context: Parameters) throws {
         self.murrayfile = murrayfile
 
         let packages = try murrayfile.packages()

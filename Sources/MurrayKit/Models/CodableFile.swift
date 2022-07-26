@@ -50,13 +50,11 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
     }
 
     public init(file: File,
-                type _: Object.Type = Object.self) throws
-    {
+                type _: Object.Type = Object.self) throws {
 //        self.file = file
         let data = try file.read()
         if let ext = file.extension,
-           let decoder: Decoder = Self.decoder(from: ext)
-        {
+           let decoder: Decoder = Self.decoder(from: ext) {
             self.init(file: file, object: try decoder.decode(data))
 
         } else {
@@ -98,8 +96,7 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
     public static func create(_ object: Object,
                               encoding: Encoding = .yml,
                               named name: String,
-                              in folder: Folder) throws -> CodableFile<Object>
-    {
+                              in folder: Folder) throws -> CodableFile<Object> {
         let data = try encoding.encoder.encode(object)
 
         let file = try folder.createFileIfNeeded(at: name, contents: data)
@@ -109,8 +106,7 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
     private mutating func update(_ object: Object) throws {
         let data: Data
         if let ext = file.extension,
-           let encoder: Encoder = Self.encoder(from: ext)
-        {
+           let encoder: Encoder = Self.encoder(from: ext) {
             data = try encoder.encode(object)
         } else {
             let encoders: [Encoder] = [JSONEncoder(), YAMLEncoder()]

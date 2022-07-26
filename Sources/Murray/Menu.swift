@@ -22,8 +22,7 @@ func commands() -> Group {
         group.runCommand(in: folder)
         group.scaffoldCommand(in: folder)
         group.group("bone",
-                    .boneDescription)
-        { group in
+                    .boneDescription) { group in
             group.listCommand(in: folder)
             group.runCommand(in: folder, name: "new")
         }

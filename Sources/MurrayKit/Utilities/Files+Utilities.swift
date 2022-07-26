@@ -148,8 +148,7 @@ public struct Folder: Hashable {
     }
 
     public func createFileIfNeeded(at path: String,
-                                   contents: @autoclosure () -> Data? = nil) throws -> File
-    {
+                                   contents: @autoclosure () -> Data? = nil) throws -> File {
         do {
             return try .init(folder.createFileIfNeeded(at: path, contents: contents()))
 

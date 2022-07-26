@@ -17,8 +17,7 @@ public struct Scaffold: Command {
 
     public static func murrayfile(named name: String = Murrayfile.defaultName,
                                   encoding: CodableFile<Murrayfile>.Encoding,
-                                  in folder: Folder) -> Scaffold
-    {
+                                  in folder: Folder) -> Scaffold {
         .init {
             let file = Murrayfile.empty
             try CodableFile.create(file,
@@ -32,8 +31,7 @@ public struct Scaffold: Command {
                                encoding: CodableFile<Package>.Encoding? = nil,
                                description: String,
                                rootFolder: Folder,
-                               path: String = "Murray") -> Scaffold
-    {
+                               path: String = "Murray") -> Scaffold {
         return Scaffold {
             var murrayfile = try CodableFile(in: rootFolder,
                                              murrayfileName: Murrayfile.defaultName)
@@ -64,8 +62,7 @@ public struct Scaffold: Command {
                             description: String,
                             rootFolder: Folder,
                             createProcedure: Bool = true,
-                            files: [String]) -> Scaffold
-    {
+                            files: [String]) -> Scaffold {
         Scaffold {
             let murrayfile = try CodableFile(in: rootFolder,
                                              murrayfileName: Murrayfile.defaultName)
@@ -120,8 +117,7 @@ public struct Scaffold: Command {
                                  package packageName: String,
                                  description: String,
                                  rootFolder: Folder,
-                                 itemNames: [String]) -> Scaffold
-    {
+                                 itemNames: [String]) -> Scaffold {
         Scaffold {
             let murrayfile = try CodableFile(in: rootFolder,
                                              murrayfileName: Murrayfile.defaultName)

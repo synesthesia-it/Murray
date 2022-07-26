@@ -9,8 +9,7 @@ import Foundation
 
 public extension CodableFile where Object == Item {
     func writeableFiles(context: Template.Context,
-                        destinationRoot: Folder) throws -> [WriteableFile]
-    {
+                        destinationRoot: Folder) throws -> [WriteableFile] {
         let paths = try object.paths.flatMap {
             try writeableFiles(for: $0,
                                context: context,
@@ -26,8 +25,7 @@ public extension CodableFile where Object == Item {
 
     func writeableFiles(for path: Item.Path,
                         context: Template.Context,
-                        destinationRoot: Folder) throws -> [WriteableFile]
-    {
+                        destinationRoot: Folder) throws -> [WriteableFile] {
         let sourcePath = try path.from.resolve(with: context)
 
         if let folder = try? file.parent?.subfolder(at: sourcePath) {
@@ -51,8 +49,7 @@ public extension CodableFile where Object == Item {
     private func writeableFiles(in folder: Folder,
                                 context: Template.Context,
                                 destinationRoot: Folder,
-                                destinationPath: String) throws -> [WriteableFile]
-    {
+                                destinationPath: String) throws -> [WriteableFile] {
         let files = try folder.files.map { file -> WriteableFile in
             let destinationName = try file.name.resolve(with: context)
             let path = destinationPath.appendingPathComponent(destinationName)
@@ -73,8 +70,7 @@ public extension CodableFile where Object == Item {
 
     func writeableFile(for replacement: Item.Replacement,
                        context _: Template.Context,
-                       destinationRoot: Folder) throws -> WriteableFile
-    {
+                       destinationRoot: Folder) throws -> WriteableFile {
         let content: Content
 
         if let text = replacement.text {

@@ -108,8 +108,7 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
                 paths: [Item.Path],
                 plugins: Parameters?,
                 optionalDescription: String?,
-                replacements: [Item.Replacement])
-    {
+                replacements: [Item.Replacement]) {
         self.name = name
         self.parameters = parameters
         self.paths = paths

@@ -18,8 +18,7 @@ public struct Parameters: Codable,
     ExpressibleByNilLiteral,
     CustomDebugStringConvertible,
     CustomStringConvertible,
-    Collection
-{
+    Collection {
     private enum WrappedValue: Codable, Equatable, Hashable {
         case `nil`
         case string(String)
