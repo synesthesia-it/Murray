@@ -9,7 +9,6 @@ import Foundation
 import Commander
 import MurrayKit
 
-
 extension Commander.Group {
     func listCommand(in folder: Folder, name: String = "list") {
         command(name,

@@ -40,9 +40,7 @@ public struct Procedure: Codable, Hashable {
         self.itemPaths = itemPaths
     }
     
-    
     public mutating func add(itemPath: String) {
         itemPaths = itemPaths.filter { $0 != itemPath } + [itemPath]
     }
 }
-

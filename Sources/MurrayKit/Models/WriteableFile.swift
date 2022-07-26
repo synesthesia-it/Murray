@@ -10,7 +10,7 @@ import Foundation
 public struct WriteableFile {
     
     public enum Action {
-        case create//(context: Template.Context)
+        case create// (context: Template.Context)
         case edit(placeholder: String)
     }
     

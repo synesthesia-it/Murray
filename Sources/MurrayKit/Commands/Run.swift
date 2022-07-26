@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public struct Run: Command {
     
     var folder: Folder

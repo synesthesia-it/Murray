@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 extension CodableFile where Object == Item {
     public func writeableFiles(context: Template.Context,
                                destinationRoot: Folder) throws -> [WriteableFile] {
@@ -72,8 +71,6 @@ extension CodableFile where Object == Item {
         return files + subfolders
     }
     
-
-    
     public func writeableFile(for replacement: Item.Replacement,
                                context: Template.Context,
                                destinationRoot: Folder) throws -> WriteableFile {
@@ -100,4 +97,3 @@ extension CodableFile where Object == Item {
     }
     
 }
-

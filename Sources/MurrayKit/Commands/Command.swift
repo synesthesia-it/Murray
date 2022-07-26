@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public protocol Command {
     func execute() throws
     func executeAndCatch(verbose: Bool)
@@ -31,5 +30,3 @@ public extension Command {
         }
     }
 }
-
-

@@ -62,15 +62,24 @@ class PipelineTests: TestCase {
         let pipeline = try Pipeline(murrayfile: .init(in: root),
                                     procedure: "simpleGroup",
                                     context: ["name": "test"])
-        let xcodeProjPreviousContents = try root.file(at: "Test.xcodeproj/project.pbxproj").readAsString()
+       
         try pipeline.run()
-        let xcodeProjUpdatedContents = try root.file(at: "Test.xcodeproj/project.pbxproj").readAsString()
         
         let file = try root.file(at: "Sources/Files/test/test.swift.test")
         XCTAssertEqual(try file.readAsString(), "test.swift\n")
+    }
+    
+    func testXcodePluginAlteringXcodeProject() throws {
+        let root = try Scenario.simpleYaml.make()
+        let pipeline = try Pipeline(murrayfile: .init(in: root),
+                                    procedure: "simpleGroup",
+                                    context: ["name": "xcodeCustomFile"])
+        let xcodeProjPreviousContents = try root.file(at: "Test.xcodeproj/project.pbxproj").readAsString()
+        try pipeline.run()
+        let xcodeProjUpdatedContents = try root.file(at: "Test.xcodeproj/project.pbxproj").readAsString()
         XCTAssertNotEqual(xcodeProjPreviousContents, xcodeProjUpdatedContents)
         // check that xcodeplugin is properly adding newly created file to proper target. This test can be improved a lot.
-        XCTAssertTrue(xcodeProjUpdatedContents.contains("test.swift"))
-        XCTAssertFalse(xcodeProjPreviousContents.contains("test.swift"))
+        XCTAssertTrue(xcodeProjUpdatedContents.contains("xcodeCustomFile.swift"))
+        XCTAssertFalse(xcodeProjPreviousContents.contains("xcodeCustomFile.swift"))
     }
 }

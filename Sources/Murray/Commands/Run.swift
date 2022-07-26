@@ -9,7 +9,6 @@ import Foundation
 import Commander
 import MurrayKit
 
-
 extension Commander.Group {
     func runCommand(in folder: Folder, name: String = "run") {
         command(name,

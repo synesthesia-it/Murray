@@ -89,7 +89,6 @@ extension Commander.Group {
         }
     }
     
-    
     func scaffoldCommand(in folder: Folder, name: String = "scaffold") {
         group(name) {
             $0.murrayfile(in: folder)

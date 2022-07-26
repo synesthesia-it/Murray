@@ -30,7 +30,6 @@ extension String {
     @Translation("Previews results instead of actually execute it")
     static var runPreviewDescription: String
     
-    
     @Translation("Custom parameters for templates. Use key:value syntax (ex: \"author:yourname with spaces\")")
     static var runParametersDescription: String
     
@@ -68,7 +67,6 @@ extension String {
 
     @Translation("Create a procedure named like current item.")
     static var scaffoldItemCreateProcedureDescription: String
-
     
     @Translation("Create a new procedure in specified package with provided items in sequence.")
     static var scaffoldProcedureDescription: String

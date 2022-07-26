@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public struct Pipeline {
     let murrayfile: CodableFile<Murrayfile>
     let procedures: [PackagedProcedure]

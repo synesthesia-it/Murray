@@ -5,7 +5,6 @@
 //  Created by Stefano Mondino on 30/01/22.
 //
 
-
 import Foundation
 import Yams
 
@@ -124,7 +123,7 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
         guard let string = String(data: data, encoding: .utf8) else {
             throw Errors.unwriteableFile(file.path)
         }
-        try self.file.write(string,encoding: .utf8)
+        try self.file.write(string, encoding: .utf8)
         self.object = object
     }
     

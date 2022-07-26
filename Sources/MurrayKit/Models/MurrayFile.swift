@@ -5,7 +5,6 @@
 //  Created by Stefano Mondino on 30/01/22.
 //
 
-
 import Foundation
 
 public struct Murrayfile: Codable, Hashable {
@@ -55,7 +54,7 @@ public extension CodableFile where Object == Murrayfile {
     }
     
     func encoding<Object: Codable>(_ type: Object.Type = Object.self) -> CodableFile<Object>.Encoding {
-        switch (self.file.extension?.lowercased() ?? "") {
+        switch self.file.extension?.lowercased() ?? "" {
         case "yaml", "yml": return .yml
         default: return .json
         }

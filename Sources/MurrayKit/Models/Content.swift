@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public enum Content {
     case file(File)
     case text(String)

@@ -11,8 +11,6 @@ import Foundation
 import MurrayKit
 import Rainbow
 
-
-
 func commands() -> Group {
     let folder = Folder.current
     #if DEBUG

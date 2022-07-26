@@ -18,14 +18,14 @@ extension String: Resolvable {
     }
 }
 //
-//extension CodableFile: Resolvable {
+// extension CodableFile: Resolvable {
 //    public func resolve(with context: Template.Context) throws -> String {
 //        try file.resolve(with: context)
 //    }
-//}
+// }
 //
-//extension File: Resolvable {
+// extension File: Resolvable {
 //    public func resolve(with context: Template.Context) throws -> String {
 //        try Template(self, context: context).resolve()
 //    }
-//}
+// }

@@ -18,7 +18,7 @@ public class PluginManager {
     private init() {}
     
     public func add(plugin: PluginType) {
-        if !plugins.contains(where: { $0.name == plugin.name} ) {
+        if !plugins.contains(where: { $0.name == plugin.name}) {
             add(plugins: [plugin])
         }
     }

@@ -40,7 +40,6 @@ public struct Parameters: Codable,
         }
     }
 
-
     public var startIndex: Int { array?.startIndex ?? 0 }
 
     public var endIndex: Int { array?.endIndex ?? 0 }

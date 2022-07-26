@@ -8,8 +8,6 @@
 import Foundation
 
 public struct Item: Codable, CustomStringConvertible, Hashable {
-
-    
     
     public struct Parameter: Codable, CustomStringConvertible, Hashable {
         private enum CodingKeys: String, CodingKey {
