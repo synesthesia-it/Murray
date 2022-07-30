@@ -8,8 +8,6 @@ jobs:
     runs-on: macOS-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install tools
-      run: make setup
     - name: Lint
       run: make lint
     - name: Resolve
