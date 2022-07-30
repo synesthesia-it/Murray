@@ -5,10 +5,18 @@ on:
 
 jobs:
   TestMurrayKit:
-    runs-on: macOS-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        swift: ["5.5"]
+    runs-on: ${{ matrix.os }}
     steps:
+    - uses: fwal/setup-swift@2040b795e5c453c3a05fcb8316496afc8a74f192
+      with:
+        swift-version: ${{ matrix.swift }}
     - uses: actions/checkout@v2
     - name: Lint
+      if: ${{ matrix.os == 'macos-latest' }}
       run: swiftlint lint --strict
     - name: Resolve
       run: swift package resolve
@@ -16,14 +24,3 @@ jobs:
       run: swift build
     - name: Run tests
       run: swift test 2>&1 | xcpretty
-  TestLinux:
-    runs-on: ubuntu-latest
-    container: swift:5.3
-    steps:
-      - uses: actions/checkout@v2
-      - name: Resolve
-        run: swift package resolve
-      - name: Build
-        run: swift build
-      - name: Run tests
-        run: swift test 2>&1
