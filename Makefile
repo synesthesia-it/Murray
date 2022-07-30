@@ -15,7 +15,7 @@ project:
 lint:
 	swiftformat ./Sources
 	swiftlint --fix
-	swiftlint lint
+	swiftlint lint --strict
 
 git_setup:
 	eval "$$add_pre_commit_script"

@@ -41,7 +41,6 @@ class ListTests: TestCase {
     func testCommandFailedExecutionInWrongFolder() throws {
         let root = Folder.temporary
         XCTAssertThrowsError(try List(folder: root)) { error in
-            // TODO: check proper error
             XCTAssertEqual(error as? Errors, Errors.murrayfileNotFound(root.path))
 //            XCTAssert(error is LocationError)
 //            XCTAssertFalse(logger.messages.isEmpty)

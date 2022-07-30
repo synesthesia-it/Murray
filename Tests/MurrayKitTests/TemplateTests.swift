@@ -12,10 +12,10 @@ import XCTest
 class TemplateTests: TestCase {
     
     private func test(_ text: String,
-                            context: Template.Context,
-                            expected: String,
-                            file: StaticString = #file,
-                            line: UInt = #line) throws {
+                      context: Template.Context,
+                      expected: String,
+                      file: StaticString = #file,
+                      line: UInt = #line) throws {
         let template = Template(text, context: context)
         XCTAssertEqual(try template.resolve(), expected, file: file, line: line)
     }
