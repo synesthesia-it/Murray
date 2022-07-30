@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Lint
-      run: make lint
+      run: swiftlint lint --strict
     - name: Resolve
       run: swift package resolve
     - name: Build
