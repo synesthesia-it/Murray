@@ -34,7 +34,7 @@ extension String {
 
     @Translation("Create a new Murrayfile in current folder")
     static var scaffoldMurrayfileDescription: String
-    
+
     @Translation("Create a new Skeleton in current folder")
     static var scaffoldSkeletonfileDescription: String
 
@@ -81,10 +81,10 @@ extension String {
 
     @Translation("File format for file. Can be yml or json. Defaults to yml.")
     static var scaffoldFileFormatDescription: String
-    
+
     @Translation("Clone a remote repository containing a Skeleton file")
     static var cloneDescription: String
-    
+
     @Translation("A path pointing to a valid git repository, either local or remote. To specify a custom branch/tag, use @<tag> or @<branch> or @<commit_id> right after the url. \nExample: https://github.com/synesthesia-it/Murray@develop")
     static var cloneGitDescription: String
 }

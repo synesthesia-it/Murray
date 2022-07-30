@@ -100,7 +100,6 @@ class ScaffoldTests: TestCase {
                                   itemPaths: [itemRelativePath])
         
         XCTAssertTrue(package.object.procedures.contains(procedure))
-        
 
     }
     
@@ -203,7 +202,6 @@ class ScaffoldTests: TestCase {
     
     func testFailWhenProcedureAlreadyExists() throws {
         let root = try Scenario.simpleYaml.make()
-
         
         XCTAssertThrowsError(try Scaffold.procedure(named: "simpleGroup",
                                package: "simple",

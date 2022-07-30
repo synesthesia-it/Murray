@@ -42,11 +42,9 @@ public struct Murrayfile: Hashable, RootFile {
 }
 
 public extension CodableFile where Object == Murrayfile {
-
     func packages() throws -> [CodableFile<Package>] {
         try object.packages
             .compactMap { try file.parent?.file(named: $0) }
             .map { try .init(file: $0) }
     }
-
 }

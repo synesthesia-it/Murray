@@ -56,6 +56,7 @@ public struct File: Hashable {
             throw Errors.unwriteableFile(file.path)
         }
     }
+
     public func delete() throws {
         do {
             try file.delete()

@@ -5,7 +5,6 @@
 //  Created by Stefano Mondino on 11/05/22.
 //
 
-
 import Foundation
 import Yams
 @testable import MurrayKit
@@ -51,7 +50,7 @@ class PipelineTests: TestCase {
     func testSingleProcedureNotFoundInMultipleProcedureSetup() throws {
         let root = try Scenario.simpleJSON.make()
         XCTAssertThrowsError(try Pipeline(murrayfile: .init(in: root),
-                                          procedures: ["simpleGroup","wrongName"],
+                                          procedures: ["simpleGroup", "wrongName"],
                                           context: ["name": "test"])) { error in
             XCTAssertEqual(error as? Errors, .procedureNotFound(name: "wrongName"))
         }

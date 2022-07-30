@@ -5,7 +5,6 @@
 //  Created by Stefano Mondino on 11/05/22.
 //
 
-
 import Foundation
 @testable import MurrayKit
 import XCTest
@@ -22,7 +21,7 @@ class TemplateTests: TestCase {
     }
     func testSimpleStringConversion() throws {
         try test("{{name}} is in the house",
-                 context:  ["name": "John Doe"],
+                 context: ["name": "John Doe"],
                  expected: "John Doe is in the house")
     }
     
@@ -52,13 +51,13 @@ class TemplateTests: TestCase {
     
     func testNestedParametersConversion() throws {
         try test("{{person.firstname}} {{person.lastname|uppercase}}",
-                 context: ["person": ["firstname": "John", "lastname":  "Doe"]],
+                 context: ["person": ["firstname": "John", "lastname": "Doe"]],
                  expected: "John DOE")
     }
     
     func testContextWithGlobalEnvironment() throws {
         try test("{{person.firstname}} {{person.lastname|uppercase}} ©{{year}}",
-                 context: .init(["person": ["firstname": "John", "lastname":  "Doe"]],
+                 context: .init(["person": ["firstname": "John", "lastname": "Doe"]],
                                 environment: ["year": "2022"]),
                  expected: "John DOE ©2022")
     }

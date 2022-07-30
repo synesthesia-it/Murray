@@ -20,7 +20,7 @@ extension Commander.Group {
                 .executeAndCatch(verbose: verbose)
         }
     }
-    
+
     private func skeletonfile(in folder: Folder, name: String = "murrayfile") {
         command(name,
                 Flag("verbose"),

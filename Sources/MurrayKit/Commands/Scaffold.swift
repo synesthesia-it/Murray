@@ -26,10 +26,10 @@ public struct Scaffold: Command {
                                    in: folder)
         }
     }
-    
+
     public static func skeletonfile(named name: String = Skeleton.defaultName,
-                                  encoding: CodableFile<Skeleton>.Encoding,
-                                  in folder: Folder) -> Scaffold {
+                                    encoding: CodableFile<Skeleton>.Encoding,
+                                    in folder: Folder) -> Scaffold {
         .init {
             let file = Skeleton.empty
             try CodableFile.create(file,

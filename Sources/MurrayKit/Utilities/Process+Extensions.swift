@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //  Inspired by https://github.com/JohnSundell/ShellOut
 //  Created by Stefano Mondino on 26/07/22.
 //
@@ -15,7 +15,7 @@ extension Process {
         let command = "cd \(folder.path.escapingSpaces) && \(command)"
         launchPath = "/bin/bash"
         arguments = ["-c", command]
-        
+
         // Because FileHandle's readabilityHandler might be called from a
         // different queue from the calling queue, avoid a data race by
         // protecting reads and writes to outputData and errorData on

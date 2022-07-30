@@ -2,16 +2,11 @@
 
 [![Swift](https://github.com/synesthesia-it/Murray/actions/workflows/tests.yml/badge.svg)](https://github.com/synesthesia-it/Murray/actions/workflows/tests.yml)
 
-Murray is a set of tools for Skeleton-based software development.
+**Murray** is a command-line integrator of template files into projects. 
+It helps developers to quickly scaffold new features into any kind of project based to their own templates, folder structure and naming conventions.
+It's written in **Swift** but it's compatible with any text-based project.
 
-**Skeleton-based** software usually consists of code generated through lots of boilerplate that can't be abstracted and re-used through software architecture principles.
-
-For instance, a classic HTML website always consists of pages with same `head` and `body`, filled with custom data in repeating structures.
-
-Murray defines a common and simple design language made of specifications (JSON specs) and template files, wraps them in structured packages ("Bones") and provides tools for developers to quickly use them in their projects.
-Speeding up development process, avoiding annoying and shared coding mistakes and enforcing proper folder structures are some of Murray's main goals.
-
-# In a nutshell
+# The (very basic) example
 
 Projects are usually made of groups of boilerplate files that has a fixed structure and part of their contents changing according to some input.
 
@@ -19,10 +14,10 @@ Some examples can be iOS' `UIViewController`, Android's `Activity`, controllers 
 
 These files are always created from scratch in specific subfolders, replaced with some placeholder (in both filename and contents) and then completed with proper context-related implementations.
 
-Murray addresses the first problem (folder structure) with JSON specs and the second one (placeholders) with Stencil templates. 
+Murray addresses the first problem (folder structure) with YAML or JSON specs and the second one (placeholders) with Stencil templates. 
 
 Stencil templates are text files where everything wrapped around double curly braces (like `{{ this }}`) can be replaced by a key-value pair, where the key is the wrapped word and the value is the actual substitution.
-An example template for a `UIViewController` can be
+An example template for a `UIViewController` can be defined in a file with these contents:
 
 ```swift
 import UIKit
@@ -36,11 +31,28 @@ class {{ name|firstUppercase }}sViewController: UIViewController {
 }
 ```
 
-Example execution command (from CLI): `murray bone new viewController product`
+Example execution command (from CLI): 
+
+```sh
+murray run ViewController product
+```
 
 When executed by Murray with some parameters, this template will actually render it's context by replacing `name` occurrences with whatever provided, and applying *filters* like uppercase, lowercase, etc.
 
-Rendered result will then be copied to a destination folder according to template's specifications in `BoneItem.json` file with these contents: 
+Murray can be instructed to *resolve* contents of the template file (at `ViewController.swift.stencil`) and copy  to a specific folder using a configuration file with this syntax
+
+```yml
+name: ViewController
+description: A custom description for this simple template.
+paths:
+- from: "ViewController.swift.stencil"
+  to: "Sources/Files/{{ name|firstUppercase }}sViewController.swift"
+  plugins:
+    xcode:
+      targets: ["App"]
+```
+
+Rendered result will be saved at `Sources/Files/ProductsViewController.swift` with these final contents: 
 
 ```swift
 import UIKit
@@ -53,26 +65,34 @@ class ProductsViewController: UIViewController {
   }
 }
 ```
+>Xcode developers, we've got you covered! With the `xcode` plugin, generated files can be added to your targets automatically! In this example, Murray will look for the `App` target and add generated view controller to it.
+
 
 Different templates can be rendered sequentially by a single execution, leading to a standardized way of software development.
 
-# Key Features
+
+# Main Features
 
 - Clone a **skeleton** project from a remote repository, customize it with your project name and custom properties and have it ready to run. Murray supports **tags** and **branches** for remote repositories (`@develop` or `@1.0.0`)
+```sh
+murray clone YourProjectName yourGitPath
+```
 
 - Develop your project with **bones**: template files you design that gets easily integrated in your project structure. If a adding a screen to your app requires 3 new files, you can design them with a template and have Murray resolve them for you and move the result in proper folders.
 
 - Install bones templates from any number of different repositories: share your file templates with your team.
 
-- Automatically add slices of code to already existing files when adding new bones (*example: Add a custom xml tag for your new Activity at the end of the Android manifest.xml when creating an Activity from a custom bone*).
+- Automatically add slices of code to already existing files when adding new bones (*example: Add a custom xml tag for your new Activity at the end of the Android manifest.xml when creating an Activity from a custom bone*). We call them **replacements**.
 
 - Easily manage and check your bones environment: see what's available directly from CLI
+```sh
+murray list
+```
 
 - Design your templates with **[Stencil](https://github.com/stencilproject/Stencil)**
 
 - Integrate Murray functionalities in any Swift application through **MurrayKit** framework
 
-- [WIP] MurrayStudio: a graphical user interface for improved editing and management.
 
 # Installation
 
@@ -84,7 +104,7 @@ Different templates can be rendered sequentially by a single execution, leading 
 ```
 mint install synesthesia-it/Murray
 ```
-Note: please ensure you're using at least Mint v0.12 (Swift 5)
+
 
 #### Compiling from source (latest version from *master* branch)
 
@@ -122,45 +142,66 @@ alias murray='/opt/Murray/murray'
 
 # Contributing
 
-Checkout the project and run 
+Checkout the project and open `Package.swift`
 
-`swift package generate-xcodeproj`
-
-## IMPORTANT:
-Due to a SPM bug, it's not possible to run tests out of the box inside XCode using Quick and Nimble.
-To workaround this issue, look for the `QuickObjCRuntime` target, go to build settings and set `Enable Modules (C and Objective-C)` to `YES`.
-
-As an alternative, it's possible to run  `swift test` directly from terminal.
 
 # Key Concepts
+
+## Configuration files format
+
+To properly setup your project to work with Murray templates, you'll need different configuration files (see below). 
+Murray support **JSON** and **YAML** out of the box. 
+
+If no extension is declared in your filename, Murray will try to parse the file contents and guess the format.
+
+## Resolution
+The concept of *resolving* involves some text input (a path or some file contents) with some placeholders thate will be replaced (*resolved*) with some specifict contents provided by a *context*.
+
+## Context
+The *context* is a map of key-values that are used in text resolutions. They are always retrieved from Skeleton environment fields plus current execution fields (with current execution overriding environment fields when collisions are detected).
 
 ## Skeleton
 
 A skeleton is an empty project, containing any type of file and folder.
 The Skeleton is a shared starting point for a new project, and should not contain any bone template; in other words, the project should work out of the box as a real project.
-To be compatible with Murray, a Skeleton project must contain a `Skeletonspec.json` file in its root folder.
+To be compatible with Murray, a Skeleton project must contain a `Skeleton` file in its root folder.
+Available fields are:
+- `paths`: array of paths that will be resolved right after cloning the original skeleton. A path should contain: 
+  - `from` field, a path to a local folder/file that will be resolved and moved to destination.
+  - `to` field, the path where the resolved folder/file will be copied. 
+  > If `from` field is a folder containing other folders, they will all be resolved and copied to destination.
+- `initializeGit`: initialize a new git (`git init`) after skeleton setup
+- `scripts`: an array of shell scripts that will be executed after cloning and paths replacements.
+Example (for non-xcode users: `Skeleton.xcodeproj` is actually a folder.): 
+
+```json
+{
+        "scripts": [
+        "sh install.sh"
+        ],
+        "initGit": true,
+        "paths" : [{
+            "from": "Skeleton.xcodeproj",
+            "to": "{{ name|firstUppercase }}.xcodeproj"
+        }],
+}
+```
+
 
 ## Bone
 
-A Bone is a piece of boilerplate code splitted into one or more template files. 
-A template file is usually NOT working out of the box, but needs to be *resolved* against some kind of context, and then copied into proper folder.
-
-Bones structure can be represented with this diagram
-
-![diagram](docs/diagram.svg)
-
-## BoneItem
-
-A BoneItem represents a group of template files that can be resolved and copied into current project.
-BoneItems consist in a folder containing a `BoneItem.json` file and any number of template files.
-
-`BoneItem.json` fields are: 
+A Bone represents a group of template files that can be resolved and copied into current project.
+BoneItems consist in a folder containing a configuration (example: `bone.yml`) file and any number of template files.
+Fields are
 
 - `name`: a name identifying current item.
+- `description`: a brief description explaining the purpose of this item
 - `paths`: an array of path objects, made by a `from` and a `to` string value. 
-  `from` represents a folder or a file relative to BoneItem.json itself and containing some template that needs to be copied into target project.
-  `to` represents target folder path, relative to project's root (the one containing the `Murrayfile.json` file.)
+  - `from` represents a folder or a file relative to BoneItem.json itself and containing some template that needs to be copied into target project.
+  - `to` represents target folder path, relative to project's root (the one containing the `Murrayfile.json` file.)
   Both `from` and `to` paths are *resolved* against provided context, meaning that every Stencil placeholder will be converted in context value, if available.
+  - `plugin`: plugin data for current bone
+
 - `parameters`: an array of objects representing all the keys expected by templates. Each object must contain a `name` string parameter (the actual name used in the template) and an optional `isRequired` boolean flag.
     If a `required` parameter is not found in provided context, the execution will stop with an error.
 - `replacements`: an array of `replacements` associated to current item. See `Replacement` for more informations.
@@ -225,11 +266,13 @@ Example:
 
 ## Murrayfile
 
-The Murrayfile is located in the root folder in `Murrayfile.json` file and contains basic setup for bones (relative paths to BoneSpecs) and environment context.
-`Murrayfile.json` fields are: 
+The Murrayfile is located in the root folder in `Murrayfile` file and contains the main configuration for all the packages and the project's environment. 
+Murray file is **required** in order to use all the commands (except the `clone` skeleton one).
+Fields are: 
 
 - `packages`: an array of paths relative to Murrayfile folder pointing to a `BonePackage.json` file
-- `environment`: an object representing a shared context for each resolution. Can contain simple data such `author` name, `packageName` and similar, or more complex array/objects that will be handled by templates.
+- `environment`: an hashmap representing a shared context for each resolution. 
+Can contain simple data such `author` name, `packageName` and similar, or more complex array/objects that will be handled by templates. Every field in this map can contain resolvable placeholders, pointing to other fields in the environment or contextual values for each run.
 
 Example: 
 
@@ -242,34 +285,17 @@ Example:
     "author": "Stefano Mondino",
     "company": "Synesthesia",
     "target": "App"
+    "currentName": "{{name}}"
   }
 }
 ```
 
-## SkeletonSpec
+## Skeleton
 
 The `Skeletonspec.json` file contains informations needed by the skeleton phase of a project to be converted in an actual project.
 It's deleted after proper project creation as it won't be needed anymore.
 
-Example (for non-xcode users: `Skeleton.xcodeproj` is actually a folder.): 
 
-```json
-{
-        "scripts": [
-        "sh install.sh"
-        ],
-        "initGit": true,
-        "folders" : [{
-            "from": "Skeleton.xcodeproj",
-            "to": "{{ name|firstUppercase }}.xcodeproj"
-        }],
-        "files": [
-        {
-            "from": "Test.swift",
-            "to": "{{ name|firstUppercase }}.swift"
-        }]
-}
-```
 
 ## Template resolution
 

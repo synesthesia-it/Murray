@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 26/07/22.
 //
@@ -10,6 +10,7 @@ import Foundation
 public protocol RootFile: Codable {
     static var defaultName: String { get }
 }
+
 public extension CodableFile where Object: RootFile {
     init(in folder: Folder,
          defaultName: String = Object.defaultName) throws {

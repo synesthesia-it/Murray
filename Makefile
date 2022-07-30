@@ -13,10 +13,9 @@ project:
 # Install dependencies, download build resources and add pre-commit hook
 
 lint:
-	
 	swiftformat ./Sources
-	swiftlint autocorrect --config "config.swiftlint.yml"
-	swiftlint lint --config "config.swiftlint.yml"
+	swiftlint --fix
+	swiftlint lint 
   
 git_setup:
 	eval "$$add_pre_commit_script"
@@ -42,8 +41,8 @@ FILES=\$(git diff --cached --name-only --diff-filter=ACMR "*.swift" | sed 's| |\
 ${SWIFTFORMAT_PATH} \$FILES
 
 # Lint
-${SWIFTLINT_PATH} autocorrect --config "config.swiftlint.yml" \$FILES
-${SWIFTLINT_PATH} lint --config "config.swiftlint.yml" \$FILES
+${SWIFTLINT_PATH} --fix \$FILES
+${SWIFTLINT_PATH} lint \$FILES
 
 # Add back the formatted/linted files to staging
 echo "\$FILES" | xargs git add

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 26/07/22.
 //
@@ -20,11 +20,10 @@ extension Commander.Group {
                 Flag("verbose", description: .verboseDescription),
                 Argument<[String]?>("parameters",
                                     description: .runParametersDescription),
-                description: .cloneDescription) { name, git, verbose, parameters in
+                description: .cloneDescription) { _, _, verbose, _ in
 
             try List(folder: folder)
                 .executeAndCatch(verbose: verbose)
         }
     }
 }
-

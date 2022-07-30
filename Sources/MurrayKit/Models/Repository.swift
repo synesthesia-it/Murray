@@ -19,6 +19,7 @@ public class Repository: Hashable, CustomStringConvertible {
     public var description: String {
         package
     }
+
     private init(repo: String, version: String = "", package: String? = nil) {
         self.repo = repo
         self.version = version

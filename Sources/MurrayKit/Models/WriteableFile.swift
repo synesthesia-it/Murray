@@ -103,7 +103,7 @@ public extension CodableFile {
                         context: Template.Context,
                         destinationRoot: Folder) throws -> [WriteableFile] {
         let sourcePath: String = resolveSource ? try path.from.resolve(with: context) : path.from
-    
+
         if let folder = try? file.parent?.subfolder(at: sourcePath) {
             return try writeableFiles(in: folder,
                                       context: context,

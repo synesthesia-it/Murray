@@ -5,7 +5,6 @@
 //  Created by Stefano Mondino on 11/05/22.
 //
 
-
 import Foundation
 import Yams
 @testable import MurrayKit
@@ -20,7 +19,6 @@ class WriteableFileTests: TestCase {
                                  path: "Sources/{{name}}/{{name}}.swift",
                                  destinationRoot: root,
                                  action: .create)
-        
         
         XCTAssertEqual(try file.preview(context: context), "replaced with TEST")
         
