@@ -118,11 +118,11 @@ public enum Logger {
         set { logger.logLevel = newValue }
     }
 
-    public static func log(_ message: String, level: LogLevel = .error, tag: String? = nil) {
+    public static func log(_ message: String, level: LogLevel = .normal, tag: String? = nil) {
         log(.message(message), level: level, tag: tag)
     }
 
-    public static func log(_ log: Log, level: LogLevel = .error, tag: String? = nil) {
+    public static func log(_ log: Log, level: LogLevel = .normal, tag: String? = nil) {
         logger.log(log, level: level, tag: tag)
     }
 }

@@ -130,6 +130,7 @@ public struct Clone: CommandWithContext {
         Logger.log("Deleting original paths",
                    level: .verbose)
         skeleton.object.paths
+            .filter { $0.from != ((try? $0.to.resolve(with: context)) ?? $0.to) }
             .map { $0.from }
             .forEach {
                 Logger.log("Deleting \($0)",

@@ -1,6 +1,8 @@
 paths:
 - from: "{{name}}"
   to: "{{name}}"
+- from: "main.swift"
+  to: "main.swift"
 initializeGit: false
 scripts:
 - echo "Hello" >> hello.txt

@@ -33,7 +33,7 @@ class CloneTests: TestCase {
                         projectName: String,
                         initGitAfterResolution: Bool,
                         file _: String = #file,
-                        line _: UInt = #line) throws {
+                        line _: UInt = #line) throws -> Folder {
         let projectFolder = try folder.subfolder(named: projectName)
         if !initGitAfterResolution {
             XCTAssertThrowsError(try projectFolder.subfolder(named: ".git"))
@@ -50,6 +50,7 @@ class CloneTests: TestCase {
         XCTAssertEqual(try projectFolder.file(named: "hello.txt").readAsString(), "Hello\n")
 
         XCTAssertThrowsError(try projectFolder.file(named: "Skeleton.yml"))
+        return projectFolder
     }
 
     func testSimpleClone() throws {
@@ -64,9 +65,10 @@ class CloneTests: TestCase {
                           mainPlaceholder: projectName)
         try clone.execute()
 
-        try checks(folder: folder,
-                   projectName: projectName,
-                   initGitAfterResolution: false)
+        let projectFolder = try checks(folder: folder,
+                                       projectName: projectName,
+                                       initGitAfterResolution: false)
+        XCTAssertEqual(try projectFolder.file(at: "main.swift").readAsString(), "// LocalGit.swift\n")
     }
 
     func testCloneWithSubfolder() throws {
