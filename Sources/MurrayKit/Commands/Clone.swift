@@ -46,7 +46,7 @@ public struct Clone {
                    level: .verbose)
         try? Folder.temporary.subfolder(named: projectName).delete()
         
-        let temporaryProjectFolder = try clone(from: repository,
+        var temporaryProjectFolder = try clone(from: repository,
                   into: Folder.temporary,
                   projectName: projectName)
         
@@ -59,15 +59,20 @@ public struct Clone {
         
         Logger.log("Moving contents from temporary folder")
         
+        if let subfolderPath = subfolderPath {
+            Logger.log("Looking for subfolder \(subfolderPath) in checked out folder \(temporaryProjectFolder.path)")
+            try temporaryProjectFolder = temporaryProjectFolder.subfolder(at: subfolderPath)
+        }
+        
         try temporaryProjectFolder.moveContents(to: projectFolder, includeHidden: true)
         
         guard let skeleton = try? CodableFile<Skeleton>.init(in: projectFolder) else {
             throw Errors.noValidSkeletonFound("\(projectFolder.path)")
         }
 
-        Logger.log("Deleting original git folder",
+        Logger.log("Deleting original git folder, if present",
                    level: .verbose)
-        try projectFolder.subfolder(named: ".git").delete()
+        try? projectFolder.subfolder(named: ".git").delete()
 
         Logger.log("Resolving paths",
                    level: .verbose)

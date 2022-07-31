@@ -31,22 +31,17 @@ class CloneTests: TestCase {
         return try makeGit(in: try Scenario.cloneOriginInSubfolder.make())
     }
     
-    func testSimpleClone() throws {
-        Logger.logLevel = .verbose
-        let git = try makeOriginalGit()
-        let folder = try Scenario.folder()
-        let projectName = "LocalGit"
-        
-        try? folder.subfolder(named: projectName).delete()
-        
-        let clone = Clone(folder: folder,
-                          git: git.path,
-                          context: ["name": .init(stringLiteral: projectName)])
-        try clone.run()
-        
+    private func checks(folder: Folder,
+                        projectName: String,
+                        initGitAfterResolution: Bool,
+                        file: String = #file,
+                        line: UInt = #line) throws {
         let projectFolder = try folder.subfolder(named: projectName)
-        
-        XCTAssertThrowsError(try projectFolder.subfolder(named: ".git"))
+        if !initGitAfterResolution {
+            XCTAssertThrowsError(try projectFolder.subfolder(named: ".git"))
+        } else {
+            XCTAssertEqual(try projectFolder.subfolder(named: ".git").name, ".git")
+        }
         
         XCTAssertThrowsError(try projectFolder.subfolder(named: "{{name}}"))
         
@@ -59,9 +54,40 @@ class CloneTests: TestCase {
         XCTAssertThrowsError(try projectFolder.file(named: "Skeleton.yml"))
     }
     
+    func testSimpleClone() throws {
+        let git = try makeOriginalGit()
+        let folder = try Scenario.folder()
+        let projectName = "LocalGit"
+        
+        try? folder.subfolder(named: projectName).delete()
+        
+        let clone = Clone(folder: folder,
+                          git: git.path,
+                          context: ["name": .init(stringLiteral: projectName)])
+        try clone.run()
+        
+        try checks(folder: folder,
+                   projectName: projectName,
+                   initGitAfterResolution: false)
+       
+    }
+    
     func testCloneWithSubfolder() throws {
         let git = try makeSubfolderGit()
+        let folder = try Scenario.folder()
+        let projectName = "LocalGit"
         
+        try? folder.subfolder(named: projectName).delete()
+        
+        let clone = Clone(folder: folder,
+                          subfolderPath: "Subfolder",
+                          git: git.path,
+                          context: ["name": .init(stringLiteral: projectName)])
+        try clone.run()
+        
+        try checks(folder: folder,
+                   projectName: projectName,
+                   initGitAfterResolution: true)
     }
     
     func testRemoteClone() throws {
