@@ -87,6 +87,10 @@ extension String {
 
     @Translation("A path pointing to a valid git repository, either local or remote. To specify a custom branch/tag, use @<tag> or @<branch> or @<commit_id> right after the url. \nExample: https://github.com/synesthesia-it/Murray@develop")
     static var cloneGitDescription: String
+
+    @Translation("Provided path should be intended as a local folder, ignoring git status, copy folder as-is. This is useful for local development to avoid committing every test.")
+    static var cloneForceLocalPathDescription: String
+
     @Translation("A subfolder path containing the actual Skeleton project. This is useful when the same repository contains more than one Skeleton,")
     static var cloneGitSubfolderDescription: String
 }

@@ -59,8 +59,8 @@ class CloneTests: TestCase {
 
         try? folder.subfolder(named: projectName).delete()
 
-        let clone = Clone(folder: folder,
-                          git: git.path,
+        let clone = Clone(path: git.path,
+                          folder: folder,
                           mainPlaceholder: projectName)
         try clone.execute()
 
@@ -76,15 +76,38 @@ class CloneTests: TestCase {
 
         try? folder.subfolder(named: projectName).delete()
 
-        let clone = Clone(folder: folder,
+        let clone = Clone(path: git.path,
+                          folder: folder,
                           subfolderPath: "Subfolder",
-                          git: git.path,
                           mainPlaceholder: projectName)
         try clone.execute()
 
         try checks(folder: folder,
                    projectName: projectName,
                    initGitAfterResolution: true)
+    }
+
+    func testCloneWithPath() throws {
+        let git = try Scenario.cloneOrigin.make()
+        try git.createFileIfNeeded(at: "uncommitted.txt",
+                                   contents: "uncommitted".data(using: .utf8))
+        let folder = try Scenario.folder()
+        let projectName = "LocalGit"
+
+        try? folder.subfolder(named: projectName).delete()
+
+        let clone = Clone(path: git.path,
+                          folder: folder,
+                          mainPlaceholder: projectName,
+                          copyFromLocalFolder: true)
+        try clone.execute()
+
+        try checks(folder: folder,
+                   projectName: projectName,
+                   initGitAfterResolution: false)
+
+        let projectFolder = try folder.subfolder(named: projectName)
+        XCTAssertEqual(try projectFolder.file(at: "uncommitted.txt").readAsString(), "uncommitted")
     }
 
     func testRemoteClone() throws {}

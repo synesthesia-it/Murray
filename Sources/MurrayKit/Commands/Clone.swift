@@ -9,33 +9,25 @@ import Foundation
 
 public struct Clone: CommandWithContext {
     public let mainPlaceholder: String
-    public let repository: Repository
+//    public let repository: Repository
+    public let path: String
+    public let forceLocalCopy: Bool
     public let params: [String]
     public let folder: Folder
     public let subfolderPath: String?
 
-    init(repository: Repository,
-         mainPlaceholder: String,
-         parameters: [String]?,
-         folder: Folder,
-         subfolderPath: String?) {
-        self.repository = repository
-        self.mainPlaceholder = mainPlaceholder
-        params = parameters ?? []
+    public init(path: String,
+                folder: Folder,
+                subfolderPath: String? = nil,
+                mainPlaceholder: String,
+                copyFromLocalFolder: Bool = false,
+                parameters: [String]? = nil) {
+        self.path = path
         self.folder = folder
         self.subfolderPath = subfolderPath
-    }
-
-    public init(folder: Folder,
-                subfolderPath: String? = nil,
-                git: String,
-                mainPlaceholder: String,
-                parameters: [String]? = nil) {
-        self.init(repository: .init(at: git),
-                  mainPlaceholder: mainPlaceholder,
-                  parameters: parameters,
-                  folder: folder,
-                  subfolderPath: subfolderPath)
+        self.mainPlaceholder = mainPlaceholder
+        params = parameters ?? []
+        forceLocalCopy = copyFromLocalFolder
     }
 
     public func execute() throws {
@@ -46,16 +38,23 @@ public struct Clone: CommandWithContext {
 
         Logger.log("Template context:\n\(context)\n")
 
-        Logger.log("Cloning repository from \(repository) into \(Folder.temporary.path)",
-                   level: .verbose)
         try? Folder.temporary.subfolder(named: projectName).delete()
-
-        var temporaryProjectFolder = try clone(from: repository,
+        var temporaryProjectFolder: Folder
+        if forceLocalCopy {
+            Logger.log("Copying contents from: \(path)")
+            let destination = try Folder.temporary.createSubfolderIfNeeded(withName: projectName)
+            let copySource = try Folder(path: path)
+            temporaryProjectFolder = try copySource.copy(to: destination)
+        } else {
+            let repository = Repository(at: path)
+            Logger.log("Cloning repository from \(repository) into \(Folder.temporary.path)",
+                       level: .verbose)
+            temporaryProjectFolder = try clone(from: repository,
                                                into: Folder.temporary,
                                                projectName: projectName)
 
-        Logger.log("Project cloned to \(temporaryProjectFolder.path)")
-
+            Logger.log("Project cloned to \(temporaryProjectFolder.path)")
+        }
         Logger.log("Creating final project folder at \(folder.path)\(projectName)",
                    level: .verbose)
 
