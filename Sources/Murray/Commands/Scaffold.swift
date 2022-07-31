@@ -21,7 +21,7 @@ extension Commander.Group {
         }
     }
 
-    private func skeletonfile(in folder: Folder, name: String = "murrayfile") {
+    private func skeletonfile(in folder: Folder, name: String = "skeleton") {
         command(name,
                 Flag("verbose"),
                 Option<String?>("format", default: nil, description: .scaffoldFileFormatDescription),

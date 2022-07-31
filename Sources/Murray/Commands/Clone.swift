@@ -19,7 +19,7 @@ extension Commander.Group {
                                  description: .cloneGitDescription),
                 Flag("verbose", description: .verboseDescription),
                 Argument<String?>("subfolder",
-                                  description: .cloneGitSubfolderDescription)
+                                  description: .cloneGitSubfolderDescription),
                 Argument<[String]?>("parameters",
                                     description: .runParametersDescription),
                 description: .cloneDescription) { name, git, verbose, subfolder, parameters in
@@ -27,7 +27,9 @@ extension Commander.Group {
             try Clone(folder: folder,
                       subfolderPath: subfolder,
                       git: git,
-                      context: parameters)
+                      mainPlaceholder: name,
+                      parameters: parameters)
+                .executeAndCatch(verbose: verbose)
         }
     }
 }

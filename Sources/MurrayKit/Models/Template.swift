@@ -10,7 +10,8 @@ import Foundation
 import Stencil
 
 public struct Template {
-    public struct Context: ExpressibleByDictionaryLiteral, CustomStringConvertible {
+    public struct Context: ExpressibleByDictionaryLiteral,
+        CustomStringConvertible {
         public var description: String { values.description }
 
         public let values: JSON

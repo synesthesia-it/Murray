@@ -7,18 +7,21 @@
 
 import Foundation
 
-public struct Clone {
-    private let repository: Repository
-    private let context: Parameters
-    private let folder: Folder
-    private let subfolderPath: String?
+public struct Clone: CommandWithContext {
+    public let mainPlaceholder: String
+    public let repository: Repository
+    public let params: [String]
+    public let folder: Folder
+    public let subfolderPath: String?
 
     init(repository: Repository,
-         context: Parameters,
+         mainPlaceholder: String,
+         parameters: [String]?,
          folder: Folder,
          subfolderPath: String?) {
         self.repository = repository
-        self.context = context
+        self.mainPlaceholder = mainPlaceholder
+        params = parameters ?? []
         self.folder = folder
         self.subfolderPath = subfolderPath
     }
@@ -26,46 +29,47 @@ public struct Clone {
     public init(folder: Folder,
                 subfolderPath: String? = nil,
                 git: String,
-                context: Parameters) {
+                mainPlaceholder: String,
+                parameters: [String]? = nil) {
         self.init(repository: .init(at: git),
-                  context: context,
+                  mainPlaceholder: mainPlaceholder,
+                  parameters: parameters,
                   folder: folder,
                   subfolderPath: subfolderPath)
     }
 
-    public func run() throws {
-        guard let projectName: String = context["name"] else {
+    public func execute() throws {
+        let context: Template.Context = .init(context(mainPlaceholderKey: "name"))
+        guard let projectName: String = context.values["name"] as? String else {
             throw Errors.unknown
         }
-        let pluginManager = PluginManager.shared
 
-        let context: Template.Context = .init(context)
         Logger.log("Template context:\n\(context)\n")
 
         Logger.log("Cloning repository from \(repository) into \(Folder.temporary.path)",
                    level: .verbose)
         try? Folder.temporary.subfolder(named: projectName).delete()
-        
+
         var temporaryProjectFolder = try clone(from: repository,
-                  into: Folder.temporary,
-                  projectName: projectName)
-        
+                                               into: Folder.temporary,
+                                               projectName: projectName)
+
         Logger.log("Project cloned to \(temporaryProjectFolder.path)")
-        
+
         Logger.log("Creating final project folder at \(folder.path)\(projectName)",
                    level: .verbose)
 
         let projectFolder = try folder.createSubfolderIfNeeded(withName: projectName)
-        
+
         Logger.log("Moving contents from temporary folder")
-        
+
         if let subfolderPath = subfolderPath {
             Logger.log("Looking for subfolder \(subfolderPath) in checked out folder \(temporaryProjectFolder.path)")
             try temporaryProjectFolder = temporaryProjectFolder.subfolder(at: subfolderPath)
         }
-        
+
         try temporaryProjectFolder.moveContents(to: projectFolder, includeHidden: true)
-        
+
         guard let skeleton = try? CodableFile<Skeleton>.init(in: projectFolder) else {
             throw Errors.noValidSkeletonFound("\(projectFolder.path)")
         }
@@ -74,9 +78,37 @@ public struct Clone {
                    level: .verbose)
         try? projectFolder.subfolder(named: ".git").delete()
 
+        try resolvePaths(for: skeleton,
+                         projectFolder: projectFolder,
+                         context: context)
+
+        Logger.log("Launching custom scripts",
+                   level: .verbose)
+        try skeleton.object.scripts.forEach {
+            let script = try $0.resolve(with: context)
+            Logger.log("\(script)",
+                       level: .verbose)
+            try Process().launchBash(with: script, in: projectFolder)
+        }
+
+        if skeleton.object.initializeGit {
+            Logger.log("Initializing git version control",
+                       level: .verbose)
+            try Process().launchBash(with: "git init", in: projectFolder)
+        }
+
+        Logger.log("Deleting skeleton file at \(skeleton.file.path(relativeTo: folder))",
+                   level: .verbose)
+        try skeleton.file.delete()
+        Logger.log("Created new project named \(projectName) at \(projectFolder.path)")
+    }
+
+    private func resolvePaths(for skeleton: CodableFile<Skeleton>,
+                              projectFolder: Folder,
+                              context: Template.Context) throws {
         Logger.log("Resolving paths",
                    level: .verbose)
-
+        let pluginManager = PluginManager.shared
         try skeleton.object.paths.forEach { path in
             let enrichedContext = context.adding(path.customParameters())
             try pluginManager.execute(.init(element: path,
@@ -106,25 +138,6 @@ public struct Clone {
                 try? projectFolder.file(at: $0).delete()
                 try? projectFolder.subfolder(at: $0).delete()
             }
-        Logger.log("Launching custom scripts",
-                   level: .verbose)
-        try skeleton.object.scripts.forEach {
-            let script = try $0.resolve(with: context)
-            Logger.log("\(script)",
-                       level: .verbose)
-            try Process().launchBash(with: script, in: projectFolder)
-        }
-
-        if skeleton.object.initializeGit {
-            Logger.log("Initializing git version control",
-                       level: .verbose)
-            try Process().launchBash(with: "git init", in: projectFolder)
-        }
-
-        Logger.log("Deleting skeleton file at \(skeleton.file.path(relativeTo: folder))",
-                   level: .verbose)
-        try skeleton.file.delete()
-        Logger.log("Created new project named \(projectName) at \(projectFolder.path)")
     }
 
     private func clone(from repository: Repository,
@@ -135,7 +148,7 @@ public struct Clone {
             if repository.version.isEmpty == false {
                 command += "--branch \(repository.version) "
             }
-           
+
             command += repository.repo + " " + folder.path + projectName
             Logger.log("Cloning - command: \(command)", level: .verbose)
             try Process().launchBash(with: command)

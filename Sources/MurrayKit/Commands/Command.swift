@@ -12,6 +12,21 @@ public protocol Command {
     func executeAndCatch(verbose: Bool)
 }
 
+public protocol CommandWithContext: Command {
+    var mainPlaceholder: String { get }
+    var params: [String] { get }
+}
+
+public extension CommandWithContext {
+    func context(mainPlaceholderKey: String) -> JSON {
+        return params.reduce(into: [mainPlaceholderKey: mainPlaceholder]) { context, pair in
+            let elements = pair.components(separatedBy: ":")
+            guard elements.count == 2 else { return }
+            context[elements[0]] = elements[1]
+        }
+    }
+}
+
 public extension Command {
     func executeAndCatch(verbose: Bool) {
         do {

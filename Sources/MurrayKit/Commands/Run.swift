@@ -7,12 +7,12 @@
 
 import Foundation
 
-public struct Run: Command {
+public struct Run: CommandWithContext {
     var folder: Folder
-    let mainPlaceholder: String
+    public let mainPlaceholder: String
     let name: String
     let preview: Bool
-    let params: [String]
+    public let params: [String]
     let verbose: Bool
 
     public init(folder: Folder,
@@ -29,17 +29,9 @@ public struct Run: Command {
         self.verbose = verbose
     }
 
-    func context(mainPlaceholderKey: String) -> JSON {
-        return params.reduce(into: [mainPlaceholderKey: mainPlaceholder]) { context, pair in
-            let elements = pair.components(separatedBy: ":")
-            guard elements.count == 2 else { return }
-            context[elements[0]] = elements[1]
-        }
-    }
-
     public func execute() throws {
         let murrayfile = try CodableFile<Murrayfile>.init(in: folder)
-        let context = self.context(mainPlaceholderKey: murrayfile.object.namePlaceholder)
+        let context = context(mainPlaceholderKey: murrayfile.object.namePlaceholder)
 
         let pipeline = try Pipeline(murrayfile: murrayfile,
                                     procedure: name,
