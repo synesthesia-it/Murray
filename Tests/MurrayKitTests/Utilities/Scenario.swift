@@ -63,6 +63,9 @@ extension Scenario {
     static var cloneOrigin: Scenario {
         .init(name: "Skeleton")
     }
+    static var cloneOriginInSubfolder: Scenario {
+        .init(name: "SkeletonInSubfolder")
+    }
     static func folder() throws -> Folder {
         try Folder.testFolder()
     }

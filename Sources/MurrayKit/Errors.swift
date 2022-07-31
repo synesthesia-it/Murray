@@ -21,6 +21,7 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case unreadableFile(String)
     case unwriteableFile(String)
     case copyFolder(String)
+    case moveFolder(String)
     case createFolder(String)
     case deleteFolder(String)
     case deleteFile(String)
@@ -47,6 +48,7 @@ extension Errors: LocalizedError {
         case let .unreadableFile(path): return "Unreadable file at \(path)"
         case let .unwriteableFile(path): return "Unwriteable file at \(path)"
         case let .copyFolder(path): return "Error copying folder at \(path)"
+        case let .moveFolder(path): return "Error moving folder to \(path)"
         case let .createFolder(path): return "Error creating folder at \(path)"
         case let .deleteFolder(path): return "Error deleting folder at \(path)"
         case let .deleteFile(path): return "Error deleting file at \(path)"

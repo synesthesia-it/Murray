@@ -1,0 +1,6 @@
+paths:
+- from: "{{name}}"
+  to: "{{name}}"
+initGit: true
+scripts:
+- echo "Hello" >> hello.txt

@@ -115,6 +115,16 @@ public struct Folder: Hashable {
             throw Errors.copyFolder(folder.path)
         }
     }
+    
+    @discardableResult
+    public func moveContents(to folder: Folder, includeHidden: Bool = false) throws -> Folder {
+        do {
+            try self.folder.moveContents(to: folder.folder, includeHidden: includeHidden)
+            return folder
+        } catch {
+            throw Errors.moveFolder(folder.path)
+        }
+    }
 
     @discardableResult
     public func createSubfolderIfNeeded(withName name: String) throws -> Folder {

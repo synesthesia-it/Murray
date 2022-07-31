@@ -11,19 +11,26 @@ public struct Clone {
     private let repository: Repository
     private let context: Parameters
     private let folder: Folder
+    private let subfolderPath: String?
 
-    init(repository: Repository, context: Parameters, folder: Folder) {
+    init(repository: Repository,
+         context: Parameters,
+         folder: Folder,
+         subfolderPath: String?) {
         self.repository = repository
         self.context = context
         self.folder = folder
+        self.subfolderPath = subfolderPath
     }
 
     public init(folder: Folder,
+                subfolderPath: String? = nil,
                 git: String,
                 context: Parameters) {
         self.init(repository: .init(at: git),
                   context: context,
-                  folder: folder)
+                  folder: folder,
+                  subfolderPath: subfolderPath)
     }
 
     public func run() throws {
@@ -35,16 +42,25 @@ public struct Clone {
         let context: Template.Context = .init(context)
         Logger.log("Template context:\n\(context)\n")
 
-        Logger.log("Cloning repository from \(repository) into \(folder.path)",
+        Logger.log("Cloning repository from \(repository) into \(Folder.temporary.path)",
+                   level: .verbose)
+        try? Folder.temporary.subfolder(named: projectName).delete()
+        
+        let temporaryProjectFolder = try clone(from: repository,
+                  into: Folder.temporary,
+                  projectName: projectName)
+        
+        Logger.log("Project cloned to \(temporaryProjectFolder.path)")
+        
+        Logger.log("Creating final project folder at \(folder.path)\(projectName)",
                    level: .verbose)
 
-        try clone(from: repository, into: folder, projectName: projectName)
-
-        Logger.log("Looking for project folder at \(folder.path)\(projectName)",
-                   level: .verbose)
-
-        let projectFolder = try folder.subfolder(named: projectName)
-
+        let projectFolder = try folder.createSubfolderIfNeeded(withName: projectName)
+        
+        Logger.log("Moving contents from temporary folder")
+        
+        try temporaryProjectFolder.moveContents(to: projectFolder, includeHidden: true)
+        
         guard let skeleton = try? CodableFile<Skeleton>.init(in: projectFolder) else {
             throw Errors.noValidSkeletonFound("\(projectFolder.path)")
         }
@@ -108,18 +124,24 @@ public struct Clone {
 
     private func clone(from repository: Repository,
                        into folder: Folder,
-                       projectName: String) throws {
+                       projectName: String) throws -> Folder {
         do {
-            var command = "git clone --single-branch "
+            var command = "git clone --single-branch --depth 1 "
             if repository.version.isEmpty == false {
                 command += "--branch \(repository.version) "
             }
+           
             command += repository.repo + " " + folder.path + projectName
-            Logger.log("Cloning - command: \(command)")
+            Logger.log("Cloning - command: \(command)", level: .verbose)
             try Process().launchBash(with: command)
+            let projectFolder = try folder.subfolder(named: projectName)
+            return projectFolder
         } catch {
             Logger.log("\(error)", level: .verbose)
-            throw Errors.invalidGitRepository(repository.package)
+            switch error {
+            case is Errors: throw error
+            default: throw Errors.invalidGitRepository(repository.package)
+            }
         }
     }
 }

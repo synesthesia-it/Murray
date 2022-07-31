@@ -11,8 +11,8 @@ import XCTest
 
 class CloneTests: TestCase {
     
-    private func makeOriginalGit() throws -> Folder {
-        let folder = try Scenario.cloneOrigin.make()
+    private func makeGit(in folder: Folder) throws -> Folder {
+        
         
         try ["git init",
              "git add .",
@@ -24,8 +24,15 @@ class CloneTests: TestCase {
         return folder
     }
     
+    private func makeOriginalGit() throws -> Folder {
+        try makeGit(in: try Scenario.cloneOrigin.make())
+    }
+    private func makeSubfolderGit() throws -> Folder {
+        return try makeGit(in: try Scenario.cloneOriginInSubfolder.make())
+    }
+    
     func testSimpleClone() throws {
-        
+        Logger.logLevel = .verbose
         let git = try makeOriginalGit()
         let folder = try Scenario.folder()
         let projectName = "LocalGit"
@@ -50,6 +57,11 @@ class CloneTests: TestCase {
         XCTAssertEqual(try projectFolder.file(named: "hello.txt").readAsString(), "Hello\n")
         
         XCTAssertThrowsError(try projectFolder.file(named: "Skeleton.yml"))
+    }
+    
+    func testCloneWithSubfolder() throws {
+        let git = try makeSubfolderGit()
+        
     }
     
     func testRemoteClone() throws {
