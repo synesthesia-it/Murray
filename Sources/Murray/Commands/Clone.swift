@@ -18,12 +18,16 @@ extension Commander.Group {
                 Argument<String>("git",
                                  description: .cloneGitDescription),
                 Flag("verbose", description: .verboseDescription),
+                Argument<String?>("subfolder",
+                                  description: .cloneGitSubfolderDescription)
                 Argument<[String]?>("parameters",
                                     description: .runParametersDescription),
-                description: .cloneDescription) { _, _, verbose, _ in
+                description: .cloneDescription) { name, git, verbose, subfolder, parameters in
 
-            try List(folder: folder)
-                .executeAndCatch(verbose: verbose)
+            try Clone(folder: folder,
+                      subfolderPath: subfolder,
+                      git: git,
+                      context: parameters)
         }
     }
 }
