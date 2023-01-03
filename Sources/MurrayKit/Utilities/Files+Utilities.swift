@@ -165,6 +165,7 @@ public struct Folder: Hashable {
         folder.path(relativeTo: to.folder)
     }
 
+    @discardableResult
     public func createFileIfNeeded(at path: String,
                                    contents: @autoclosure () -> Data? = nil) throws -> File {
         do {

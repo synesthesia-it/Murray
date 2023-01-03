@@ -29,6 +29,7 @@ class CloneTests: TestCase {
         return try makeGit(in: try Scenario.cloneOriginInSubfolder.make())
     }
 
+    @discardableResult
     private func checks(folder: Folder,
                         projectName: String,
                         initGitAfterResolution: Bool,
@@ -62,7 +63,8 @@ class CloneTests: TestCase {
 
         let clone = Clone(path: git.path,
                           folder: folder,
-                          mainPlaceholder: projectName)
+                          mainPlaceholder: projectName,
+                          copyFromLocalFolder: true)
         try clone.execute()
 
         let projectFolder = try checks(folder: folder,
@@ -81,7 +83,8 @@ class CloneTests: TestCase {
         let clone = Clone(path: git.path,
                           folder: folder,
                           subfolderPath: "Subfolder",
-                          mainPlaceholder: projectName)
+                          mainPlaceholder: projectName,
+                          copyFromLocalFolder: true)
         try clone.execute()
 
         try checks(folder: folder,

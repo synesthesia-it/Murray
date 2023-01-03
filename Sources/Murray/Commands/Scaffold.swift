@@ -69,7 +69,7 @@ extension Commander.Group {
                      description: .scaffoldItemCreateProcedureDescription),
                 Argument<[String]>("files",
                                    description: .scaffoldItemFilesDescription),
-                description: .scaffoldItemDescription) { verbose, name, package, createProcedure, files in
+                description: .scaffoldItemDescription) { verbose, package, name, createProcedure, files in
             Scaffold.item(named: name,
                           package: package,
                           description: .init(format: .scaffoldItemDefaultDescriptionFormat, name),
@@ -90,7 +90,7 @@ extension Commander.Group {
                                  description: .scaffoldProcedureNameDescription),
                 Argument<[String]>("itemNames",
                                    description: .scaffoldProcedureItemsDescription),
-                description: .scaffoldProcedureDescription) { verbose, name, package, items in
+                description: .scaffoldProcedureDescription) { verbose, package, name, items in
             Scaffold.procedure(named: name,
                                package: package,
                                description: .init(format: .scaffoldProcedureDefaultDescriptionFormat, name),

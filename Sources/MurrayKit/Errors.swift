@@ -13,6 +13,7 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     }
 
     case unparsableFile(String)
+    case unparsableContent(String)
     case unresolvableString(string: String, context: JSON)
     case invalidReplacement
     case unknown
@@ -35,10 +36,12 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case invalidGitRepository(String)
 }
 
-extension Errors: LocalizedError {
+extension Errors: LocalizedError, CustomStringConvertible {
+    public var description: String { localizedDescription.red }
     var localizedDescription: String {
         switch self {
         case let .unparsableFile(filePath): return "Path at \(filePath) is not parsable"
+        case let .unparsableContent(error): return "Unparsable content: \(error)"
         case let .unresolvableString(string, context):
             return "Provided string is not properly resolvable\n\nString:\n\(string)\n\nContext:\n\n\(context)"
         case .invalidReplacement: return "Error during replacement"

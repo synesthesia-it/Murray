@@ -9,7 +9,14 @@ import Foundation
 
 extension JSONDecoder: Decoder {
     public func decode<Value>(_ data: Data) throws -> Value where Value: Decodable {
-        try decode(Value.self, from: data)
+        do {
+            return try decode(Value.self, from: data)
+        } catch {
+            switch error {
+            case is Errors: throw error
+            default: throw Errors.unparsableContent(error.localizedDescription)
+            }
+        }
     }
 }
 

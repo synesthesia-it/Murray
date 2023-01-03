@@ -70,7 +70,9 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
             text = try container.decodeIfPresent(String.self, forKey: .text)
             plugins = try container.decodeIfPresent(Parameters.self, forKey: .plugins)
             source = try container.decodeIfPresent(String.self, forKey: .source)
-            if text == nil, source == nil { throw Errors.invalidReplacement }
+            if text == nil, source == nil {
+                throw Errors.invalidReplacement
+            }
         }
 
         public var description: String {

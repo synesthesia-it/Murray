@@ -25,12 +25,12 @@ extension Commander.Group {
                                     description: .runParametersDescription),
                 description: .cloneDescription) { name, path, verbose, copyFromLocalFolder, subfolder, parameters in
 
-            try Clone(path: path,
-                      folder: folder,
-                      subfolderPath: subfolder,
-                      mainPlaceholder: name,
-                      copyFromLocalFolder: copyFromLocalFolder,
-                      parameters: parameters)
+            Clone(path: path,
+                  folder: folder,
+                  subfolderPath: subfolder,
+                  mainPlaceholder: name,
+                  copyFromLocalFolder: copyFromLocalFolder,
+                  parameters: parameters)
                 .executeAndCatch(verbose: verbose)
         }
     }

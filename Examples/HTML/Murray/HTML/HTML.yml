@@ -1,0 +1,7 @@
+name: HTML
+description: A package named HTML created from scaffold
+procedures:
+- name: page
+  description: An item named page created from scaffold
+  items:
+  - page/page.yml

@@ -1,0 +1,8 @@
+scripts:
+- "open index.html"
+paths:
+- from: index.html
+  to: index.html
+- from: Murrayfile.yml
+  to: Murrayfile.yml
+initializeGit: true

@@ -112,7 +112,7 @@ public final class TestLogger: ConsoleLogger {
 }
 
 public enum Logger {
-    public static var logger: LoggerType = ConsoleLogger(logLevel: .network)
+    public static var logger: LoggerType = ConsoleLogger(logLevel: .normal)
     public static var logLevel: LogLevel {
         get { logger.logLevel }
         set { logger.logLevel = newValue }
