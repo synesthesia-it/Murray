@@ -44,7 +44,10 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
         }
 
         public func customParameters() -> JSON {
-            ["_path": ["_from": from, "_to": to]]
+            ["_path": ["_from": from,
+                       "_to": to],
+             "_filename": ["_from": from.filename,
+                           "_to": to.filename]]
         }
     }
 
@@ -130,5 +133,11 @@ extension CodableFile where Object == Item {
 
     func customParameters() -> JSON {
         ["_item": try? object.dictionary()]
+    }
+}
+
+private extension String {
+    var filename: String {
+        components(separatedBy: "/").last ?? self
     }
 }
