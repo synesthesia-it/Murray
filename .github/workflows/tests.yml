@@ -6,7 +6,7 @@ jobs:
   TestMurrayKit:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-20.04, macos-latest]
         swift: ["5.5"]
     runs-on: ${{ matrix.os }}
     steps:
