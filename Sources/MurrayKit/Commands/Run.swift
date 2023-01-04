@@ -37,6 +37,12 @@ public struct Run: CommandWithContext {
                                     procedure: name,
                                     context: .init(context))
 
+        let missingParameters = try pipeline.missingParameters()
+        guard missingParameters.isEmpty else {
+            throw Errors
+                .missingRequiredParameters(missingParameters.map { $0.name })
+        }
+
         let files = try pipeline.writeableFiles()
         if preview {
             try files.forEach { file in

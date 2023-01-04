@@ -51,10 +51,27 @@ public struct Pipeline {
         self.context = Template.Context(context, environment: murrayfile.object.environment)
     }
 
+    public func missingParameters() throws -> [Item.Parameter] {
+        try requiredParameters()
+            .filter { self.context.values[$0.name] == nil }
+    }
+
+    public func requiredParameters() throws -> [Item.Parameter] {
+        try procedures.flatMap { procedure in
+            try procedure.items()
+                .flatMap {
+                    $0.object.parameters
+                        .filter { $0.isRequired }
+                }
+        }.uniqued()
+    }
+
     public func run() throws {
-//        try writeableFiles().forEach {
-//            try $0.commit(context: self.context)
-//        }
+        let missingParameters = try missingParameters()
+        if !missingParameters.isEmpty {
+            throw Errors
+                .missingRequiredParameters(missingParameters.map { $0.name })
+        }
 
         guard let destinationFolder = murrayfile.file.parent else {
             // no destination folder provided

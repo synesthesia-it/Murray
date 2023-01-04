@@ -34,12 +34,15 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case procedureAlreadyExists(String)
     case noValidSkeletonFound(String)
     case invalidGitRepository(String)
+    case missingRequiredParameters([String])
 }
 
 extension Errors: LocalizedError, CustomStringConvertible {
     public var description: String { localizedDescription.red }
     var localizedDescription: String {
         switch self {
+        case let .missingRequiredParameters(parameters):
+            return "Missing required parameters: \(parameters.joined(separator: ", "))"
         case let .unparsableFile(filePath): return "Path at \(filePath) is not parsable"
         case let .unparsableContent(error): return "Unparsable content: \(error)"
         case let .unresolvableString(string, context):

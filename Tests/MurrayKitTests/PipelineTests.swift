@@ -1,43 +1,57 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Stefano Mondino on 11/05/22.
 //
 
 import Foundation
-import Yams
 @testable import MurrayKit
 import XCTest
+import Yams
 
 class PipelineTests: TestCase {
-    
     func testSimpleJSONPipeline() throws {
         let root = try Scenario.simpleJSON.make()
         let pipeline = try Pipeline(murrayfile: .init(in: root),
                                     procedure: "simpleGroup",
                                     context: ["name": "test"])
-        
+
         try pipeline.run()
-        
+
         let file = try root.file(at: "Sources/Files/test/test.swift")
         XCTAssertEqual(try file.readAsString(), "test Test\n")
-        
     }
+
+    func testSimpleJSONPipelineWithMissingParameter() throws {
+        let root = try Scenario.simpleJSON.make()
+        let pipeline = try Pipeline(murrayfile: .init(in: root),
+                                    procedure: "simpleGroup",
+                                    context: [:])
+
+        XCTAssertThrowsError(try pipeline.run()) {
+            XCTAssertEqual($0 as? Errors, Errors.missingRequiredParameters(["name"]))
+        }
+
+        XCTAssertThrowsError(try root.file(at: "Sources/Files/test/test.swift")) {
+            XCTAssertEqual($0 as? Errors, Errors.fileLocationError(root.path.appendingPathComponent("Sources/Files/test/test.swift")))
+        }
+    }
+
     func testFolderReplacementPipeline() throws {
         let root = try Scenario.simpleJSON.make()
         let pipeline = try Pipeline(murrayfile: .init(in: root),
                                     procedure: "folder",
                                     context: ["name": "test"])
-        
+
         try pipeline.run()
-        
+
         XCTAssertEqual(try root.file(at: "Sources/Files/test/test.swift").readAsString(),
                        "testing test in place\n")
         XCTAssertEqual(try root.file(at: "Sources/Files/test/AnotherSubfolderWithtest/test.swift").readAsString(),
                        "testing test in place\n")
     }
-    
+
     func testSingleProcedureNotFound() throws {
         let root = try Scenario.simpleJSON.make()
         XCTAssertThrowsError(try Pipeline(murrayfile: .init(in: root),
@@ -46,7 +60,7 @@ class PipelineTests: TestCase {
             XCTAssertEqual(error as? Errors, .procedureNotFound(name: "wrongName"))
         }
     }
-    
+
     func testSingleProcedureNotFoundInMultipleProcedureSetup() throws {
         let root = try Scenario.simpleJSON.make()
         XCTAssertThrowsError(try Pipeline(murrayfile: .init(in: root),
@@ -55,19 +69,19 @@ class PipelineTests: TestCase {
             XCTAssertEqual(error as? Errors, .procedureNotFound(name: "wrongName"))
         }
     }
-    
+
     func testPluginExecutionWithCustomPlaceholders() throws {
         let root = try Scenario.simpleYaml.make()
         let pipeline = try Pipeline(murrayfile: .init(in: root),
                                     procedure: "simpleGroup",
                                     context: ["name": "test"])
-       
+
         try pipeline.run()
-        
+
         let file = try root.file(at: "Sources/Files/test/test.swift.test")
         XCTAssertEqual(try file.readAsString(), "test.swift\n")
     }
-    
+
     func testXcodePluginAlteringXcodeProject() throws {
         let root = try Scenario.simpleYaml.make()
         let pipeline = try Pipeline(murrayfile: .init(in: root),
