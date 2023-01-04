@@ -26,6 +26,8 @@
                 },
                 {
                 "name": "type"
-                }
+                },
+                {"name": "nestedValue.innerValue",
+                    "isRequired": true}
             ]
         }

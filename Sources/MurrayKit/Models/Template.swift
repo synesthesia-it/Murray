@@ -32,6 +32,36 @@ public struct Template {
         public func adding(_ newValues: JSON) -> Context {
             .init(values.merging(newValues) { original, _ in original })
         }
+
+        private func explore(key: String, values: JSON) -> AnyHashable? {
+            let separator = "."
+            let split = key.components(separatedBy: separator)
+            guard let main = split.first,
+                  let value = values[main]
+            else {
+                return nil
+            }
+            switch value {
+            case let dictionary as JSON:
+                return explore(key: split.dropFirst().joined(separator: separator), values: dictionary)
+            case let array as [JSON]:
+                guard let mainInteger = Int(key) else {
+                    return nil
+                }
+                let indexedValue = array[mainInteger]
+                let otherKeys = split.dropFirst()
+                if otherKeys.isEmpty {
+                    return indexedValue
+                } else {
+                    return explore(key: otherKeys.joined(separator: separator), values: indexedValue)
+                }
+            default: return value
+            }
+        }
+
+        public subscript(_ key: String) -> AnyHashable? {
+            explore(key: key, values: values)
+        }
     }
 
     public let contents: String

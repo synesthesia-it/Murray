@@ -2,7 +2,10 @@
     "environment": {
         "author": "Stefano Mondino",
         "customName": "{{name}}",
-        "nestedName": "{{customName}}"
+        "nestedName": "{{customName}}",
+        "nestedValue": {
+            "innerValue": "Test"
+        }
     },
     "mainPlaceholder": "name",
     "packages": ["Murray/Simple/Simple.json"],

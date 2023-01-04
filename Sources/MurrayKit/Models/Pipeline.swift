@@ -53,7 +53,7 @@ public struct Pipeline {
 
     public func missingParameters() throws -> [Item.Parameter] {
         try requiredParameters()
-            .filter { self.context.values[$0.name] == nil }
+            .filter { self.context[$0.name] == nil }
     }
 
     public func requiredParameters() throws -> [Item.Parameter] {
