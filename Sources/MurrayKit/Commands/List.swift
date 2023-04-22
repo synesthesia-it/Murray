@@ -44,7 +44,7 @@ extension List: Command {
     public func execute() throws {
         let list = try list()
         let strings = list.map {
-            "\($0.package.object.name.lightGreen).\($0.procedure.name.green): \($0.procedure.description)\n"
+            "\($0.package.object.name.lightGreen).\($0.procedure.name.green): \($0.procedure.description)"
         }
         strings.forEach {
             Logger.log($0, level: .normal)

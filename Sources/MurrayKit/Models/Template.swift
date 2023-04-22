@@ -6,8 +6,8 @@
 //
 
 import Foundation
-
 import Stencil
+import StencilSwiftKit
 
 public struct Template {
     public struct Context: ExpressibleByDictionaryLiteral,
@@ -79,6 +79,7 @@ public struct Template {
 
     public func resolve(recursive: Bool = true) throws -> String {
         let ext = Extension()
+        ext.registerStencilSwiftExtensions()
         ext.registerFilter("firstLowercase") { (value: Any?) in
             (value as? String)?.firstLowercased() ?? value
         }

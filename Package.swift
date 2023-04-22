@@ -3,13 +3,13 @@
 
 import PackageDescription
 
-let dependencies: [Target.Dependency] = ["Files", "ShellOut", "Rainbow", "Stencil", "XcodeProj", "Yams"]
+let dependencies: [Target.Dependency] = ["Files", "ShellOut", "Rainbow", "Stencil", "StencilSwiftKit", "XcodeProj", "Yams"]
 
 let package = Package(
     name: "Murray",
     products: [
         .executable(name: "murray", targets: ["Murray"]),
-        .library(name: "MurrayKit", targets: ["MurrayKit"]),
+        .library(name: "MurrayKit", targets: ["MurrayKit"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -25,6 +25,7 @@ let package = Package(
         .package(url: "https://github.com/kylef/Commander.git", from: "0.8.0"),
         .package(url: "https://github.com/stencilproject/Stencil.git", .branch("master")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.3"),
+        .package(url: "https://github.com/SwiftGen/StencilSwiftKit", from: "2.10.1")
 
     ],
     targets: [
@@ -36,6 +37,6 @@ let package = Package(
                 dependencies: ["MurrayKit", "Commander"] + dependencies),
         .testTarget(name: "MurrayKitTests",
                     dependencies: ["MurrayKit"] + dependencies,
-                    resources: [.copy("Mocks")]),
+                    resources: [.copy("Mocks")])
     ]
 )
