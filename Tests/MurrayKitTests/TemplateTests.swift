@@ -72,7 +72,7 @@ class TemplateTests: TestCase {
 
     func testSimpleFileConversion() throws {
         let file = try Folder.mock().file(at: "SimpleJSON/Murray/Simple/SimpleItem/Bone.swift")
-        let template = try Template(file, context: ["name": "Some random test"])
-        XCTAssertEqual(try template.resolve(), "Some random test Test\n")
+        let template = try Template(file, context: ["name": "Some random test", "__year": "2023"])
+        XCTAssertEqual(try template.resolve(), "Some random test Test 2023\n")
     }
 }

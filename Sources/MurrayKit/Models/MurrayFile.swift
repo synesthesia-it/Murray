@@ -20,8 +20,35 @@ public struct Murrayfile: Hashable, RootFile {
         self.plugins = plugins
     }
 
+    private func string(from date: Date, format: String = "dd/MM/yyyy") -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        return dateFormatter.string(from: date)
+    }
+
+    private var customParameters: [String: AnyHashable] {
+        let author = (try? Process().launchBash(with: "git config user.name",
+                                                outputHandle: nil))?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return ["__date": string(from: date),
+                "__dateTime": string(from: date, format: "dd/MM/yyyy HH:mm:ss"),
+                "__timestamp": String(Int64(Date().timeIntervalSince1970)),
+                "__time": string(from: date, format: "MM:ss"),
+                "__year": string(from: date, format: "yyyy"),
+                "__author": author ?? ""]
+    }
+
+    private let date: Date = .init()
     public private(set) var packages: [String]
-    public private(set) var environment: Parameters
+    private var environment: Parameters
+    public var enrichedEnvironment: Parameters {
+        let environmentDictionary = customParameters
+            .merging(environment.dictionaryValue ?? [:],
+                     uniquingKeysWith: { _, original in original })
+        return .init(environmentDictionary)
+    }
+
     private var mainPlaceholder: String?
     private var plugins: Parameters?
 

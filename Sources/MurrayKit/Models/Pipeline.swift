@@ -23,7 +23,7 @@ public struct Pipeline {
                 context: Parameters) throws {
         self.murrayfile = murrayfile
         self.procedures = procedures
-        self.context = Template.Context(context, environment: murrayfile.object.environment)
+        self.context = Template.Context(context, environment: murrayfile.object.enrichedEnvironment)
     }
 
     public init(murrayfile: CodableFile<Murrayfile>,
@@ -48,7 +48,7 @@ public struct Pipeline {
             return procedure
         }
 
-        self.context = Template.Context(context, environment: murrayfile.object.environment)
+        self.context = Template.Context(context, environment: murrayfile.object.enrichedEnvironment)
     }
 
     public func missingParameters() throws -> [Item.Parameter] {

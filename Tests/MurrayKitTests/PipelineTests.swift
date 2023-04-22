@@ -20,7 +20,7 @@ class PipelineTests: TestCase {
         try pipeline.run()
 
         let file = try root.file(at: "Sources/Files/test/test.swift")
-        XCTAssertEqual(try file.readAsString(), "test Test\n")
+        XCTAssertEqual(try file.readAsString(), "test Test \(year)\n")
     }
 
     func testSimpleJSONPipelineWithMissingParameter() throws {

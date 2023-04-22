@@ -1,1 +1,1 @@
-{{ name }} Test
+{{ name }} Test {{ __year }}
