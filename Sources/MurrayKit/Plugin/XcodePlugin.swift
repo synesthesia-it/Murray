@@ -25,7 +25,7 @@ struct XcodePlugin: Plugin {
         guard let data = try data(for: execution.element) else {
             return
         }
-        let targetNames = Set(try data.targets.map { try $0.resolve(with: context) })
+        let targetNames = try Set(data.targets.map { try $0.resolve(with: context) })
         Logger.log("Required targets: \(targetNames.joined(separator: ", "))", level: .verbose)
         guard targetNames.isEmpty == false else { return }
 

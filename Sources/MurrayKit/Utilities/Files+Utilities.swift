@@ -129,7 +129,7 @@ public struct Folder: Hashable {
     @discardableResult
     public func createSubfolderIfNeeded(withName name: String) throws -> Folder {
         do {
-            return Folder(try folder.createSubfolderIfNeeded(at: name))
+            return try Folder(folder.createSubfolderIfNeeded(at: name))
         } catch {
             throw Errors.createFolder(name)
         }

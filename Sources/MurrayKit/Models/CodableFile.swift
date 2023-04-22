@@ -55,7 +55,7 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
         let data = try file.read()
         if let ext = file.extension,
            let decoder: Decoder = Self.decoder(from: ext) {
-            self.init(file: file, object: try decoder.decode(data))
+            try self.init(file: file, object: decoder.decode(data))
 
         } else {
             let decoders: [Decoder] = [JSONDecoder(), YAMLDecoder()]

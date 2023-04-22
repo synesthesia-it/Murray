@@ -145,7 +145,7 @@ public struct Scaffold: Command {
                 throw Errors.procedureAlreadyExists(name)
             }
 
-            let availableItems = Set(try package.items())
+            let availableItems = try Set(package.items())
             let itemPaths = try itemNames.map { itemName -> String in
                 guard let item = availableItems.first(where: { $0.object.name == itemName }) else {
                     throw Errors.itemNotFound(itemName)
