@@ -10,8 +10,8 @@ import Foundation
 extension Process {
     @discardableResult func launchBash(with command: String,
                                        in folder: Folder = .current,
-                                       outputHandle: FileHandle? = nil,
-                                       errorHandle: FileHandle? = nil) throws -> String {
+                                       outputHandle: FileHandle? = .standardOutput,
+                                       errorHandle: FileHandle? = .standardError) throws -> String {
         let command = "cd \(folder.path.escapingSpaces) && \(command)"
         launchPath = "/bin/bash"
         arguments = ["-c", command]
