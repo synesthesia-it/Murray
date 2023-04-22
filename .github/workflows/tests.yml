@@ -8,7 +8,7 @@ jobs:
       matrix:
         # os: [ubuntu-20.04, macos-latest]
         os: [macos-latest]
-        swift: ["5.7"]
+        swift: ["5.8"]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: fwal/setup-swift@2040b795e5c453c3a05fcb8316496afc8a74f192
