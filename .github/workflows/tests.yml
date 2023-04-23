@@ -3,20 +3,11 @@ on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
 jobs:
-  TestMurrayKit:
-    strategy:
-      matrix:
-        # os: [ubuntu-20.04, macos-latest]
-        os: [macos-latest]
-        swift: ["5.8"]
-    runs-on: ${{ matrix.os }}
+  macOS:
+    runs-on: macOS-latest
     steps:
-    - uses: fwal/setup-swift@2040b795e5c453c3a05fcb8316496afc8a74f192
-      with:
-        swift-version: ${{ matrix.swift }}
     - uses: actions/checkout@v2
     - name: Lint
-      if: ${{ matrix.os == 'macos-latest' }}
       run: swiftlint lint --strict
     - name: Resolve
       run: swift package resolve
@@ -24,3 +15,14 @@ jobs:
       run: swift build
     - name: Run tests
       run: swift test 2>&1 | xcpretty
+  linux:
+    runs-on: ubuntu-latest
+    container: swift:5.2
+    steps:
+      - uses: actions/checkout@v2
+      - name: Resolve
+        run: swift package resolve
+      - name: Build
+        run: swift build
+      - name: Run tests
+        run: swift test 2>&1
