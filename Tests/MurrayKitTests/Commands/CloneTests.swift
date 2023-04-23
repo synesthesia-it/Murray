@@ -12,6 +12,8 @@ import XCTest
 class CloneTests: TestCase {
     private func makeGit(in folder: Folder) throws -> Folder {
         try ["git init",
+             "git config user.email \"somebody@synesthesia.it\"",
+             "git config user.name \"John Doe\"",
              "git add .",
              "git commit -m \"test\""]
             .forEach {
