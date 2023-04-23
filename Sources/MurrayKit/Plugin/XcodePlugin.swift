@@ -13,18 +13,26 @@ struct XcodePlugin: Plugin {
 //    fileprivate typealias Path = XcodeProj.Path
     var name: String { "xcode" }
     struct PluginData: Codable {
+        let projectPath: String?
         let targets: [String]
     }
 
     func execute(_ execution: PluginExecution<Item.Path>) throws {
         if execution.phase == .before { return }
-        guard let projectFolder = execution.root.subfolders
-            .filter({ $0.name.contains(".xcodeproj") })
-            .first else { return }
-        let context = execution.context()
         guard let data = try data(for: execution.element) else {
             return
         }
+        let projectFolder: Folder
+        if let path = data.projectPath {
+            projectFolder = try execution.root.subfolder(at: path)
+        } else {
+            guard let folder = execution.root.subfolders
+                .filter({ $0.name.contains(".xcodeproj") })
+                .first else { return }
+            projectFolder = folder
+        }
+        let context = execution.context()
+
         let targetNames = try Set(data.targets.map { try $0.resolve(with: context) })
         Logger.log("Required targets: \(targetNames.joined(separator: ", "))", level: .verbose)
         guard targetNames.isEmpty == false else { return }
@@ -41,7 +49,10 @@ struct XcodePlugin: Plugin {
         files.forEach { file in
             let relativeFolder: Folder = projectFolder.parent ?? projectFolder
 
-            let folders = file.parent?.path(relativeTo: relativeFolder).components(separatedBy: "/").filter { $0.isEmpty == false } ?? []
+            let folders = file.parent?.path(relativeTo: relativeFolder)
+                .components(separatedBy: "/")
+                .filter { $0.isEmpty == false } ?? []
+
             guard let mainGroup = pbx.mainGroup else { return }
             let group = folders
                 .reduce(mainGroup) { group, folder -> PBXGroup? in
