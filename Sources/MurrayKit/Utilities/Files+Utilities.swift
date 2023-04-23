@@ -66,9 +66,9 @@ public struct File: Hashable {
     }
 }
 
-public struct Folder: Hashable {
+public struct Folder: Hashable, CustomStringConvertible {
     fileprivate let folder: Files.Folder
-
+    public var description: String { path }
     public var path: String { folder.path }
     public var name: String { folder.name }
     public var files: [File] {

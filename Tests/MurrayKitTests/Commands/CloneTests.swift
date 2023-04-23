@@ -15,18 +15,24 @@ class CloneTests: TestCase {
              "git add .",
              "git commit -m \"test\""]
             .forEach {
-                try Process().launchBash(with: $0, in: folder)
+                print("Executing: `\($0)` in \(folder)")
+                do {
+                    try Process().launchBash(with: $0, in: folder)
+                } catch {
+                    print((error as? ShellOutError)?.message ?? "")
+                    throw error
+                }
             }
 
         return folder
     }
 
     private func makeOriginalGit() throws -> Folder {
-        try makeGit(in: try Scenario.cloneOrigin.make())
+        try makeGit(in: Scenario.cloneOrigin.make())
     }
 
     private func makeSubfolderGit() throws -> Folder {
-        return try makeGit(in: try Scenario.cloneOriginInSubfolder.make())
+        return try makeGit(in: Scenario.cloneOriginInSubfolder.make())
     }
 
     @discardableResult

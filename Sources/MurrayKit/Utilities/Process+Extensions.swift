@@ -11,7 +11,7 @@ extension Process {
     @discardableResult func launchBash(with command: String,
                                        in folder: Folder = .current,
                                        outputHandle: FileHandle? = .standardOutput,
-                                       errorHandle: FileHandle? = .standardError) throws -> String {
+                                       errorHandle: FileHandle? = nil) throws -> String {
         let command = "cd \(folder.path.escapingSpaces) && \(command)"
         launchPath = "/bin/bash"
         arguments = ["-c", command]
