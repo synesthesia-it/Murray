@@ -3,7 +3,7 @@
 
 import PackageDescription
 
-let dependencies: [Target.Dependency] = ["Files", "ShellOut", "Rainbow", "Stencil", "StencilSwiftKit", "XcodeProj", "Yams"]
+let dependencies: [Target.Dependency] = ["Files", "Rainbow", "Stencil", "StencilSwiftKit", "XcodeProj", "Yams"]
 
 let package = Package(
     name: "Murray",
@@ -21,7 +21,6 @@ let package = Package(
             from: "4.0.0"
         ),
         .package(name: "XcodeProj", url: "https://github.com/tuist/xcodeproj.git", from: "8.0.0"),
-        .package(url: "https://github.com/JohnSundell/ShellOut.git", from: "2.3.0"),
         .package(url: "https://github.com/kylef/Commander.git", from: "0.8.0"),
         .package(url: "https://github.com/stencilproject/Stencil.git", .branch("master")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.3"),
