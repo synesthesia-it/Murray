@@ -25,4 +25,4 @@ jobs:
       - name: Build
         run: swift build
       - name: Run tests
-        run: swift test 2>&1
+        run: swift test --enable-test-discovery 2>&1
