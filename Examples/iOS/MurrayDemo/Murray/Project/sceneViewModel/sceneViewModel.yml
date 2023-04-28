@@ -1,0 +1,18 @@
+name: sceneViewModel
+parameters: []
+paths:
+- from: ViewModel.swift.stencil
+  to: "{{paths.scenes}}/{{name|firstUppercase}}/{{name|firstUppercase}}ViewModel.swift"
+  plugins:
+    xcode: 
+      targets: ["{{mainTarget}}"]
+- from: ViewModelTests.swift.stencil
+  to: "{{paths.tests}}/{{name|firstUppercase}}/{{name|firstUppercase}}ViewModel.swift"
+  plugins:
+    xcode: 
+      targets: ["{{mainTestTarget}}"]
+description: A scene view model with tests
+replacements: 
+- destination: "MurrayDemo/MainTabViewModel.swift"
+  placeholder: "// murray: viewModel"
+  text: "let {{name|firstLowercase}}ViewModel = {{name|firstUppercase}}ViewModel()\n"

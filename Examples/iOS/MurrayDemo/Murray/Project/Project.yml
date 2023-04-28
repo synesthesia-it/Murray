@@ -1,0 +1,16 @@
+name: Project
+description: A package named Project created from scaffold
+procedures:
+- name: sceneView
+  description: Creates a new scene in scene folder
+  items:
+  - sceneView/sceneView.yml
+- name: sceneViewModel
+  description: Creates a new scene ViewModel in scene folder
+  items:
+  - sceneViewModel/sceneViewModel.yml
+- name: scene
+  description: Creates a new scene with view and viewModel
+  items:
+  - sceneViewModel/sceneViewModel.yml
+  - sceneView/sceneView.yml

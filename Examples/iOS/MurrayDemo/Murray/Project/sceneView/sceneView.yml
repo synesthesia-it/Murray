@@ -1,0 +1,15 @@
+name: sceneView
+parameters:
+- name: "name"
+  isRequired: true
+paths:
+- from: SceneView.swift.stencil
+  to: "{{paths.scenes}}/{{name|firstUppercase}}/{{name|firstUppercase}}View.swift"
+  plugins:
+    xcode: 
+      targets: ["{{mainTarget}}"]
+description: A SwiftUI view with previews
+replacements: 
+- destination: "MurrayDemo/MainTab.swift"
+  placeholder: "// murray: tab"
+  text: "{{name|firstUppercase}}View(viewModel: viewModel.{{name|firstLowercase}}ViewModel)\n"
