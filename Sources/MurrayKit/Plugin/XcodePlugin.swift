@@ -10,8 +10,8 @@ import PathKit
 import XcodeProj
 
 struct XcodePlugin: Plugin {
-//    fileprivate typealias Path = XcodeProj.Path
     var name: String { "xcode" }
+
     struct PluginData: Codable {
         let projectPath: String?
         let targets: [String]

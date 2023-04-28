@@ -31,12 +31,12 @@ public struct Murrayfile: Hashable, RootFile {
                                                 outputHandle: nil))?
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        return ["__date": string(from: date),
-                "__dateTime": string(from: date, format: "dd/MM/yyyy HH:mm:ss"),
-                "__timestamp": String(Int64(Date().timeIntervalSince1970)),
-                "__time": string(from: date, format: "MM:ss"),
-                "__year": string(from: date, format: "yyyy"),
-                "__author": author ?? ""]
+        return ["_date": string(from: date),
+                "_dateTime": string(from: date, format: "dd/MM/yyyy HH:mm:ss"),
+                "_timestamp": String(Int64(Date().timeIntervalSince1970)),
+                "_time": string(from: date, format: "MM:ss"),
+                "_year": string(from: date, format: "yyyy"),
+                "_author": author ?? ""]
     }
 
     private let date: Date = .init()
