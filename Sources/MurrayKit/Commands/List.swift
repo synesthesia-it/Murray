@@ -21,7 +21,11 @@ public struct List {
             let murrayfile = try CodableFile<Murrayfile>(in: folder, defaultName: murrayfileName)
             self.init(murrayfile: murrayfile)
         } catch {
-            throw Errors.murrayfileNotFound(folder.path)
+            switch error {
+            case Errors.fileLocationError: throw Errors.murrayfileNotFound(folder.path)
+            case is Errors: throw error
+            default: throw Errors.murrayfileNotFound(folder.path)
+            }
         }
     }
 

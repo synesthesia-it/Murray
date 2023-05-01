@@ -14,9 +14,10 @@ extension Commander.Group {
         command(name,
                 Flag("verbose", description: .verboseDescription),
                 description: .listDescription) { verbose in
-
-            try List(folder: folder)
-                .executeAndCatch(verbose: verbose)
+            try withVerbose(verbose) {
+                try List(folder: folder)
+                    .executeAndCatch(verbose: verbose)
+            }
         }
     }
 }

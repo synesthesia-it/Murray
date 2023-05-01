@@ -15,9 +15,11 @@ extension Commander.Group {
                 Flag("verbose"),
                 Option<String?>("format", default: nil, description: .scaffoldFileFormatDescription),
                 description: .scaffoldMurrayfileDescription) { verbose, format in
-            Scaffold
-                .murrayfile(encoding: .init(rawValue: format) ?? .yml, in: folder)
-                .executeAndCatch(verbose: verbose)
+            try withVerbose(verbose) {
+                Scaffold
+                    .murrayfile(encoding: .init(rawValue: format) ?? .yml, in: folder)
+                    .executeAndCatch(verbose: verbose)
+            }
         }
     }
 
