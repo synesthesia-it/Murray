@@ -14,7 +14,7 @@ extension Commander.Group {
         command(name,
                 Flag("verbose"),
                 Option<String?>("format", default: nil, description: .scaffoldFileFormatDescription),
-                description: .scaffoldSkeletonfileDescription) { verbose, format in
+                description: .scaffoldMurrayfileDescription) { verbose, format in
             Scaffold
                 .murrayfile(encoding: .init(rawValue: format) ?? .yml, in: folder)
                 .executeAndCatch(verbose: verbose)
@@ -25,7 +25,7 @@ extension Commander.Group {
         command(name,
                 Flag("verbose"),
                 Option<String?>("format", default: nil, description: .scaffoldFileFormatDescription),
-                description: .scaffoldMurrayfileDescription) { verbose, format in
+                description: .scaffoldSkeletonfileDescription) { verbose, format in
             Scaffold
                 .skeletonfile(encoding: .init(rawValue: format) ?? .yml, in: folder)
                 .executeAndCatch(verbose: verbose)
@@ -58,23 +58,23 @@ extension Commander.Group {
     }
 
     private func item(in folder: Folder,
-                      name: String = "item") {
+                      name: String = "bone") {
         command(name,
                 Flag("verbose"),
                 Argument<String>("packageName",
                                  description: .scaffoldItemPackageNameDescription),
                 Argument<String>("name",
                                  description: .scaffoldItemNameDescription),
-                Flag("createProcedure",
-                     description: .scaffoldItemCreateProcedureDescription),
+                Flag("skipProcedure",
+                     description: .scaffoldItemSkipProcedureDescription),
                 Argument<[String]>("files",
                                    description: .scaffoldItemFilesDescription),
-                description: .scaffoldItemDescription) { verbose, package, name, createProcedure, files in
+                description: .scaffoldItemDescription) { verbose, package, name, skipProcedure, files in
             Scaffold.item(named: name,
                           package: package,
                           description: .init(format: .scaffoldItemDefaultDescriptionFormat, name),
                           rootFolder: folder,
-                          createProcedure: createProcedure,
+                          createProcedure: !skipProcedure,
                           files: files)
                 .executeAndCatch(verbose: verbose)
         }

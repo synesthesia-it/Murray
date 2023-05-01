@@ -67,8 +67,8 @@ extension String {
     @Translation("File names to be created (empty) and associated to current item")
     static var scaffoldItemFilesDescription: String
 
-    @Translation("Create a procedure named like current item.")
-    static var scaffoldItemCreateProcedureDescription: String
+    @Translation("Skip automatic procedure creation for current item.")
+    static var scaffoldItemSkipProcedureDescription: String
 
     @Translation("Create a new procedure in specified package with provided items in sequence.")
     static var scaffoldProcedureDescription: String

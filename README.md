@@ -2,111 +2,44 @@
 
 [![Swift](https://github.com/synesthesia-it/Murray/actions/workflows/tests.yml/badge.svg)](https://github.com/synesthesia-it/Murray/actions/workflows/tests.yml)
 
-**Murray** is a command-line integrator of template files into projects. 
-It helps developers to quickly scaffold new features into any kind of project based to their own templates, folder structure and naming conventions.
+**Murray** is a command-line integrator of template files into projects.
+
+It helps developers to quickly scaffold new features into any kind of project based on their own templates, folder structure and naming conventions.
+
 It's written in **Swift** but it's compatible with any text-based project.
 
-# The (very basic) example
+The templating language is [Stencil](https://github.com/stencilproject/Stencil) with [StencilSwiftKit](https://github.com/SwiftGen/StencilSwiftKit) additions.
 
-Projects are usually made of groups of boilerplate files that has a fixed structure and part of their contents changing according to some input.
+# A real-life example
 
-Some examples can be iOS' `UIViewController`, Android's `Activity`, controllers for Web MVC, actions/reducers for React, etc.
+Let's say you have to create some feature for your software - let's actually call it `Feature`. We can imagine it as a *screen* for your application, and you'll need to create later on different screens with the same structure but a different base name (`Feature` may become `Product` or `User` or really anything).
 
-These files are always created from scratch in specific subfolders, replaced with some placeholder (in both filename and contents) and then completed with proper context-related implementations.
+Let's also say that you are following the MVC (Model View Controller) pattern and you are using Swift as programming language.
 
-Murray addresses the first problem (folder structure) with YAML or JSON specs and the second one (placeholders) with Stencil templates. 
+It's almost certain that you will end up creating 3 different files: 
+- the `Feature.swift` file containing the model 
+- the `FeatureController.swift` file containing the controller
+- the `FeatureView.swift` file with the view.
 
-Stencil templates are text files where everything wrapped around double curly braces (like `{{ this }}`) can be replaced by a key-value pair, where the key is the wrapped word and the value is the actual substitution.
-An example template for a `UIViewController` can be defined in a file with these contents:
+If you are also following TDD (or just unit testing your software), you will probably also need a `FeatureTests.swift` file somewhere.
 
-```swift
-import UIKit
-class {{ name|firstUppercase }}sViewController: UIViewController {
+On top of that, you will probably will have to instantiate at least the controller somewhere by writing `FeatureController()` in a very specific part of your existing code.
 
-  let {{ name|firstLowercase }}s: [{{ name|firstUppercase }}] = []
-
-  func viewDidLoad() {
-    super.viewDidLoad()
-  }
-}
+The idea behind Murray is to run in a terminal a command like
+```shell
+murray run screen Feature 
 ```
+to find all the files you need in the proper place (example: a `Scenes/Feature` folder), already pre-compiled with some boilerplate (ex: `struct Feature: Codable {}`) and all the links already in place so that you can quickly start developing your... features.
 
-Example execution command (from CLI): 
+# Installation (macOS)
 
-```sh
-murray run ViewController product
-```
-
-When executed by Murray with some parameters, this template will actually render it's context by replacing `name` occurrences with whatever provided, and applying *filters* like uppercase, lowercase, etc.
-
-Murray can be instructed to *resolve* contents of the template file (at `ViewController.swift.stencil`) and copy  to a specific folder using a configuration file with this syntax
-
-```yml
-name: ViewController
-description: A custom description for this simple template.
-paths:
-- from: "ViewController.swift.stencil"
-  to: "Sources/Files/{{ name|firstUppercase }}sViewController.swift"
-  plugins:
-    xcode:
-      targets: ["App"]
-```
-
-Rendered result will be saved at `Sources/Files/ProductsViewController.swift` with these final contents: 
-
-```swift
-import UIKit
-class ProductsViewController: UIViewController {
-
-  let products: [Product] = []
-
-  func viewDidLoad() {
-    super.viewDidLoad()
-  }
-}
-```
->Xcode developers, we've got you covered! With the `xcode` plugin, generated files can be added to your targets automatically! In this example, Murray will look for the `App` target and add generated view controller to it.
-
-
-Different templates can be rendered sequentially by a single execution, leading to a standardized way of software development.
-
-
-# Main Features
-
-- Clone a **skeleton** project from a remote repository, customize it with your project name and custom properties and have it ready to run. Murray supports **tags** and **branches** for remote repositories (`@develop` or `@1.0.0`)
-```sh
-murray clone YourProjectName yourGitPath
-```
-
-- Develop your project with **bones**: template files you design that gets easily integrated in your project structure. If a adding a screen to your app requires 3 new files, you can design them with a template and have Murray resolve them for you and move the result in proper folders.
-
-- Install bones templates from any number of different repositories: share your file templates with your team.
-
-- Automatically add slices of code to already existing files when adding new bones (*example: Add a custom xml tag for your new Activity at the end of the Android manifest.xml when creating an Activity from a custom bone*). We call them **replacements**.
-
-- Easily manage and check your bones environment: see what's available directly from CLI
-```sh
-murray list
-```
-
-- Design your templates with **[Stencil](https://github.com/stencilproject/Stencil)**
-
-- Integrate Murray functionalities in any Swift application through **MurrayKit** framework
-
-
-# Installation
-
-## MacOS
-
-#### Using *[Mint](https://github.com/yonaskolb/mint)*
-
+## Using 🌱 *[Mint](https://github.com/yonaskolb/mint)* (recommended)
 
 ```
 mint install synesthesia-it/Murray
 ```
 
-
-#### Compiling from source (latest version from *master* branch)
+## Compiling from source (latest version from *main* branch)
 
 ```
 curl -fsSL https://raw.githubusercontent.com/synesthesia-it/Murray/master/install.sh | sh
@@ -120,381 +53,341 @@ This is especially useful for contribution to the project.
 > Make sure you've installed Homebrew on your machine.
 
 `make build` will build a release version of Murray and copy the executable file it in `/usr/local/bin` folder 
+
 `make setup` will properly setup the environment and generate the XCode project
+
 `make lint` will ensure code is properly written by following the Swiftlint standard
-
-## Linux (*experimental*, tested on Ubuntu 18)
-
-Install Swift compiler ([guide](https://gist.github.com/Azoy/8c47629fa160878cf359bf7380aaaaf9) here)
-then
-
-```
-sudo apt-get install libdispatch-dev
-clone murray https://github.com/synesthesia-it/Murray/tree/develop
-cd Murray
-touch LinuxMain.swift
-swift build -c release
-copy .build/x86_64-unknow-linux/releas /opt/
-alias murray='/opt/Murray/murray'
-```
-
-(credits to @beppenmk)
-
-# Contributing
-
-Checkout the project and open `Package.swift`
 
 
 # Key Concepts
 
-## Configuration files format
+**Murray** is based around the concept of **Skeleton** - a starting point for any kind of project given a pre-defined architecture (example: an HTML5 project with Bootstrap, an iOS project with MVVM/MVC/TCA/whatever, a React Native starting project template) that is goin to be extended with small parts of boilerplate code that need to be created in specific subfolders in a consistent way - we call them **Bones**.  The idea is to have precompiled files ready in place and edit it accoring to your needs. 
+> Murray doesn't interpret your file contents after it's created, it's completely language agnostic.
 
-To properly setup your project to work with Murray templates, you'll need different configuration files (see below). 
-Murray support **JSON** and **YAML** out of the box. 
+You put together one or more bones into a **Procedure**, which is a command with a name that "installs" Bones into your project. You provide a **Context** to the procedure, containing a bunch of variables that will be used to transform your template file into the final one.
 
-If no extension is declared in your filename, Murray will try to parse the file contents and guess the format.
+## Template
 
-## Resolution
-The concept of *resolving* involves some text input (a path or some file contents) with some placeholders thate will be replaced (*resolved*) with some specifict contents provided by a *context*.
+A template is a text file containing a mix of final code structure and variables that will be solved. A template is built around a *templating language*, and Murray uses [Stencil](https://github.com/stencilproject/Stencil)
+
+A basic example (for a SwiftUI project) can be:
+```swift
+import SwiftUI
+
+struct {{name|firstUppercase}}View: View {
+    @ObservedObject var viewModel: {{name|firstUppercase}}ViewModel
+    var body: some View {
+        Text("{{name}} is cool!")
+    }
+}
+```
+
+When provided with a *context* containing a variable called `name`, all the placeholders contained within the `{{}}` symbols will be replaced with that variable name. If `name` value were `murray`, the result would be
+
+```swift
+import SwiftUI
+
+struct MurrayView: View {
+    @ObservedObject var viewModel: MurrayViewModel
+    var body: some View {
+        Text("murray is cool!")
+    }
+}
+```
+Stencil provides a "basic" templating experience; to enhance the capabilities and create more complex templates, Murray also implement [StencilSwiftKit](https://github.com/SwiftGen/StencilSwiftKit) extensions. Check both documentation for template usage.
 
 ## Context
-The *context* is a map of key-values that are used in text resolutions. They are always retrieved from Skeleton environment fields plus current execution fields (with current execution overriding environment fields when collisions are detected).
 
-## Skeleton
+A **context** is a key-value map (a *dictionary*) containing variables that will be replaced in templates.
 
-A skeleton is an empty project, containing any type of file and folder.
-The Skeleton is a shared starting point for a new project, and should not contain any bone template; in other words, the project should work out of the box as a real project.
-To be compatible with Murray, a Skeleton project must contain a `Skeleton` file in its root folder.
-Available fields are:
-- `paths`: array of paths that will be resolved right after cloning the original skeleton. A path should contain: 
-  - `from` field, a path to a local folder/file that will be resolved and moved to destination.
-  - `to` field, the path where the resolved folder/file will be copied. 
-  > If `from` field is a folder containing other folders, they will all be resolved and copied to destination.
-- `initializeGit`: initialize a new git (`git init`) after skeleton setup
-- `scripts`: an array of shell scripts that will be executed after cloning and paths replacements.
-Example (for non-xcode users: `Skeleton.xcodeproj` is actually a folder.): 
+It can be provided through command line (local context - it changes with every invocation according to your need) and provide some global defaults defined in the main `Murrayfile`.
 
-```json
-{
-        "scripts": [
-        "sh install.sh"
-        ],
-        "initGit": true,
-        "paths" : [{
-            "from": "Skeleton.xcodeproj",
-            "to": "{{ name|firstUppercase }}.xcodeproj"
-        }],
-}
+Context is also enriched with some dynamic values like current time/date/year, the current git author, file path, etc. so that every created template may render something like
+
+```swift
+// {{_filename._to}} - {{_author}} © {{_year}}
+```
+rendered as 
+```swift
+// Murray.swift - Stefano Mondino - © 2023
+```
+
+## Package
+
+A package is a group of procedures and bones that may easily be redistributed across different teams and/or people.
+Most common use case scenario involves a single package containing all the procedure for current skeleton, but there may be some cases where packages could be mixed and/or extended.
+
+A package is contained in a folder, so it's easy to move around (zip or git subfolder)
+
+## Configuration files
+
+Murray supports either YAML or JSON for configuration file.
+
+The main entry-point is the **Murrayfile** in the project's root, containing the environment hashmap and the list of included packages (as paths relative to the project's root).
+
+Every package configuration file contains the list of supported **procedures**, each one linking to a list of one or more **bones**
+
+Every bone has a a configuration file listing the new files that will be created when the procedure including current bone is ran, and some other options. See below for further details
+
+# CLI commands
+
+Every command has a `--help` option explaining proper usage of selected command.
+
+## List
+`murray list` returns a complete list of all available procedures by joining the packages contained in your Murrayfile.
+
+Example with two packages:
+```console
+foo@bar:~$ murray list
+Package.procedureA
+Package.procedureB
+Package.procedureC
+AnotherPackage.procedureA
+```
+
+> You can use the name of the procedure in following `run` executions; if two different packages have the same name, prepend the package name to the procedure's name
+
+## Run
+`murray run <procedureName> <name>` runs selected procedure.
+If context requires more than the `name` parameter, add a key-value list of parameters with `parameter:value` syntax
+
+Example (let's assume that `procedureA` requires a `name` and a `module` parameter in context):
+```console
+foo@bar:~$ murray run procedureA test module:MyModule
+```
+Options: 
+- `--verbose`: enables full logging 
+- `--preview`: skip any file creation and provides a list of file that will be created/modified by current execution 
+
+## Scaffold 
+
+`murray scaffold <type>` creates the basic configuration structure for Murray components.
+
+Every command creating a new configuration file accepts an optional `--format` parameter, accepting either `yml` or `json` for contents data structure. Murray default format is YAML.
+
+### Skeleton
+
+```console
+foo@bar:~$ murray scaffold skeleton --format yml
+```
+
+Creates a new Skeletonfile in current folder. 
+
+### Murrayfile
+```console
+foo@bar:~$ murray scaffold murrayfile --format yml
+```
+
+Creates an empty Murrayfile in current folder.
+
+### Package
+```console
+foo@bar:~$ murray scaffold Package <packageName> --format yml --folder ".Murray"
+```
+
+Creates a new package called `packageName` in specified folder. When not specified, folder is a new directory called `Murray` (relative to the Murrayfile)
+
+### Bone 
+```console
+foo@bar:~$ murray scaffold bone <packageName> <name> <files> --format yml --skipProcedure
+```
+
+Creates a new bone named `name` in package named `packageName`.
+You can provide a list of file names (separated by spaces) that will be created empty inside the bone's folder.
+
+> The file format for the bone configuration file will be the same as the containing package.
+
+Example (given that `MyPackage` is the package name): 
+
+```console
+foo@bar:~$ murray scaffold bone MyPackage CustomBone FileA.swift.stencil FileB.swift.stencil`
+```
+
+will create a new bone inside MyPackage, containing the configuration file and two empty template files.
+
+The `--skipProcedure` parameter skips the creation of a new procedure inside the Package configuration containing the new item. Defaults to `false` (meaning that - if set to `true` - you will need to manually add a new procedure to your package by editing the configuration file).
+
+
+### Procedure
+```console
+murray scaffold procedure <packageName> <name> <boneNames>
+```
+Appends a new procedure to package named `packageName`, containing bones (separated by spaces) named `boneNames`. The name of the procedure will be called `name`.
+
+Example (given that `MyPackage` is the package name and it already contains bones named `CustomBone` and `AnotherBone`):
+
+```console
+murray scaffold procedure MyPackage MyProcedure CustomBone AnotherBone
+```
+
+will create a procedure named `MyProcedure` containing `CustomBone` and `AnotherBone`. They will be executed in this exact order.
+
+You can then call `murray run MyProcedure Test` to use it in your project.
+
+# Plugins
+
+Developers may need to perform some tasks befor or after some key moments in `murray run` execution. 
+These moments are usually:
+- before or after every new file defined by an item is created
+- before or after a replacement
+- before or after an item is executed
+- before or after a specific procedure is ran
+- before or after **every** procedure is ran
+
+> **Before** and **after** are called **phases** and every plugin may or may not support them both.
+
+MurrayKit exposes the context of `Plugin` to ensure allow every (Swift) developer to easy integrate custom behavior inside executions. Every `Plugin` may have its own parameters that will be used at the right time.
+
+To declare a plugin for an item / procedure / global execution, you need to add a dictionary node named `plugins` containing the name of the plugin you need to use and its own parameters. (see below for examples)
+
+> Currently every plugin must be compiled with Murray sources. Dynamic plugins are in the roadmap.
+
+Murray ships with 2 plugins: `Xcode` and `Shell`
+
+## Xcode Plugin
+
+The xcode plugin allows users to automatically add new files to a specific target in your Xcode project. 
+
+It only supports the **after** phase (it would be pointless to add a specific file to your Xcode project before it's created).
+
+The accepted parameters are: 
+- `targets`: an array of targets to add the current file to.
+- `projectPath`: (optional) the path (relative to the Murrayfile folder) containing the xcode project. When not specified, it will use the first `xcodeproj` found in the Murrayfile folder. This is useful for modular projects with multiple xcodeprojs.
+
+See the Examples folder for a demo.
+
+## Shell Plugin
+
+The shell plugin executes any shell command before or after the current item execution.
+It could be used at any level (replacement, file, procedure or globally).
+The accepted parameters are:
+- `before`: an array of commands to be run before the current element execution
+- `after`: an array of commands to be run after the currente element execution
+
+A common use case scenario could be running a linter (ex: `swiftlint --fix` or `swiftformat`) after every execution, to ensure that files created or edited by murray execution are still well formatted according to your logic
+
+Projects using XcodeGen or Tuist may run either `xcodegen` or `tuist generate` to recreate the xcode project. This is usually a better approach than the Xcode Plugin for projects that are already supporting project generation.
+
+Example in Murrayfile:
+```yml
+...
+plugins:
+  shell:
+    after: 
+    - "swiftformat"
+    - "swiftlint --fix"
+    - "tuist generate"
 ```
 
 
-## Bone
-
-A Bone represents a group of template files that can be resolved and copied into current project.
-BoneItems consist in a folder containing a configuration (example: `bone.yml`) file and any number of template files.
-Fields are
-
-- `name`: a name identifying current item.
-- `description`: a brief description explaining the purpose of this item
-- `paths`: an array of path objects, made by a `from` and a `to` string value. 
-  - `from` represents a folder or a file relative to BoneItem.json itself and containing some template that needs to be copied into target project.
-  - `to` represents target folder path, relative to project's root (the one containing the `Murrayfile.json` file.)
-  Both `from` and `to` paths are *resolved* against provided context, meaning that every Stencil placeholder will be converted in context value, if available.
-  - `plugin`: plugin data for current bone
-
-- `parameters`: an array of objects representing all the keys expected by templates. Each object must contain a `name` string parameter (the actual name used in the template) and an optional `isRequired` boolean flag.
-    If a `required` parameter is not found in provided context, the execution will stop with an error.
-- `replacements`: an array of `replacements` associated to current item. See `Replacement` for more informations.
-- `plugins`: an object where the key represents the name of a pre-installed plugin, and its object counterpart is strictly plugin-dependent. See `Plugin` section for more informations.
-
-Example:
-
-  ```json
-  { 
-    "name": "viewController",
-    "paths": [{ 
-    "from": "ViewController.template.swift",
-    "to": "Sources/ViewControllers/{{ name|firstUppercase}}/{{ name|firstUppercase }}ViewController.swift"
-   }],
-    "replacements": [],
-    "parameters": [
-      {
-        "name": "name",
-        "isRequired": true
-      }
-    ],
-    "plugins": {
-      "xcode": { "targets": ["App"] }
-    }
-   }
-  ```
-
-## BoneProcedure
-
-A **Procedure** is a sequence of items resolved and installed in target project across a single execution. The procedure is identified by the `name` parameter.
-
-## BonePackage
-
-A **Package** is a group of items and procedures that can be shipped through git or zips and reused across different projects.
-It should contain a json file representing it's structure (default name: `BonePackage.json`) and any number of folders including Items.
-`BonePackage.json` fields are: 
-
-- `name`: a name identifying the package. 
-- `description`: a description string explaining the package's main purpose. Will be printed by CLI commands
-- `procedures`: an array of **BoneProcedure** objects.
-
-Example:
-
-```json
-{
-  "description" : "A package for quick MVVM scaffolding.",
-  "procedures" : [
-    {
-      "items" : [
-        "viewModel\/BoneItem.json",
-        "viewController\/BoneItem.json",
-        "model\/BoneItem.json"
-      ],
-      "description" : "Creates an group of Model, ViewController and ViewModel",
-      "name" : "section"
-    }
-  ],
-  "name" : "MVVM"
-}
-
-```
+# Configuration files
 
 ## Murrayfile
 
-The Murrayfile is located in the root folder in `Murrayfile` file and contains the main configuration for all the packages and the project's environment. 
-Murray file is **required** in order to use all the commands (except the `clone` skeleton one).
-Fields are: 
+The Murrayfile contains the list of packages supported by current project and the environment. It also supports plugins that will be executed before or after any procedure.
 
-- `packages`: an array of paths relative to Murrayfile folder pointing to a `BonePackage.json` file
-- `environment`: an hashmap representing a shared context for each resolution. 
-Can contain simple data such `author` name, `packageName` and similar, or more complex array/objects that will be handled by templates. Every field in this map can contain resolvable placeholders, pointing to other fields in the environment or contextual values for each run.
+The environment contains a base context that will be available in every Stencil template during the execution (either in code files or configuration files).
 
-Example: 
+You can also recursively reference other environment variables.
 
-```json
-{
-  "packages" : [
-    "Murray/MVC/BonePackage.json"
-  ],
-  "environment" : {
-    "author": "Stefano Mondino",
-    "company": "Synesthesia",
-    "target": "App"
-    "currentName": "{{name}}"
-  }
-}
+> Avoid creating "variable loops" in the environment.
+
+Parameters:
+- `packages`: a list of paths to the packages configuration files (relative to the Murrayfile) 
+- `plugins`: the plugin data
+- `environment`: a dictionary containing a context available to all executions.
+- `mainPlaceholder`: (optional) the name of the main placeholder used in every template. Defaults to `name`.
+
+Example (YAML):
+```yaml
+packages:
+- "Murray/MyPackage/MyPackage.yml
+- "Murray/AnotherPackage/AnotherPackage.yml
+plugins:
+  shell:
+    after: 
+    - "make"
+environment: 
+  company: Synesthesia
+  paths:
+    sources: "Sources"
+    module: "{{paths.sources}}/{{module}}"
+    tests: "Tests"
 ```
 
-## Skeleton
+## PackageFile
 
-The `Skeletonspec.json` file contains informations needed by the skeleton phase of a project to be converted in an actual project.
-It's deleted after proper project creation as it won't be needed anymore.
+Contains the definition of a package and its procedures.
 
+Parameters:
+- `name`: the name of the package
+- `description`: a readable description of the package, briefly explaining what it does.
+- `procedures`: an array of procedures, each containing:
+  - `name`: the name of the procedure, used in the `murray run` command
+  - `description`: (optional) a readable description of the procedure, briefly explaining what it does. It will be shown in `murray list`.
+  - `plugins`: the plugin data
+  - `items`: paths to the bones configuration files, relative to the current Package configuration file. You can combine as many as you want (they will be executed following provided order).
 
-
-## Template resolution
-
-The conversion of a template into a proper project file, by replacing every placeholder with context values.
-Templates follows [Stencil](https://github.com/stencilproject/Stencil) syntax and rules
-
-## Context
-
-A key-value map/dictionary containing value that will be replaced in templates during resolution.
-Context is made of **environment** values (static values) and execution values explicitly derived from CLI commands.
-Example: in an Android application, an environmnent value can be the main `packageName` used by the app, while an execution value can be the `name` of the activity being created.
-Environment values are set inside the `Murrayfile.json` file, in the `environment` json field. In templates, just use the same key used in the Murrayfile.
-
-## Replacements
-
-Replacements are special strings or file templates that won't create a new file when resolved, but will append their contents in a specific part of some already-existing file.
-Replacements are declared at Item level, and should be used with normal templates to ensure that project will still be "valid" after an execution.
-
-Example: in Android development, developers can declare an `Activity` to create a new screen of the app. Creating a template for an Activity is surely a great fit for Murray, but Android requires every new Activity to be declared in a common xml file (the `AndroidManifest.xml`). By placing a template file inside the Item (with the xml node syntax) and a comment inside the XML, Murray can look for the placeholder, replace it with the template string and add back the placeholder again.
-
-## Available filters
-
-Murray provides custom filters for Stencil templates:
-
-- `firstUppercase` and `firstLowercase` are useful for class names and variable names in code templates: you can input some generic name like `product` and convert it into `Product` when it should be used in class names or viceversa.
-- `snakeCase` is useful to convert camelcase words into snake case. Example: `thisIsAWord` becomes  `this_is_a_word`
-
-Filters can be chained: 
-```
-{{ name | snakeCase | uppercase }}
-```
-converts name from `thisIsAWord` into `THIS_IS_A_WORD`
-
-## Plugins
-
-A `Plugin` is composed by custom code that may be executed in a specific moment during the pipeline.
-For example, a specific item may need some bash command to be executed every time a resolution happened (== after a group of file templates have been resolved and copied to final destination folder).
-
-A common use case, for iOS/Xcode projects, is having a new file creted by a bone item to be automatically added to proper .xcodeproj structure and target.
-
-Other platforms may need some custom code to be executed to clean/rebuild the entire project, depending on how the programming language/framework is designed.
-
-Murray currently defines two custom plugins: XCode and Shell
-
-### XCode Plugin
-
-The XCode plugin is executed if the `plugins` node in an item contains a `xcode` object with a `targets` array of targets names.
-Example in a specific BoneItem.json: 
-
-```json
-"plugins": {
-    "xcode": {
-        "targets": ["MyApp", "MyAppTVOS"]
-    }
-}
+Example (YAML):
+```yaml
+name: MyPackage
+description: Some meaningful description
+procedures:
+- name: ProcedureA
+  description: I'm sure this will be meaningful to you
+  items: 
+  - BoneA/bone.yml
+- name: ProcedureB
+  description: I'm sure this will be meaningful to you
+  items: 
+  - BoneB/bone.yml
+- name: ProcedureC
+  description: I'm sure this will be meaningful to you
+  items: 
+  - BoneA/bone.yml
+  - BoneB/bone.yml
 ```
 
-In the above example, every bone Item created by the execution will add created files to the "MyApp" target and the "MyAppTVOS" target. 
+## BoneFile
 
-### Shell Plugin
+Contains the definition of a single Bone. A bone is a combination of new files and replacements in existing files. 
+While probably pointless, a bone can be completely empty (or only contain plugin data.)
 
-The Shell plugin will execute shell commands before and/or after each item creation
+Parameters:
+- `name`: the name of the bone. It's used to scaffold new procedures.
+- `description`:  a readable description of the bone, briefly explaining what it does.
+- `parameters`: a list of parameters accepted by current bone. Each one is defined by
+  - `name`: the name of the parameters. 
+  - `isRequired`: a boolean value that will require the presence of this parameter in every execution containing this bone, throwing an error when missing
+- `plugins`: plugin data
+- `paths`: an array of paths definitions for every **new** file that will be created by this bone. Each one is defined by:
+  - `from`: a path to a file or a folder relative to current bone configuration file. When pointing to a folder, it will resolve all contained files against provided context.
+  - `to`: the destination path (relative **to the Murrayfile**) where this template (or folder) will be resolved into. It supports context resolution (meaning that it may contain stencil templates). 
+  - `plugins`: plugin data for this path file/folder
+- `replacements`: an array of replacements that will be sequentially executed. Each one is defined by: 
+  - `destination`: destination file path (relative to Murrayfile) containing the file where the replacement will take place
+  - `placeholder`: a line of text that will be searched inside the `destination`, and replaced by the `text` or the `source` contents. The placeholder is always added back after the replacement.
+  - `text`: (optional) a small amount of text that will be placed right before the `placeholder` in the `destination` file. For large amount of replacement texts use `source`
+  - `source`: (optional) a path to a file (relative to the bone) containing a resolvable text that will be placed in the `destination` file right before the `placeholder`. For small replacements use the `text` property instead. Please note that at least one between `text` and `source` is required. When both of them are specified, `source` is always used.
 
-Allowed parameters:
-`before`: array of shell commands (strings) that will be executed right before a single item/procedure/path resolution
-`after`: array of shell commands (strings) that will be executed right after an item/procedure/path has been resolved and/or copied to destination
-
-
-> Shell commands will be executed from the project root folder. 
-
-Example (in BoneItem.json): 
-
-```json
-plugins: {
-    "shell": {
-        "before": ["echo Hello", "ls -la"],
-        "after": ["make project"],
-    }
-}
+Example (YAML):
+```yaml
+name: sceneViewModel
+parameters: []
+paths:
+- from: ViewModel.swift.stencil
+  to: "{{paths.scenes}}/{{name|firstUppercase}}/{{name|firstUppercase}}ViewModel.swift"
+  plugins:
+    xcode: 
+      targets: ["{{mainTarget}}"]
+- from: ViewModelTests.swift.stencil
+  to: "{{paths.tests}}/{{name|firstUppercase}}/{{name|firstUppercase}}ViewModel.swift"
+  plugins:
+    xcode: 
+      targets: ["{{mainTestTarget}}"]
+description: A scene view model with tests
+replacements: 
+- destination: "MurrayDemo/MainTabViewModel.swift"
+  placeholder: "// murray: viewModel"
+  text: "let {{name|firstLowercase}}ViewModel = {{name|firstUppercase}}ViewModel()\n"
 ```
-Example (in BonePackage.json, in a procedure JOSN node): 
-
-```json
-plugins: {
-    "shell": {
-        "before": ["echo Hello", "ls -la"],
-        "after": ["make project"],
-    }
-}
-```
-
-# CLI - Usage
-
-Murray exposes a simple Command Line Interface.
-Every command can be run with `--help` flag for descriptive help and with `--verbose` to display more output and debug purposes.
-
-By running 
-
-```bash
-$ murray
-```
-
-you get a list of macrocommands: `skeleton`, `bone` and `scaffold`
-
-## Skeleton
-
-A set of commands to interact with skeletons
-
-- `new` - Create a new skeleton app by cloning any remote repository with a `Skeletonspec.json` file in its root folder. This command will clone your remote repository/copy your local repository in a subfolder of current folder with provided name.
-Command will fail if subfolder is already existing or if provided repository does not contain a `Skeletonspec.json`.
-
-```bash
-$ murray skeleton new YourCustomProjectName git@github.com:stefanomondino/somerepo@develop
-```
-```bash
-$ murray skeleton new AnotherCustomProjectName ../SkeletonFolder@develop
-```
-
-## Bone
-
-A set of commands to interact with bones
-
-All `bone` subcommands must be run from your project root folder. Such folder should also contain a valid `Murrayfile.json`
-
-- `clone` - Clones a remote repository containing a bone Package. You should specify the `git` address (remote or local) to clone the package from, and an optional local subfolder to clone it into (defaults to `.murray` hidden folder).
-
-```bash
-$ murray bone clone ../SomeLocalPackageGitFolder@master MurrayBones
-```
-
-- `list` - Prints out every available `procedure` by flatting available packages. 
-
-```bash
-$ murray bone list
-```
-
-- `new` - Executes an available procedure. Requires a `name` parameter (the procedure `name`, as printed out from `murray bone list`), a `mainPlaceholder` value (the `name` parameter in context). 
-Optional parameters are `--context` (a valid JSON string containing the context).
-By providing the  `--` , you can add a variadic list of strings at the end of the command that will be used inside templates in additions to provided name and environment values from Murrayfile.
-Each string must be a key-value pair separated by a colon, example `"author:stefano mondino"`.
-
-```bash
-$ murray bone new viewModel Product -- "company:Synesthesia" "author:stefano mondino"
-```
-The example above will resolve templates by replacing `name` with `Product`, `company` with `Synesthesia` and `author` with `stefano mondino`.
-
-## Scaffold
-
-A set of commands to create Murray structures from scratch.
-
-All `scaffold` subcommands must be run from your project root folder. Such folder should also contain a valid `Murrayfile.json` (with the exceptions of `murrayfile` and `skeleton` commands).
-
-- `murrayfile`: creates a new empty `Murrayfile.json` 
-
-```bash
-$ murray scaffold murrayfile
-```
-
-- `skeleton`: creates a new empty `Skeletonspec.json` 
-
-```bash
-$ murray scaffold skeleton
-```
-
-- `package`: creates a new Package named `name` in specified local `path` and adds it to current Murrayfile. An optional `--description` string parameter may be provided to describe the new Package in list commands.
-```bash
-$ murray scaffold package MVC ./MurrayBones --description "A package to manage MVC in iOS applications"
-```
-
-- `item`: creates a new Item inside a Package. Requires a `package` parameter that must match an existing package in project folder, a `name` used to uniquely identify the item inside the package and a list of file names that will be use to generate empty files for your templates.
-Note: created items will **NOT** added to any procedure. See `scaffold procedure` for that.
-```bash
-$ murray scaffold item MVC ViewController "ViewController.template.swift" "ViewController.template.xib"
-```
-```bash
-$ murray scaffold item MVC Model "Model.template.swift"
-```
-
-- `procedure`: creates inside a `package` a new procedure identified by `name` by adding provided list of `items`. If target package already contains a procedure with provided name, the items will be added to the existing one. An optional `--description` option may be provided to better describe the procedure in lists.
-```bash
-$ murray scaffold procedure MVC screen ViewController Model --description "Creates a new screen in the app with a ViewController class and xib and a Model"
-```
-
-
-# FAQ
-
-#### I'm a Swift developer. Why shoud I use this instead of Sourcery?
----------------
-[Sourcery](https://github.com/krzysztofzablocki/Sourcery) is a great software that somehow handles templates as well, but is meant to handle only Swift code and project by actually *compiling* templates in different scenarios.
-Murray doesn't compile or interpret your code, it doesn't even know what programming language you're actually using. It's aimed to project's structure and boilerplate reuse across projects through git repos
-
-#### Why Murray? Who is Murray?
----------------
-  Because we're dealing with Skeleton apps and Bones and we miss Monkey Island a lot! :) We hope this tool is not as much annoying as its original counterpart!
-
-#### Who's behind Murray?
-------------
-![Syn](https://synesthesia.it/wp-content/themes/synesthesia/dist/img/syn_sm.png)
-
-**Murray** is entirely developed and open-sourced by [Synesthesia](https://www.synesthesia.it)
-
-We're currently using it for **iOS** and **Android** projects.
