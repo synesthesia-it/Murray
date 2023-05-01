@@ -13,13 +13,13 @@ extension Folder {
         try Folder(path: Bundle.module.resourcePath ?? Bundle.module.bundlePath)
             .subfolder(at: "Mocks/\(name)")
     }
-    
+
     static func testFolder() throws -> Folder {
         try Folder
             .temporary
             .createSubfolderIfNeeded(withName: "Murray")
     }
-    
+
     static func emptyTestFolder() throws -> Folder {
         try? Folder.temporary.subfolder(named: "emptyTest").delete()
         return try Folder
@@ -30,7 +30,7 @@ extension Folder {
 
 struct Scenario {
     let name: String
-    
+
     func make() throws -> Folder {
         let origin = try Folder.mock(at: name)
 
@@ -39,7 +39,7 @@ struct Scenario {
         try? destinationParent
             .subfolder(named: name)
             .delete()
-        
+
         try origin
             .copy(to: destinationParent)
 
@@ -51,7 +51,6 @@ struct Scenario {
 }
 
 extension Scenario {
-
     static var simpleJSON: Scenario {
         .init(name: "SimpleJSON")
     }
@@ -59,13 +58,19 @@ extension Scenario {
     static var simpleYaml: Scenario {
         .init(name: "SimpleYaml")
     }
-    
+
+    static var wrongMurrayfile: Scenario {
+        .init(name: "WrongMurrayfile")
+    }
+
     static var cloneOrigin: Scenario {
         .init(name: "Skeleton")
     }
+
     static var cloneOriginInSubfolder: Scenario {
         .init(name: "SkeletonInSubfolder")
     }
+
     static func folder() throws -> Folder {
         try Folder.testFolder()
     }

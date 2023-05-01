@@ -17,7 +17,11 @@ extension YAMLDecoder: Decoder {
             case let DecodingError.dataCorrupted(inner):
                 switch inner.underlyingError ?? error {
                 case is Errors: throw inner.underlyingError ?? error
-                default: throw Errors.unparsableContent((inner.underlyingError ?? error).localizedDescription)
+                default:
+                    if let underlying = inner.underlyingError as? YamlError {
+                        throw Errors.unparsableContent(underlying.description)
+                    }
+                    throw Errors.unparsableContent((inner.underlyingError ?? error).localizedDescription)
                 }
             default: throw Errors.unparsableContent(error.localizedDescription)
             }

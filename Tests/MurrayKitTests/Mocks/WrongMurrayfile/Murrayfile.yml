@@ -1,0 +1,3 @@
+environment:
+  someProperty: {{name}} but this is probably wrong because is missing surrounding quotes
+packages: []
