@@ -29,7 +29,7 @@ The idea behind Murray is to run in a terminal a command like
 ```shell
 murray run screen Feature 
 ```
-to find all the files you need in the proper place (example: a `Scenes/Feature` folder), already pre-compiled with some boilerplate (ex: `struct Feature: Codable {}`) and all the links already in place so that you can quickly start developing your... features.
+to find all the files you need in the proper place (example: a `Scenes/Feature` folder), already pre-filled with some boilerplate (ex: `struct Feature: Codable {}` for your model file) and all the links already in place so that you can quickly start developing your... features.
 
 # Installation (macOS)
 
@@ -57,6 +57,19 @@ This is especially useful for contribution to the project.
 `make setup` will properly setup the environment and generate the XCode project
 
 `make lint` will ensure code is properly written by following the Swiftlint standard
+
+# Quickstart
+All concepts are explained in the detail below. To quickly get a taste about Murray, and see if it fits your needs, here's a quick start for a basic working setup (example is for a Swift project)
+
+1. In your project's root folder, run `murray scaffold murrayfile` - this will create the required murrayfile (empty).
+2. In the same folder, run `murray scaffold package Project` - this will create a Package of bones called `Project` and link it to your Murrayfile.
+3. Run `murray scaffold bone Project Model Model.swift.stencil` - this will create a bone in `Murray/Project/Model` containing an empty stencil file (we assume it's for a "model", but it can be anything and you can have more than one).
+4. Edit `Murray/Project/Model/Model.yml`: you will see that the `to` parameter for your template file is empty, as it will depend on your project structure. Assuming that you have everything in the "Sources" folder, have the `to` value point to `"Sources/Models/{{name|firstUppercase}}.swift"` (remember the surrounding quotes - YAML is tricky sometimes :)) 
+5. Edit your template in `Murray/Project/Model/Model.swift.stencil`. Since it's a Model, probably `struct {{name|firstUppercase}}: Codable {}` is what you're looking for, but it can be A LOT more useful and complex than this (remember, this is just a quickstart!).
+6. Let's create a `Product` model in your project! In the root folder of your project run  `murray run MyTest product` - you will find your new model in `Sources/Models/Product.swift`. How cool is that?
+7. Scaffold more bones into your project, mix them together and create your perfect bone system for your architecture - your productivity will boost and your projects will be a lot more clean!
+
+> Swift (iOS/macOS/tvOS/watchOS) projects also requires files to be added to the xcodeproj in order to be used. See the Plugins sections for informations about the Xcode plugin.
 
 
 # Key Concepts
