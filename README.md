@@ -404,3 +404,30 @@ replacements:
   placeholder: "// murray: viewModel"
   text: "let {{name|firstLowercase}}ViewModel = {{name|firstUppercase}}ViewModel()\n"
 ```
+
+## Context values
+
+Context is a mix of runtime values (parameters in CLI), environment values ("hardcoded" in Murrayfile) and dynamic values (standard values depending on current time or current machine).
+
+Values in Murrayfile environment dictionary may be used inside every template by using dotted notation (example: `some.nested.key`) and may be resolved against current context, recursively mixing them with either dynamic, environment or runtime values.
+
+This is a mixed example that creates a `{{fileHeader}}` variable that should print something like
+```swift
+// Filename.swift
+// Stefano Mondino - Synesthesia © 2023
+```
+when creating a bone for a file named `Filename.swift`
+
+```yaml
+environment: 
+  company: Synesthesia
+  gitName: "{{_author}}"
+  currentYear: "{{_year}}"
+  fileHeader: |
+              // {{_filename._to}}
+              // {{gitName}} - {{company}} ©{{currentYear}}
+
+```
+
+
+### 
