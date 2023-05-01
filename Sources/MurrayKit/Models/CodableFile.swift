@@ -58,7 +58,7 @@ public struct CodableFile<Object: Codable & Hashable>: Hashable {
             do {
                 try self.init(file: file, object: decoder.decode(data))
             } catch {
-                Logger.log(error.localizedDescription, level: .verbose)
+                Logger.log("\(error)", level: .error)
                 throw Errors.unparsableFile(file.path)
             }
 
