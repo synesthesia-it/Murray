@@ -8,7 +8,7 @@ class {{name|firstUppercase}}ViewModelTests: XCTestCase {
     
     var viewModel: {{name|firstUppercase}}ViewModel = .init()
 
-    func setUpWithError() throws {
+    override func setUpWithError() throws {
         try super.setUpWithError()
         viewModel = .init()
     }
