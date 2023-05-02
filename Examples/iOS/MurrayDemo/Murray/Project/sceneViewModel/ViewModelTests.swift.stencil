@@ -8,8 +8,8 @@ class {{name|firstUppercase}}ViewModelTests: XCTestCase {
     
     var viewModel: {{name|firstUppercase}}ViewModel = .init()
 
-    func setUpWitError() throws {
-        super.setUpWitError()
+    func setUpWithError() throws {
+        try super.setUpWithError()
         viewModel = .init()
     }
 
