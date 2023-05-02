@@ -1,0 +1,17 @@
+<head>
+    <title>{{name|firstUppercase}}</title>
+</head>
+<body>
+    <nav>
+        {% for page in pages %}
+        <a href="{{page.path}}">{{page.name|firstUppercase}}</a>
+        {% endfor %}
+        <a href="{{folder|default:"Pages"}}/{{name}}.html">{{page.name|firstUppercase}}</a>
+<!--MURRAY NAV--> 
+    </nav>
+    <h1>Welcome to {{name|firstUppercase}}</h1>
+    <p>This is a very simple detail page</p>
+    <footer>
+        This file was created by {{ author.name }} - {{ author.email }}
+    </footer>
+</body>

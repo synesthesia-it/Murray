@@ -1,0 +1,13 @@
+packages:
+- Murray/HTML/HTML.yml
+environment:
+  projectName: "{{name}}"
+  pages:
+  - name: Home
+    path: index.html
+#PagesPlaceholder
+  author:
+    email: stefano.mondino.dev@gmail.com
+    name: Stefano Mondino
+  
+  

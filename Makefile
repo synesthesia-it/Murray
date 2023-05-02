@@ -7,24 +7,19 @@ build:
 	swift build -c release
 	cp -f .build/release/Murray /usr/local/bin/murray
 
-project:
-	swift package generate-xcodeproj
-
 # Install dependencies, download build resources and add pre-commit hook
 
 lint:
-	
 	swiftformat ./Sources
-	swiftlint autocorrect --config "config.swiftlint.yml"
-	swiftlint lint --config "config.swiftlint.yml"
-  
+	swiftlint --fix
+	swiftlint lint --strict
+
 git_setup:
 	eval "$$add_pre_commit_script"
   
 setup:
 	brew update && brew bundle
 	make git_setup
-	make project
 
 # Define pre commit script to auto lint and format the code
 define _add_pre_commit
@@ -42,8 +37,8 @@ FILES=\$(git diff --cached --name-only --diff-filter=ACMR "*.swift" | sed 's| |\
 ${SWIFTFORMAT_PATH} \$FILES
 
 # Lint
-${SWIFTLINT_PATH} autocorrect --config "config.swiftlint.yml" \$FILES
-${SWIFTLINT_PATH} lint --config "config.swiftlint.yml" \$FILES
+${SWIFTLINT_PATH} --fix \$FILES
+${SWIFTLINT_PATH} lint \$FILES
 
 # Add back the formatted/linted files to staging
 echo "\$FILES" | xargs git add

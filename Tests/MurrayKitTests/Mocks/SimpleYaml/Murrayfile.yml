@@ -1,0 +1,11 @@
+environment:
+  author: Stefano Mondino
+  customName: "{{name}}"
+  nestedName: "{{customName}}"
+mainPlaceholder: "name"
+packages:
+  - "Murray/Simple/Simple.yml"
+plugins: 
+  shell:
+    after:
+    - "echo test >> plugin.data"

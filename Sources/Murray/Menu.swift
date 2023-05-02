@@ -6,15 +6,29 @@
 //
 
 import Commander
+
 import Foundation
 import MurrayKit
+import Rainbow
 
-public class Murray {
-    public static var commands: Group {
-        return Group {
-            Skeleton.commands(for: $0)
-            Bone.commands(for: $0)
-            Scaffold.commands(for: $0)
+func commands() -> Group {
+    let folder = Folder.current
+    #if DEBUG
+        Rainbow.enabled = false
+    #endif
+
+    return Group { group in
+        group.listCommand(in: folder)
+        group.runCommand(in: folder)
+        group.scaffoldCommand(in: folder)
+        group.cloneCommand(in: folder)
+        group.group("bone",
+                    .boneDescription) { group in
+            group.listCommand(in: folder)
+            group.runCommand(in: folder, name: "new")
         }
+        //            Skeleton.commands(for: $0)
+        //            Bone.commands(for: $0)
+        //            Scaffold.commands(for: $0)
     }
 }

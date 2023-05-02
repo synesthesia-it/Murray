@@ -1,0 +1,15 @@
+packages:
+- Murray/Project/Project.yml
+environment: 
+  mainTarget: MurrayDemo
+  mainTestTarget: MurrayDemoTests
+  fileHeader: |
+              // {{_author}} - © {{_year}}
+  paths:
+    sources: MurrayDemo
+    tests: MurrayDemoTests
+    scenes: "{{paths.sources}}/Scenes"
+plugins:
+  shell:
+    after:
+    - make lint

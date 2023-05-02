@@ -1,0 +1,13 @@
+name: "folder"
+description: "Folder replacement with nested subfolders"
+paths:
+- from: "Subfolder"
+  to: "Sources/Files/{{name}}"
+replacements:
+- text: "{{name}}"
+  placeholder: "//Murray Placeholder"
+  destination: "Sources/Files/Default/TestReplacementOnly.swift"
+parameters:
+- name: name
+  isRequired: true
+- name: type

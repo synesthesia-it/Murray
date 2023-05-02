@@ -1,0 +1,10 @@
+{{fileHeader}}
+
+import Combine
+import SwiftUI
+
+class {{name|firstUppercase}}ViewModel: ObservableObject {
+    var title: String { "{{name}}".uppercased() }
+    init() {
+    }
+}

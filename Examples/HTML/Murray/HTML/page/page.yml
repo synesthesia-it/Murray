@@ -1,0 +1,21 @@
+name: page
+parameters: 
+- name: name
+  isRequired: true
+- name: folder
+  isRequired: false
+paths:
+- from: Page.html.stencil
+  to: |
+    {{ folder|default:"Pages" }}/{{name|firstLowercase}}.html
+description: An item named page created from scaffold
+replacements:
+- destination: Murrayfile.yml
+  placeholder: "#PagesPlaceholder"
+  text: |+1
+     - name: {{name}}
+       path: {{ folder|default:"Pages"}}/{{name|firstLowercase}}.html
+- destination: index.html
+  placeholder: "<!--MURRAY NAV-->"
+  text: |
+      <a href="{{ folder|default:"Pages" }}/{{name|firstLowercase}}.html">{{name|firstUppercase}}</a>

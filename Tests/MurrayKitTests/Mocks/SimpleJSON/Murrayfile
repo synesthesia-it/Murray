@@ -1,0 +1,15 @@
+{
+    "environment": {
+        "author": "Stefano Mondino",
+        "customName": "{{name}}",
+        "nestedName": "{{customName}}",
+        "nestedValue": {
+            "innerValue": "Test"
+        }
+    },
+    "mainPlaceholder": "name",
+    "packages": ["Murray/Simple/Simple.json"],
+    "plugins" : {
+            "shell": { "after": ["echo test >> plugin.data"]}
+          }
+}

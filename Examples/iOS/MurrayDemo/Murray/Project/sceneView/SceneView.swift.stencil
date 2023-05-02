@@ -1,0 +1,21 @@
+{{fileHeader}}
+
+import SwiftUI
+
+struct {{name|firstUppercase}}View: View {
+    @ObservedObject var viewModel: {{name|firstUppercase}}ViewModel
+    var body: some View {
+        VStack {
+            Text(viewModel.title)
+            Text("This is the {{name}} screen")
+        }.tabItem {
+            Text("{{name|uppercase}}")
+        }
+    }
+}
+
+struct {{name|firstUppercase}}View_Previews: PreviewProvider {
+    static var previews: some View {
+        {{name|firstUppercase}}View(viewModel: .init())
+    }
+}

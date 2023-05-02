@@ -1,0 +1,19 @@
+{{fileHeader}}
+
+import Foundation
+import XCTest
+@testable import {{mainTarget|firstUppercase}}
+
+class {{name|firstUppercase}}ViewModelTests: XCTestCase {
+    
+    var viewModel: {{name|firstUppercase}}ViewModel = .init()
+
+    func setUpWitError() throws {
+        super.setUpWitError()
+        viewModel = .init()
+    }
+
+    func testTitleIsAlwaysUppercased() throws {
+        XCTAssertEqual(viewModel.title, "{{name|uppercase}}")
+    }
+}

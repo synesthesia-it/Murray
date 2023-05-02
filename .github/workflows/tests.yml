@@ -1,0 +1,36 @@
+name: MurrayKit Tests
+on:
+  push: 
+    branches: ["main"]
+    paths: 
+    - Sources
+    - Tests
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    paths: 
+    - Sources
+    - Tests
+jobs:
+  macOS:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Lint
+      run: swiftlint lint --strict
+    - name: Resolve
+      run: swift package resolve
+    - name: Build
+      run: swift build
+    - name: Run tests
+      run: swift test 2>&1 | xcpretty
+  linux:
+    runs-on: ubuntu-latest
+    # container: swift:5.3
+    steps:
+      - uses: actions/checkout@v2
+      - name: Resolve
+        run: swift package resolve
+      - name: Build
+        run: swift build
+      - name: Run tests
+        run: swift test --enable-test-discovery 2>&1

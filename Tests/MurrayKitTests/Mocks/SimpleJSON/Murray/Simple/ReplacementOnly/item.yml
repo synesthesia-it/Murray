@@ -1,0 +1,11 @@
+name: "replacementOnly"
+description: "Simple item replacement"
+paths: []
+replacements:
+- text: {{name}}
+  placeholder: "//Murray Placeholder"
+  destination: "Sources/Files/Default/TestReplacementOnly.swift"
+parameters:
+- name: name
+  isRequired: true
+- name: type

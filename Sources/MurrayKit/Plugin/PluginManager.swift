@@ -1,59 +1,49 @@
 //
-//  PluginManager.swift
-//  Commander
+//  File.swift
 //
-//  Created by Stefano Mondino on 20/01/2020.
+//
+//  Created by Stefano Mondino on 23/05/22.
 //
 
-import Files
 import Foundation
-import Gloss
-
-public protocol PluginDataContainer {
-    var name: String { get }
-    var pluginData: [String: JSON] { get }
-}
-
-open class Plugin {
-    open var name: String { return "" }
-
-    open class func getInstance() -> Plugin { return Plugin() }
-
-    public init() {}
-
-    open func execute(phase _: PluginPhase, from _: Folder, defaultData _: JSON?) throws {}
-
-    open func pluginData<T: JSONDecodable>(for item: PluginDataContainer, type _: T.Type = T.self) -> T? {
-        guard let json = item.pluginData[name],
-              let data = T(json: json)
-        else {
-            return nil
-        }
-        return data
-    }
-}
-
-public enum PluginPhase {
-    case beforeProcedureReplace(procedure: BoneProcedure, context: BoneContext)
-    case afterProcedureReplace(procedure: BoneProcedure, context: BoneContext)
-    case beforeItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
-    case afterItemReplace(item: ObjectReference<BoneItem>, context: BoneContext)
-    case beforePathReplace(item: BonePath, context: BoneContext)
-    case afterPathReplace(item: ObjectReference<BonePath>, context: BoneContext)
-}
 
 public class PluginManager {
-    public static let shared = PluginManager()
+    static let shared: PluginManager = {
+        let manager = PluginManager()
+        manager.add(plugins: [ShellPlugin(), XcodePlugin()])
+        return manager
+    }()
 
-    public static var defaultPlugins: [Plugin] = [XCodePlugin(), ShellPlugin()]
+    private var plugins: [PluginType] = []
+    private init() {}
 
-    public let plugins: [Plugin]
-
-    public init(defaultPlugins: [Plugin] = defaultPlugins) {
-        plugins = defaultPlugins
+    public func add(plugin: PluginType) {
+        if !plugins.contains(where: { $0.name == plugin.name }) {
+            add(plugins: [plugin])
+        }
     }
 
-    public func execute(phase: PluginPhase, from folder: Folder, defaultData: [String: JSON]) throws {
-        try plugins.forEach { try $0.execute(phase: phase, from: folder, defaultData: defaultData[$0.name]) }
+    public func add(plugins: [PluginType]) {
+        self.plugins += plugins
+    }
+
+    public func execute(_ execution: PluginExecution<Murrayfile>) throws {
+        try plugins.forEach { try $0.execute(execution) }
+    }
+
+    public func execute(_ execution: PluginExecution<Procedure>) throws {
+        try plugins.forEach { try $0.execute(execution) }
+    }
+
+    public func execute(_ execution: PluginExecution<Item>) throws {
+        try plugins.forEach { try $0.execute(execution) }
+    }
+
+    public func execute(_ execution: PluginExecution<Item.Path>) throws {
+        try plugins.forEach { try $0.execute(execution) }
+    }
+
+    public func execute(_ execution: PluginExecution<Item.Replacement>) throws {
+        try plugins.forEach { try $0.execute(execution) }
     }
 }
