@@ -2,6 +2,9 @@ name: MurrayKit Tests
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize]
+    paths: 
+    - Sources
+    - Tests
 jobs:
   macOS:
     runs-on: macOS-latest
