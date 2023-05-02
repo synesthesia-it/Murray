@@ -146,6 +146,8 @@ Every bone has a a configuration file listing the new files that will be created
 
 Every command has a `--help` option explaining proper usage of selected command.
 
+To get an explanatory log about what is happening, use `--verbose` with any command.
+
 ## List
 `murray list` returns a complete list of all available procedures by joining the packages contained in your Murrayfile.
 
@@ -161,7 +163,7 @@ AnotherPackage.procedureA
 > You can use the name of the procedure in following `run` executions; if two different packages have the same name, prepend the package name to the procedure's name
 
 ## Run
-`murray run <procedureName> <name>` runs selected procedure.
+`murray run <procedureName> <name> <parameters>` runs selected procedure.
 If context requires more than the `name` parameter, add a key-value list of parameters with `parameter:value` syntax
 
 Example (let's assume that `procedureA` requires a `name` and a `module` parameter in context):
@@ -171,6 +173,18 @@ foo@bar:~$ murray run procedureA test module:MyModule
 Options: 
 - `--verbose`: enables full logging 
 - `--preview`: skip any file creation and provides a list of file that will be created/modified by current execution 
+
+## Clone
+
+`murray clone <name> <git_path> <subfolder> <parameters>` clones a remote skeleton containing a Skeletonfile, in order to create a new project named `<name>` from it.
+
+If the Skeletonfile is contained in a remote subfolder, you can specify it with the `<subfolder>` parameter. 
+
+For `git_path` you can use the same syntax used by 🌱 *[Mint](https://github.com/yonaskolb/mint)* to specify git branches or tags. Example `github.com/synesthesia-it/murray@wip/3.0` for the `wip/3.0` branch.
+
+If you need to load a skeleton from a local folder, you can use a local path instead of the git url, as long as you provide the `--copyFromLocalFolder` parameter.
+
+
 
 ## Scaffold 
 
@@ -379,7 +393,7 @@ Parameters:
   - `plugins`: plugin data for this path file/folder
 - `replacements`: an array of replacements that will be sequentially executed. Each one is defined by: 
   - `destination`: destination file path (relative to Murrayfile) containing the file where the replacement will take place
-  - `placeholder`: a line of text that will be searched inside the `destination`, and replaced by the `text` or the `source` contents. The placeholder is always added back after the replacement.
+  - `placeholder`: a line of text that will be searched inside the `destination`, and replaced by the `text` or the `source` contents. The placeholder is always added back after the replacement. Hint: you can use comments in your files as placeholders and look for them. 
   - `text`: (optional) a small amount of text that will be placed right before the `placeholder` in the `destination` file. For large amount of replacement texts use `source`
   - `source`: (optional) a path to a file (relative to the bone) containing a resolvable text that will be placed in the `destination` file right before the `placeholder`. For small replacements use the `text` property instead. Please note that at least one between `text` and `source` is required. When both of them are specified, `source` is always used.
 
@@ -405,6 +419,25 @@ replacements:
   text: "let {{name|firstLowercase}}ViewModel = {{name|firstUppercase}}ViewModel()\n"
 ```
 
+## Skeletonfile
+
+A Skeletonfile contains all the informations for a Skeleton to be kickstarted as a new project.
+
+Usually a Skeleton, as opposed to bones, is a fully-working project that needs to be developed beforehand; therefor, it's unlikely to have it containing templates and bones (but it can contain pre-configured packages and a Murrayfile, of course).
+
+The Skeletonfile purpose is to list local scripts and (when needed) a list of template folders that don't get compiled with the project, so that they can be resolved against provided context and then removed. 
+
+> The Skeletonfile itself gets removed from a new project after running `murray clone`. There's usually no need for it to be present in your project.
+
+The Skeletonfile parameters are:
+- `paths`: an array of paths for folders and/or files with the same syntax used in bones. Each one is defined by:
+  - `from`: a path to a file or a folder relative to the Skeletonfile. When pointing to a folder, it will resolve all contained files against provided context.
+  - `to`: the destination path relative to the Skeletonfile where this folder/file will be resolved into. It supports context resolution (meaning that it may contain stencil templates). 
+- `scripts`: an array of bash scripts that will be executed after cloning and paths execution
+- `initializeGit`: wheter automatically initialize an empty git (with `git init`) after the execution. Defaults to `false`.
+
+> There is currently no plugin support for Skeletonfiles, meaning that xcodeproj files for iOS and other Apple Swift projects  will need to be renamed manually after creation. Use Xcodegen or Tuist instead and have the skeletonfile change your project.yml / Project.swift files with a script.
+
 ## Context values
 
 Context is a mix of runtime values (parameters in CLI), environment values ("hardcoded" in Murrayfile) and dynamic values (standard values depending on current time or current machine).
@@ -414,7 +447,7 @@ Values in Murrayfile environment dictionary may be used inside every template by
 This is a mixed example that creates a `{{fileHeader}}` variable that should print something like
 ```swift
 // Filename.swift
-// Stefano Mondino - Synesthesia © 2023
+// Stefano Mondino - Synesthesia ©2023
 ```
 when creating a bone for a file named `Filename.swift`
 
@@ -429,5 +462,38 @@ environment:
 
 ```
 
+### Dynamic values
+These are values available in context and dynamically changing across time and/or machine they are generated on.
+When not available, they return an empty string.
 
-### 
+
+- `_year`: current year
+- `_date`: date in format `dd/MM/yyyy`
+- `_dateTime`: date with time in format `dd/MM/yyyy HH:mm:ss`
+- `_timestamp`: timestamp in seconds from 1/1/1970
+- `_author`: name of file author as set in git configuration. Returns empty string if git is not properly configured.
+- `_filename`: Name of file currently created. Use `_from` for source template and `_to` for destination filename (example : `_filename._to`)
+- `_path`: Full path of file currently created. Use `_from` for source template and `_to` for destination path (example : `_path_._to`)
+
+# Alternatives and similar softwares
+
+Murray was heavily inspired by scaffold features available in good old Ruby on Rails and other "web based" software. Back in 2018 when we started Murray, there seemed to be nothing similar available for mobile development.
+
+[Sourcery](https://github.com/krzysztofzablocki/Sourcery) is a similar software based on configuration files and Stencil templates, but is intended for Swift projects only, as it interprets Swift code and automatically generate files based on them (such as automatic implementations for protocols). Generated files are not supposed to be changed, as every execution of sourcery will re-generate them, discarding every user change.
+
+[SwiftGen](https://github.com/SwiftGen/SwiftGen) relates (in a way) to Sourcery, but is intended for Swift resources (assets, translations, etc.). Again, it's tailored for Swift projects and doesn't have crossplatform dedicated capabilities.
+
+[Genesis](https://github.com/yonaskolb/Genesis) seems to be very similar, but doesn't seems to support replacements in other files (only new templates)
+
+[Tuist](https://tuist.io/) has scaffolding features, but requires the project to be configured with Tuist itself, and again is only for Swift projects. It doesn't support replacements in files as well. We, however, recommend using Tuist whenever possibile and forget about xcodeproj files once and for all.
+
+# MurrayKit
+
+MurrayKit is a Package that can be used in any Swift project to use Murray functionalities.
+
+Documentation is WIP at the moment
+
+
+# Credits and contribution
+Murray was developed by the Synesthesia team. Feel free to contribute by opening Github issues and/or PR.
+
