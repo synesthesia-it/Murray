@@ -1,5 +1,10 @@
 name: MurrayKit Tests
 on:
+  push: 
+    branches: ["main"]
+    paths: 
+    - Sources
+    - Tests
   pull_request:
     types: [opened, edited, reopened, synchronize]
     paths: 
