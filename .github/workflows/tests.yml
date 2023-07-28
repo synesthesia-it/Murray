@@ -6,6 +6,7 @@ on:
     - Sources
     - Tests
   pull_request:
+    branches: ["main"]
     types: [opened, edited, reopened, synchronize]
     paths: 
     - Sources
