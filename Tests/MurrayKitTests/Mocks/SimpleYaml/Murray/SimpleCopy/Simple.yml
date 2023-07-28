@@ -1,4 +1,4 @@
-name: "Simple"
+name: "SimpleCopy"
 description: "Simple bone spec for testing purposes"
 procedures:
 - name: simpleGroup

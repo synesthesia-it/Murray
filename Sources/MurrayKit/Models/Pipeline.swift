@@ -38,14 +38,14 @@ public struct Pipeline {
         self.murrayfile = murrayfile
 
         let packages = try murrayfile.packages()
-        procedures = try procedureNames.map { procedureName in
-            guard let procedure = packages
-                .compactMap({ try? PackagedProcedure(package: $0, procedureName: procedureName) })
-                .first
-            else {
-                throw Errors.procedureNotFound(name: procedureName)
+        procedures = try procedureNames.compactMap { procedureName in
+            let procedures = packages
+                .compactMap { try? PackagedProcedure(package: $0, procedureName: procedureName) }
+            switch procedures.count {
+            case 0: throw Errors.procedureNotFound(name: procedureName)
+            case 1: return procedures.first
+            default: throw Errors.multipleProceduresFound(name: procedureName)
             }
-            return procedure
         }
 
         self.context = Template.Context(context, environment: murrayfile.object.enrichedEnvironment)
