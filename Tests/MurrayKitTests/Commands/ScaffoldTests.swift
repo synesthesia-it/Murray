@@ -77,6 +77,7 @@ class ScaffoldTests: TestCase {
         let package = try XCTUnwrap(CodableFile<Murrayfile>(in: root)
             .packages()
             .first(where: { $0.object.name == "simple" }))
+
         let packageFolder = try XCTUnwrap(package.file.parent)
         let itemFolder = try XCTUnwrap(packageFolder.subfolder(named: "newItem"))
         let itemFile = try itemFolder.file(named: "newItem.json")
