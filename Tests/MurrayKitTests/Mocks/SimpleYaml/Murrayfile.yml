@@ -5,6 +5,7 @@ environment:
 mainPlaceholder: "name"
 packages:
   - "Murray/Simple/Simple.yml"
+  - "Murray/SimpleCopy/Simple.yml"
 plugins: 
   shell:
     after:

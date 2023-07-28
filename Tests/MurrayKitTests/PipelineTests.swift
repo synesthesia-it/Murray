@@ -73,7 +73,7 @@ class PipelineTests: TestCase {
     func testPluginExecutionWithCustomPlaceholders() throws {
         let root = try Scenario.simpleYaml.make()
         let pipeline = try Pipeline(murrayfile: .init(in: root),
-                                    procedure: "simpleGroup",
+                                    procedure: "Simple.simpleGroup",
                                     context: ["name": "test"])
 
         try pipeline.run()
@@ -85,7 +85,7 @@ class PipelineTests: TestCase {
     func testXcodePluginAlteringXcodeProject() throws {
         let root = try Scenario.simpleYaml.make()
         let pipeline = try Pipeline(murrayfile: .init(in: root),
-                                    procedure: "simpleGroup",
+                                    procedure: "Simple.simpleGroup",
                                     context: ["name": "xcodeCustomFile"])
         let xcodeProjPreviousContents = try root.file(at: "Test.xcodeproj/project.pbxproj").readAsString()
         try pipeline.run()

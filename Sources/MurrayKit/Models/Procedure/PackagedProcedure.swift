@@ -28,11 +28,11 @@ public struct PackagedProcedure: Hashable {
     public init(package: CodableFile<Package>,
                 procedureName name: String) throws {
         self.package = package
-        guard let procedure = package
+        let procedures = package
             .object
             .procedures
-            .first(where: { $0.name == name || $0.name == "\(package.object.name).\(name)" })
-        else {
+            .filter { $0.name == name || name == "\(package.object.name).\($0.name)" }
+        guard let procedure = procedures.first else {
             throw Errors.procedureNotFound(name: name)
         }
         self.procedure = procedure

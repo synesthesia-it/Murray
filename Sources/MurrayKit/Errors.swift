@@ -27,6 +27,7 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case deleteFolder(String)
     case deleteFile(String)
     case procedureNotFound(name: String)
+    case multipleProceduresFound(name: String)
     case murrayfileNotFound(String)
     case invalidPackageName(String)
     case itemAlreadyExists(String)
@@ -49,6 +50,7 @@ extension Errors: LocalizedError, CustomStringConvertible {
             return "Provided string is not properly resolvable\n\nString:\n\(string)\n\nContext:\n\n\(context)"
         case .invalidReplacement: return "Error during replacement"
         case let .procedureNotFound(name): return "Procedure '\(name)' not found."
+        case let .multipleProceduresFound(name): return "Multiple procedures found for name \(name). Use syntax PackageName.procedureName instead."
         case let .folderLocationError(path): return "Invalid folder at \(path)"
         case let .fileLocationError(path): return "Invalid file at \(path)"
         case let .unreadableFile(path): return "Unreadable file at \(path)"

@@ -43,15 +43,15 @@ class ScaffoldTests: TestCase {
         let root = try Scenario.simpleYaml.make()
         try Scaffold
             .item(named: "newItem",
-                  package: "simple",
+                  package: "Simple",
                   description: "Test description",
                   rootFolder: root,
                   files: ["fileA.swift", "fileB.yml"])
             .execute()
 
-        let package = try XCTUnwrap(try CodableFile<Murrayfile>(in: root)
+        let package = try XCTUnwrap(CodableFile<Murrayfile>(in: root)
             .packages()
-            .first(where: { $0.object.name == "simple" }))
+            .first(where: { $0.object.name == "Simple" }))
 
         let itemFolder = try XCTUnwrap(package.file.parent?.subfolder(named: "newItem"))
         let itemFile = try itemFolder.file(named: "newItem.yml")
@@ -74,9 +74,10 @@ class ScaffoldTests: TestCase {
                   files: ["fileA.swift", "fileB.json"])
             .execute()
 
-        let package = try XCTUnwrap(try CodableFile<Murrayfile>(in: root)
+        let package = try XCTUnwrap(CodableFile<Murrayfile>(in: root)
             .packages()
             .first(where: { $0.object.name == "simple" }))
+
         let packageFolder = try XCTUnwrap(package.file.parent)
         let itemFolder = try XCTUnwrap(packageFolder.subfolder(named: "newItem"))
         let itemFile = try itemFolder.file(named: "newItem.json")
@@ -116,8 +117,8 @@ class ScaffoldTests: TestCase {
                   rootFolder: root,
                   files: ["fileA.swift", "fileB.json"])
             .execute()) { error in
-                XCTAssertEqual(error as? Errors, .itemAlreadyExists("newItem"))
-            }
+            XCTAssertEqual(error as? Errors, .itemAlreadyExists("newItem"))
+        }
     }
 
     func testNewItemDoesNotAddProcedureWhenSpecified() throws {
@@ -131,7 +132,7 @@ class ScaffoldTests: TestCase {
                   files: ["fileA.swift", "fileB.json"])
             .execute()
 
-        let package = try XCTUnwrap(try CodableFile<Murrayfile>(in: root)
+        let package = try XCTUnwrap(CodableFile<Murrayfile>(in: root)
             .packages()
             .first(where: { $0.object.name == "simple" }))
         let packageFolder = try XCTUnwrap(package.file.parent)
@@ -156,8 +157,8 @@ class ScaffoldTests: TestCase {
                   rootFolder: root,
                   files: ["fileA.swift", "fileB.json"])
             .execute()) {
-                XCTAssertEqual($0 as? Errors, .invalidPackageName("notFound"))
-            }
+            XCTAssertEqual($0 as? Errors, .invalidPackageName("notFound"))
+        }
     }
 
     func testAddNewProcedureInInvalidPackage() throws {
@@ -176,14 +177,14 @@ class ScaffoldTests: TestCase {
     func testAddNewProcedureWithMultipleItems() throws {
         let root = try Scenario.simpleYaml.make()
 
-        var package = try XCTUnwrap(try CodableFile<Murrayfile>(in: root)
+        var package = try XCTUnwrap(CodableFile<Murrayfile>(in: root)
             .packages()
-            .first(where: { $0.object.name == "simple" }))
+            .first(where: { $0.object.name == "Simple" }))
 
         XCTAssertNil(package.object.procedures.first { $0.name == "newProcedure" })
 
         try Scaffold.procedure(named: "newProcedure",
-                               package: "simple",
+                               package: "Simple",
                                description: "theDescription",
                                rootFolder: root,
                                itemNames: ["replacementOnly", "simpleItem"])
@@ -199,7 +200,7 @@ class ScaffoldTests: TestCase {
         let root = try Scenario.simpleYaml.make()
 
         XCTAssertThrowsError(try Scaffold.procedure(named: "simpleGroup",
-                                                    package: "simple",
+                                                    package: "Simple",
                                                     description: "theDescription",
                                                     rootFolder: root,
                                                     itemNames: ["replacementOnly", "i do not exist"])
@@ -210,12 +211,12 @@ class ScaffoldTests: TestCase {
 
     func testFailWhenItemNameNotFound() throws {
         let root = try Scenario.simpleYaml.make()
-        var package = try XCTUnwrap(try CodableFile<Murrayfile>(in: root)
+        var package = try XCTUnwrap(CodableFile<Murrayfile>(in: root)
             .packages()
-            .first(where: { $0.object.name == "simple" }))
+            .first(where: { $0.object.name == "Simple" }))
 
         XCTAssertThrowsError(try Scaffold.procedure(named: "newProcedure",
-                                                    package: "simple",
+                                                    package: "Simple",
                                                     description: "theDescription",
                                                     rootFolder: root,
                                                     itemNames: ["replacementOnly", "i do not exist"])
