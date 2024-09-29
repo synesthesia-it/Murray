@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ItemTests.swift
 //
 //
 //  Created by Stefano Mondino on 11/05/22.
@@ -60,5 +60,26 @@ class ItemTests: TestCase {
         XCTAssertThrowsError(try JSONDecoder().decode(replacementJSON, of: Item.Replacement.self)) { error in
             XCTAssertEqual(error as? Errors, Errors.invalidReplacement)
         }
+    }
+
+    func testMissingReplacementAllowsMapping() throws {
+        let yaml = """
+        name: simpleItem
+        description: custom description
+        paths:
+        - from: "Bone.swift"
+          to: "Sources/Files/{{ nestedName }}/{{ customName }}.swift"
+          plugins:
+            xcode:
+              targets: ["App"]
+            shell:
+              after:
+              - "echo {{_destinationFilename}} >> /{{ _destinationPath }}.test"
+        parameters:
+        - "name": "name"
+          "isRequired": true
+        """
+        let item = try YAMLDecoder(encoding: .utf8).decode(yaml, of: Item.self)
+        XCTAssertEqual(item.replacements, [])
     }
 }
