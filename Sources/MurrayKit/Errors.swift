@@ -43,8 +43,9 @@ private extension Array where Element == Item.Parameter {
     func invalidDescription() -> String {
         map {
             [$0.name,
-             $0.description,
+             $0.description != $0.name ? $0.description : nil,
              "Allowed values: \(($0.values ?? []).joined(separator: ", "))"]
+                .compactMap { $0 }
                 .joined(separator: " - ")
         }
         .joined(separator: "\n")
@@ -57,7 +58,7 @@ private extension Array where Element == Item.Parameter {
                     $0.description]
                 .joined(separator: " - ")
         }
-        .joined(separator: ", ")
+        .joined(separator: "\n")
     }
 }
 
