@@ -22,6 +22,16 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
         public var description: String { optionalDescription ?? name }
         public var values: [String]?
 
+        public init(name: String,
+                    description: String? = nil,
+                    isRequired: Bool = true,
+                    values: [String]? = nil) {
+            self.name = name
+            self.isRequired = isRequired
+            self.values = values
+            optionalDescription = description
+        }
+
         public init(from decoder: Swift.Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             name = try container.decode(String.self, forKey: .name)

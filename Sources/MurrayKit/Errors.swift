@@ -35,8 +35,30 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case procedureAlreadyExists(String)
     case noValidSkeletonFound(String)
     case invalidGitRepository(String)
-    case missingRequiredParameters([String])
-    case invalidParameters([String])
+    case missingRequiredParameters([Item.Parameter])
+    case invalidParameters([Item.Parameter])
+}
+
+private extension Array where Element == Item.Parameter {
+    func invalidDescription() -> String {
+        map {
+            [$0.name,
+             $0.description,
+             "Allowed values: \(($0.values ?? []).joined(separator: ", "))"]
+                .joined(separator: " - ")
+        }
+        .joined(separator: "\n")
+    }
+
+    func missingDescription() -> String {
+        map {
+            if $0.name == $0.description { return $0.name }
+            return [$0.name,
+                    $0.description]
+                .joined(separator: " - ")
+        }
+        .joined(separator: ", ")
+    }
 }
 
 extension Errors: LocalizedError, CustomStringConvertible {
@@ -44,9 +66,9 @@ extension Errors: LocalizedError, CustomStringConvertible {
     var localizedDescription: String {
         switch self {
         case let .missingRequiredParameters(parameters):
-            return "Missing required parameters: \(parameters.joined(separator: ", "))"
+            return "Missing required parameters: \(parameters.missingDescription())"
         case let .invalidParameters(parameters):
-            return "These parameters are invalid: \(parameters.joined(separator: ", "))"
+            return "Provided parameters are not valid:\n\(parameters.invalidDescription())"
         case let .unparsableFile(filePath): return "Path at \(filePath) is not parsable"
         case let .unparsableContent(error): return "Unparsable content: \(error)"
         case let .unresolvableString(string, context):

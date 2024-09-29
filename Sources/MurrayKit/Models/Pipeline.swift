@@ -85,12 +85,12 @@ public struct Pipeline {
         let missingParameters = try missingParameters()
         if !missingParameters.isEmpty {
             throw Errors
-                .missingRequiredParameters(missingParameters.map { $0.name })
+                .missingRequiredParameters(missingParameters)
         }
         let invalidParameters = try invalidParameters()
         if !invalidParameters.isEmpty {
             throw Errors
-                .invalidParameters(invalidParameters.map { $0.name })
+                .invalidParameters(invalidParameters)
         }
         guard let destinationFolder = murrayfile.file.parent else {
             // no destination folder provided

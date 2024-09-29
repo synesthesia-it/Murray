@@ -40,13 +40,13 @@ public struct Run: CommandWithContext {
         let missingParameters = try pipeline.missingParameters()
         guard missingParameters.isEmpty else {
             throw Errors
-                .missingRequiredParameters(missingParameters.map { $0.name })
+                .missingRequiredParameters(missingParameters)
         }
 
         let invalidParameters = try pipeline.invalidParameters()
         guard invalidParameters.isEmpty else {
             throw Errors
-                .invalidParameters(invalidParameters.map { $0.name + " - Allowed: \($0.values ?? [])" })
+                .invalidParameters(invalidParameters)
         }
 
         let files = try pipeline.writeableFiles()
