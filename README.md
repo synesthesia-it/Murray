@@ -33,7 +33,29 @@ to find all the files you need in the proper place (example: a `Scenes/Feature` 
 
 # Installation (macOS)
 
-## Using 🌱 *[Mint](https://github.com/yonaskolb/mint)* (recommended)
+## Using *[Mise](https://github.com/jdx/mise)*
+
+Add
+
+`spm:synesthesia-it/murray = "latest"`
+
+to your .mise-toml
+
+Example:
+```toml
+[tools]
+tuist = "latest"
+swiftlint = 'latest'
+swiftformat = 'latest'
+sourcery = 'latest'
+xcodes = 'latest'
+xcbeautify = 'latest'
+"spm:synesthesia-it/murray" = "latest"
+```
+
+and run `mise install`
+
+## Using 🌱 *[Mint](https://github.com/yonaskolb/mint)* 
 
 ```
 mint install synesthesia-it/Murray
@@ -385,6 +407,8 @@ Parameters:
 - `description`:  a readable description of the bone, briefly explaining what it does.
 - `parameters`: a list of parameters accepted by current bone. Each one is defined by
   - `name`: the name of the parameters. 
+  - `description`: a brief description about what this parameter is supposed to do. Optional.
+  - `values`: A list of allowed values for current parameters. Optional, when not provided any parameter will be accepted.
   - `isRequired`: a boolean value that will require the presence of this parameter in every execution containing this bone, throwing an error when missing
 - `plugins`: plugin data
 - `paths`: an array of paths definitions for every **new** file that will be created by this bone. Each one is defined by:

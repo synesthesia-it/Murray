@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Item.swift
 //
 //
 //  Created by Stefano Mondino on 11/05/22.
@@ -12,16 +12,32 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
         private enum CodingKeys: String, CodingKey {
             case name
             case isRequired
+            case values
+            case optionalDescription = "description"
         }
 
         public let name: String
         public let isRequired: Bool
-        public var description: String { name }
+        private var optionalDescription: String?
+        public var description: String { optionalDescription ?? name }
+        public var values: [String]?
+
+        public init(name: String,
+                    description: String? = nil,
+                    isRequired: Bool = true,
+                    values: [String]? = nil) {
+            self.name = name
+            self.isRequired = isRequired
+            self.values = values
+            optionalDescription = description
+        }
 
         public init(from decoder: Swift.Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             name = try container.decode(String.self, forKey: .name)
             isRequired = try container.decodeIfPresent(Bool.self, forKey: .isRequired) ?? false
+            values = try container.decodeIfPresent([String].self, forKey: .values)
+            optionalDescription = try container.decodeIfPresent(String.self, forKey: .optionalDescription)
         }
     }
 
@@ -120,6 +136,16 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
         self.plugins = plugins
         self.optionalDescription = optionalDescription
         self.replacements = replacements
+    }
+
+    public init(from decoder: Swift.Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        parameters = try container.decode([Item.Parameter].self, forKey: .parameters)
+        paths = try container.decode([Item.Path].self, forKey: .paths)
+        plugins = try container.decodeIfPresent(Parameters.self, forKey: .plugins)
+        optionalDescription = try container.decodeIfPresent(String.self, forKey: .optionalDescription)
+        replacements = try container.decodeIfPresent([Item.Replacement].self, forKey: .replacements) ?? []
     }
 }
 

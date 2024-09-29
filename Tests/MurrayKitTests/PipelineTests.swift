@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PipelineTests.swift
 //
 //
 //  Created by Stefano Mondino on 11/05/22.
@@ -21,6 +21,7 @@ class PipelineTests: TestCase {
 
         let file = try root.file(at: "Sources/Files/test/test.swift")
         XCTAssertEqual(try file.readAsString(), "test Test \(year)\n")
+//        XCTAssertNoThrow(try root.file(at: "Sources/Files/test/.gitKeep"))
     }
 
     func testSimpleJSONPipelineWithMissingParameter() throws {
@@ -28,9 +29,9 @@ class PipelineTests: TestCase {
         let pipeline = try Pipeline(murrayfile: .init(in: root),
                                     procedure: "simpleGroup",
                                     context: [:])
-
+        let missingParameter = Item.Parameter(name: "name")
         XCTAssertThrowsError(try pipeline.run()) {
-            XCTAssertEqual($0 as? Errors, Errors.missingRequiredParameters(["name"]))
+            XCTAssertEqual($0 as? Errors, Errors.missingRequiredParameters([missingParameter]))
         }
 
         XCTAssertThrowsError(try root.file(at: "Sources/Files/test/test.swift")) {
@@ -80,6 +81,21 @@ class PipelineTests: TestCase {
 
         let file = try root.file(at: "Sources/Files/test/test.swift.test")
         XCTAssertEqual(try file.readAsString(), "test.swift\n")
+    }
+
+    func testExecutionFailsIfProvidedValueIsNotPartOfAllowedList() throws {
+        let root = try Scenario.simpleYaml.make()
+        let pipeline = try Pipeline(murrayfile: .init(in: root),
+                                    procedure: "Simple.simpleGroup",
+                                    context: ["name": "test", "type": "valueC"])
+        let invalidParameter = Item.Parameter(name: "type",
+                                              description: "The type of the item",
+                                              values: ["valueA", "valueB"])
+        XCTAssertThrowsError(try pipeline.run()) { error in
+            XCTAssertEqual(error as? Errors?, Errors.invalidParameters([invalidParameter]))
+        }
+        // no file should be created
+        XCTAssertThrowsError(try root.file(at: "Sources/Files/test/test.swift.test"))
     }
 
     func testXcodePluginAlteringXcodeProject() throws {

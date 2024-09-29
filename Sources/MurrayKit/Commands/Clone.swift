@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Clone.swift
 //
 //
 //  Created by Stefano Mondino on 26/07/22.
@@ -36,7 +36,7 @@ public struct Clone: CommandWithContext {
             throw Errors.unknown
         }
 
-        Logger.log("Template context:\n\(context)\n")
+        Logger.log("Template context:\n\(context)\n", level: .verbose)
 
         try? Folder.temporary.subfolder(named: projectName).delete()
         var temporaryProjectFolder: Folder
@@ -69,7 +69,7 @@ public struct Clone: CommandWithContext {
 
         try temporaryProjectFolder.moveContents(to: projectFolder, includeHidden: true)
 
-        guard let skeleton = try? CodableFile<Skeleton>.init(in: projectFolder) else {
+        guard let skeleton = try? CodableFile<Skeleton>(in: projectFolder) else {
             throw Errors.noValidSkeletonFound("\(projectFolder.path)")
         }
 
