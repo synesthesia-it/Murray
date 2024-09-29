@@ -33,7 +33,29 @@ to find all the files you need in the proper place (example: a `Scenes/Feature` 
 
 # Installation (macOS)
 
-## Using 🌱 *[Mint](https://github.com/yonaskolb/mint)* (recommended)
+## Using *[Mise](https://github.com/jdx/mise)*
+
+Add
+
+`spm:synesthesia-it/murray = "latest"`
+
+to your .mise-toml
+
+Example:
+```toml
+[tools]
+tuist = "latest"
+swiftlint = 'latest'
+swiftformat = 'latest'
+sourcery = 'latest'
+xcodes = 'latest'
+xcbeautify = 'latest'
+"spm:synesthesia-it/murray" = "latest"
+```
+
+and run `mise install`
+
+## Using 🌱 *[Mint](https://github.com/yonaskolb/mint)* 
 
 ```
 mint install synesthesia-it/Murray
