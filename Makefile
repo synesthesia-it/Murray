@@ -7,6 +7,12 @@ build:
 	swift build -c release
 	cp -f .build/release/Murray /usr/local/bin/murray
 
+archive: 
+	swift build -c release
+	cp -f .build/release/Murray ./murray
+	chmod +x murray
+	zip murray.zip murray
+
 # Install dependencies, download build resources and add pre-commit hook
 
 lint:

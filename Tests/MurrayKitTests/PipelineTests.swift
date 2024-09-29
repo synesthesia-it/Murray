@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PipelineTests.swift
 //
 //
 //  Created by Stefano Mondino on 11/05/22.
@@ -21,6 +21,7 @@ class PipelineTests: TestCase {
 
         let file = try root.file(at: "Sources/Files/test/test.swift")
         XCTAssertEqual(try file.readAsString(), "test Test \(year)\n")
+//        XCTAssertNoThrow(try root.file(at: "Sources/Files/test/.gitKeep"))
     }
 
     func testSimpleJSONPipelineWithMissingParameter() throws {
@@ -80,6 +81,19 @@ class PipelineTests: TestCase {
 
         let file = try root.file(at: "Sources/Files/test/test.swift.test")
         XCTAssertEqual(try file.readAsString(), "test.swift\n")
+    }
+
+    func testExecutionFailsIfProvidedValueIsNotPartOfAllowedList() throws {
+        let root = try Scenario.simpleYaml.make()
+        let pipeline = try Pipeline(murrayfile: .init(in: root),
+                                    procedure: "Simple.simpleGroup",
+                                    context: ["name": "test", "type": "valueC"])
+
+        XCTAssertThrowsError(try pipeline.run()) { error in
+            XCTAssertEqual(error as? Errors?, Errors.invalidParameters(["type"]))
+        }
+        // no file should be created
+        XCTAssertThrowsError(try root.file(at: "Sources/Files/test/test.swift.test"))
     }
 
     func testXcodePluginAlteringXcodeProject() throws {

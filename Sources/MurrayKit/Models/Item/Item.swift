@@ -13,11 +13,13 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
             case name
             case isRequired
             case values
+            case optionalDescription = "description"
         }
 
         public let name: String
         public let isRequired: Bool
-        public var description: String { name }
+        private var optionalDescription: String?
+        public var description: String { optionalDescription ?? name }
         public var values: [String]?
 
         public init(from decoder: Swift.Decoder) throws {
@@ -25,6 +27,7 @@ public struct Item: Codable, CustomStringConvertible, Hashable {
             name = try container.decode(String.self, forKey: .name)
             isRequired = try container.decodeIfPresent(Bool.self, forKey: .isRequired) ?? false
             values = try container.decodeIfPresent([String].self, forKey: .values)
+            optionalDescription = try container.decodeIfPresent(String.self, forKey: .optionalDescription)
         }
     }
 

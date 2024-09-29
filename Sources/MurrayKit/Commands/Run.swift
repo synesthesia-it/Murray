@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Run.swift
 //
 //
 //  Created by Stefano Mondino on 19/05/22.
@@ -30,7 +30,7 @@ public struct Run: CommandWithContext {
     }
 
     public func execute() throws {
-        let murrayfile = try CodableFile<Murrayfile>.init(in: folder)
+        let murrayfile = try CodableFile<Murrayfile>(in: folder)
         let context = context(mainPlaceholderKey: murrayfile.object.namePlaceholder)
 
         let pipeline = try Pipeline(murrayfile: murrayfile,
@@ -41,6 +41,12 @@ public struct Run: CommandWithContext {
         guard missingParameters.isEmpty else {
             throw Errors
                 .missingRequiredParameters(missingParameters.map { $0.name })
+        }
+
+        let invalidParameters = try pipeline.invalidParameters()
+        guard invalidParameters.isEmpty else {
+            throw Errors
+                .invalidParameters(invalidParameters.map { $0.name + " - Allowed: \($0.values ?? [])" })
         }
 
         let files = try pipeline.writeableFiles()

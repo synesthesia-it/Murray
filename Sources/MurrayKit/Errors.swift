@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Errors.swift
 //
 //
 //  Created by Stefano Mondino on 30/01/22.
@@ -36,6 +36,7 @@ public enum Errors: Swift.Error, Equatable, Hashable {
     case noValidSkeletonFound(String)
     case invalidGitRepository(String)
     case missingRequiredParameters([String])
+    case invalidParameters([String])
 }
 
 extension Errors: LocalizedError, CustomStringConvertible {
@@ -44,6 +45,8 @@ extension Errors: LocalizedError, CustomStringConvertible {
         switch self {
         case let .missingRequiredParameters(parameters):
             return "Missing required parameters: \(parameters.joined(separator: ", "))"
+        case let .invalidParameters(parameters):
+            return "These parameters are invalid: \(parameters.joined(separator: ", "))"
         case let .unparsableFile(filePath): return "Path at \(filePath) is not parsable"
         case let .unparsableContent(error): return "Unparsable content: \(error)"
         case let .unresolvableString(string, context):

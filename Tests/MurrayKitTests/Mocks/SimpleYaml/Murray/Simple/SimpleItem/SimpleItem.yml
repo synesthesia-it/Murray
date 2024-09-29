@@ -19,5 +19,8 @@ replacements:
   "destination": "Sources/Files/Default/Test2.swift"
 parameters:
 - "name": "name"
+  "description": "The name of the item"
   "isRequired": true
 - "name": "type"
+  "description": "The type of the item"
+  "values": ["valueA", "valueB"]

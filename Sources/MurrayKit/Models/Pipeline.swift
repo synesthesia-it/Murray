@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Pipeline.swift
 //
 //
 //  Created by Stefano Mondino on 30/01/22.
@@ -56,12 +56,27 @@ public struct Pipeline {
             .filter { self.context[$0.name] == nil }
     }
 
+    public func invalidParameters() throws -> [Item.Parameter] {
+        try allParameters()
+            .filter { parameter in
+                if let allowedValues = parameter.values,
+                   let contextValue = self.context[parameter.name]?.description {
+                    return !Set(allowedValues).contains(contextValue)
+                } else {
+                    return false
+                }
+            }
+    }
+
     public func requiredParameters() throws -> [Item.Parameter] {
+        try allParameters().filter { $0.isRequired }
+    }
+
+    public func allParameters() throws -> [Item.Parameter] {
         try procedures.flatMap { procedure in
             try procedure.items()
                 .flatMap {
                     $0.object.parameters
-                        .filter { $0.isRequired }
                 }
         }.uniqued()
     }
@@ -72,7 +87,11 @@ public struct Pipeline {
             throw Errors
                 .missingRequiredParameters(missingParameters.map { $0.name })
         }
-
+        let invalidParameters = try invalidParameters()
+        if !invalidParameters.isEmpty {
+            throw Errors
+                .invalidParameters(invalidParameters.map { $0.name })
+        }
         guard let destinationFolder = murrayfile.file.parent else {
             // no destination folder provided
             throw Errors.unknown
@@ -126,6 +145,7 @@ public struct Pipeline {
                                                   context: localContext,
                                                   phase: .after,
                                                   root: destinationFolder))
+
                     default:
                         try file.commit(context: enrichedContext)
                     }
